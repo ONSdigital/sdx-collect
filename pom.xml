@@ -21,6 +21,11 @@
             <version>0.1.12</version>
         </dependency>
         <dependency>
+            <groupId>com.github.davidcarboni</groupId>
+            <artifactId>httpino</artifactId>
+            <version>0.0.7</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.4.1</version>
@@ -55,6 +60,11 @@
 
         <!-- Commons -->
         <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.6</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.0</version>
@@ -73,6 +83,12 @@
             <groupId>com.github.davidcarboni</groupId>
             <artifactId>resource-utils</artifactId>
             <version>1.2.2</version>
+        </dependency>
+        <!-- FTP -->
+        <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+            <version>3.0.1</version>
         </dependency>
 
     </dependencies>
