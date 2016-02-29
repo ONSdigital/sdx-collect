@@ -1,5 +1,6 @@
 package com.github.onsdigital.perkin.storage;
 
+import com.github.onsdigital.perkin.helpers.Configuration;
 import com.github.onsdigital.perkin.helpers.Json;
 import com.github.onsdigital.perkin.json.Survey;
 import org.apache.commons.fileupload.FileItem;
@@ -47,7 +48,6 @@ public class FtpPublisherTest {
         when(data.getInputStream()).thenReturn(in);
         when(data.getName()).thenReturn("test.json");
 
-        classUnderTest = new FtpPublisher();
 
         fakeFtpServer = new FakeFtpServer();
         fakeFtpServer.setServerControlPort(0);  // use any free port
@@ -60,8 +60,10 @@ public class FtpPublisherTest {
         fakeFtpServer.start();
         port = fakeFtpServer.getServerControlPort();
 
-        classUnderTest.setHost("localhost");
-        classUnderTest.setPort(port);
+        //create publisher
+        Configuration.set(Configuration.FTP_HOST, "localhost");
+        Configuration.set(Configuration.FTP_PORT, port);
+        classUnderTest = new FtpPublisher();
 
         System.out.println("FakeFtpServer running on port " + port);
     }
@@ -74,7 +76,8 @@ public class FtpPublisherTest {
     @Test(expected = IOException.class)
     public void shouldErrorConnectionRefused() throws IOException {
         //given
-        classUnderTest.setPort(8888);
+        Configuration.set(Configuration.FTP_PORT, 8888);
+        classUnderTest = new FtpPublisher();
 
         //when
         classUnderTest.publish(data, "");
@@ -83,7 +86,8 @@ public class FtpPublisherTest {
     @Test(expected = IOException.class)
     public void shouldErrorInvalidCredentials() throws IOException {
         //given
-        classUnderTest.setUser("invalid");
+        Configuration.set(Configuration.FTP_USER, "invalid");
+        classUnderTest = new FtpPublisher();
 
         //when
         classUnderTest.publish(data, "");
@@ -116,4 +120,6 @@ public class FtpPublisherTest {
         assertThat(files.length, is(1));
         assertThat(files[0].getName(), is("test.json"));
     }
+
+    //TODO: add test for file writing fails
 }

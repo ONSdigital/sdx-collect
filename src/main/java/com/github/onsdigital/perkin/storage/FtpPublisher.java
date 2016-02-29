@@ -1,5 +1,6 @@
 package com.github.onsdigital.perkin.storage;
 
+import com.github.onsdigital.perkin.helpers.Configuration;
 import org.apache.commons.fileupload.FileItem;
 
 import java.io.InputStream;
@@ -18,40 +19,19 @@ public class FtpPublisher implements Publisher {
     private int port;
     private String user;
     private String password;
-    private String remoteDirectory;
+    private String path;
 
     public FtpPublisher() {
-        //TODO defaults via system properties?
-        setHost("192.168.99.100");
-        setPort(21);
-        setUser("ons");
-        setPassword("ons");
-        setRemoteDirectory("/");
+        host = Configuration.get(Configuration.FTP_HOST, "192.168.99.100");
+        port = Configuration.getInt(Configuration.FTP_PORT, 21);
+        user = Configuration.get(Configuration.FTP_USER, "ons");
+        password = Configuration.get(Configuration.FTP_PASSWORD, "ons");
+        path = Configuration.get(Configuration.FTP_PATH, "/");
     }
 
     public void publish(final FileItem data, final String path) throws IOException {
         String filename = data.getName();
         ftpFile(data.getInputStream(), path, filename);
-    }
-
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setRemoteDirectory(String remoteDirectory) {
-        this.remoteDirectory = remoteDirectory;
     }
 
     private void ftpFile(InputStream inputStream, String path, String filename) throws IOException {
@@ -73,7 +53,7 @@ public class FtpPublisher implements Publisher {
                 //get system name
                 System.out.println("ftp remote system is " + ftp.getSystemType());
                 //change current directory
-                ftp.changeWorkingDirectory(remoteDirectory);
+                ftp.changeWorkingDirectory(path);
                 System.out.println("ftp current directory is " + ftp.printWorkingDirectory());
 
                 //store the file in the remote server
