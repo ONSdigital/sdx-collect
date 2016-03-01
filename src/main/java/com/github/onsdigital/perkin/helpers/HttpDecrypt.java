@@ -28,7 +28,7 @@ public class HttpDecrypt {
     public HttpDecrypt() {
         //TODO: integrate with posie
         //host = Configuration.get(HOST, "http://posie:80/");
-        host = Configuration.get(HOST, "http://localhost:80/");
+        host = Configuration.get(HOST, "http://localhost:8080/");
         path = Configuration.get(PATH, "/decrypt");
         //TODO: remove, Ian Wooten's machine
         //host = Configuration.get(HOST, "http://172.28.47.39:5000/");

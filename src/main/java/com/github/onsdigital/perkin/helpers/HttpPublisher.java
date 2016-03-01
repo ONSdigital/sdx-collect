@@ -26,7 +26,7 @@ public class HttpPublisher {
     public HttpPublisher() {
         //TODO: integrate with pootle
         //host = Configuration.get(HOST, "http://pootle:80/");
-        host = Configuration.get(HOST, "http://localhost:80/");
+        host = Configuration.get(HOST, "http://localhost:8080/");
         path = Configuration.get(PATH, "/publish");
     }
 
