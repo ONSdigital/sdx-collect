@@ -26,7 +26,7 @@ public class HttpDecrypt {
     private String path;
 
     public HttpDecrypt() {
-        host = Configuration.get(HOST, "http://posie:8080/");
+        host = Configuration.get(HOST, "http://posie:80/");
         path = Configuration.get(PATH, "/decrypt");
         //TODO: remove, Ian Wooten's machine
         //host = Configuration.get(HOST, "http://172.28.47.39:5000/");
