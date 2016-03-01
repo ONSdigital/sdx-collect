@@ -6,6 +6,8 @@ import com.github.davidcarboni.httpino.Http;
 import com.github.davidcarboni.httpino.Response;
 import com.github.onsdigital.perkin.json.IdbrReceipt;
 import com.github.onsdigital.perkin.json.Result;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

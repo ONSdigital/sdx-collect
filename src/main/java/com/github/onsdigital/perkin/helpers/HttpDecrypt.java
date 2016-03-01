@@ -8,6 +8,8 @@ import com.github.onsdigital.perkin.json.EncryptedPayload;
 import com.github.onsdigital.perkin.json.IdbrReceipt;
 import com.github.onsdigital.perkin.json.Result;
 import com.github.onsdigital.perkin.json.Survey;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -21,6 +23,8 @@ public class HttpDecrypt {
 
     protected static final String HOST = "decrypt.host";
     protected static final String PATH = "decrypt.path";
+
+    private static final NameValuePair APPLICATION_JSON = new BasicNameValuePair("Content-Type", "application/json");
 
     private String host;
     private String path;
@@ -39,6 +43,6 @@ public class HttpDecrypt {
 
         Endpoint endpoint = new Endpoint(new Host(host), path);
         System.out.println("decrypt endpoint " + endpoint);
-        return new Http().postJson(endpoint, payload, Survey.class);
+        return new Http().postJson(endpoint, payload, Survey.class, APPLICATION_JSON);
     }
 }
