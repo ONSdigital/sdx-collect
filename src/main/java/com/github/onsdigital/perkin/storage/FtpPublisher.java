@@ -28,7 +28,7 @@ public class FtpPublisher implements Publisher {
     private String path;
 
     public FtpPublisher() {
-        host = Configuration.get(FTP_HOST, "192.168.99.100");
+        host = Configuration.get(FTP_HOST, "pure-ftpd");
         port = Configuration.getInt(FTP_PORT, 21);
         user = Configuration.get(FTP_USER, "ons");
         password = Configuration.get(FTP_PASSWORD, "ons");
