@@ -4,6 +4,8 @@ import com.github.davidcarboni.httpino.Endpoint;
 import com.github.davidcarboni.httpino.Http;
 import com.github.davidcarboni.httpino.Response;
 import com.github.davidcarboni.restolino.framework.Api;
+import com.github.onsdigital.perkin.helpers.HttpDecrypt;
+import com.github.onsdigital.perkin.helpers.HttpPublisher;
 import com.github.onsdigital.perkin.helpers.IdbrReceiptFactory;
 import com.github.onsdigital.perkin.helpers.Json;
 import com.github.onsdigital.perkin.json.EncryptedPayload;
@@ -12,16 +14,13 @@ import com.github.onsdigital.perkin.json.Result;
 import com.github.onsdigital.perkin.json.Survey;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.http.StatusLine;
-import org.apache.http.protocol.HTTP;
 import org.eclipse.jetty.http.HttpStatus;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.concurrent.atomic.AtomicLong;
@@ -32,10 +31,12 @@ import java.util.concurrent.atomic.AtomicLong;
 @Api
 public class Transform {
 
-    private IdbrReceiptFactory idbrReceiptFactory = new IdbrReceiptFactory();
-
     //TODO: service/api for batchId
     private static AtomicLong batchId = new AtomicLong(35000);
+
+    private HttpPublisher publisher = new HttpPublisher();
+    private HttpDecrypt decrypt = new HttpDecrypt();
+    private IdbrReceiptFactory idbrReceiptFactory = new IdbrReceiptFactory();
 
     @GET
     public EncryptedPayload get(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -58,7 +59,7 @@ public class Transform {
 
         System.out.println("transform >>>>>>>> request: " + Json.format(payload));
 
-        Response<Survey> decryptResponse = decrypt(payload);
+        Response<Survey> decryptResponse = decrypt.decrypt(payload);
         if (isError(decryptResponse.statusLine)) {
             return new Response<>(decryptResponse.statusLine, Result.builder().error(true).message("problem decrypting").build());
         }
@@ -67,7 +68,7 @@ public class Transform {
         IdbrReceipt receipt = idbrReceiptFactory.createIdbrReceipt(survey, batchId.getAndIncrement());
         System.out.println("transform created IDBR receipt: " + Json.format(receipt));
 
-        Response<Result> result = publish(receipt);
+        Response<Result> result = publisher.publish(receipt);
         System.out.println("transform <<<<<<<< response: " + Json.format(result));
 
         if (result.body.isError()) {
@@ -89,23 +90,5 @@ public class Transform {
         }
 
         return ok;
-    }
-
-    private Response<Survey> decrypt(final EncryptedPayload payload) throws IOException {
-
-        //TODO: make host configurable
-        Http http = new Http();
-        Endpoint endpoint = new Endpoint("/decrypt");
-        return http.postJson(endpoint, payload, Survey.class);
-    }
-
-    private Response<Result> publish(final IdbrReceipt receipt) throws IOException {
-
-        //TODO: make host configurable
-        Http http = new Http();
-        Endpoint endpoint = new Endpoint("/publish");
-        InputStream inputStream = new ByteArrayInputStream(receipt.getReceipt().getBytes(StandardCharsets.UTF_8));
-
-        return http.post(endpoint, inputStream, receipt.getFilename(), Result.class);
     }
 }

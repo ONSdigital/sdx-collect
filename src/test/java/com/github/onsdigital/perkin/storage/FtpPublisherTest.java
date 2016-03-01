@@ -61,8 +61,8 @@ public class FtpPublisherTest {
         port = fakeFtpServer.getServerControlPort();
 
         //create publisher
-        Configuration.set(Configuration.FTP_HOST, "localhost");
-        Configuration.set(Configuration.FTP_PORT, port);
+        Configuration.set(FtpPublisher.FTP_HOST, "localhost");
+        Configuration.set(FtpPublisher.FTP_PORT, port);
         classUnderTest = new FtpPublisher();
 
         System.out.println("FakeFtpServer running on port " + port);
@@ -76,7 +76,7 @@ public class FtpPublisherTest {
     @Test(expected = IOException.class)
     public void shouldErrorConnectionRefused() throws IOException {
         //given
-        Configuration.set(Configuration.FTP_PORT, 8888);
+        Configuration.set(FtpPublisher.FTP_PORT, 8888);
         classUnderTest = new FtpPublisher();
 
         //when
@@ -86,7 +86,7 @@ public class FtpPublisherTest {
     @Test(expected = IOException.class)
     public void shouldErrorInvalidCredentials() throws IOException {
         //given
-        Configuration.set(Configuration.FTP_USER, "invalid");
+        Configuration.set(FtpPublisher.FTP_USER, "invalid");
         classUnderTest = new FtpPublisher();
 
         //when

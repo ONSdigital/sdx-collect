@@ -15,6 +15,12 @@ import java.io.IOException;
  */
 public class FtpPublisher implements Publisher {
 
+    protected static final String FTP_HOST = "ftp.host";
+    protected static final String FTP_PORT = "ftp.port";
+    protected static final String FTP_USER = "ftp.user";
+    protected static final String FTP_PASSWORD = "ftp.password";
+    protected static final String FTP_PATH = "ftp.path";
+
     private String host;
     private int port;
     private String user;
@@ -22,11 +28,11 @@ public class FtpPublisher implements Publisher {
     private String path;
 
     public FtpPublisher() {
-        host = Configuration.get(Configuration.FTP_HOST, "192.168.99.100");
-        port = Configuration.getInt(Configuration.FTP_PORT, 21);
-        user = Configuration.get(Configuration.FTP_USER, "ons");
-        password = Configuration.get(Configuration.FTP_PASSWORD, "ons");
-        path = Configuration.get(Configuration.FTP_PATH, "/");
+        host = Configuration.get(FTP_HOST, "192.168.99.100");
+        port = Configuration.getInt(FTP_PORT, 21);
+        user = Configuration.get(FTP_USER, "ons");
+        password = Configuration.get(FTP_PASSWORD, "ons");
+        path = Configuration.get(FTP_PATH, "/");
     }
 
     public void publish(final FileItem data, final String path) throws IOException {
