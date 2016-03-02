@@ -18,10 +18,9 @@ public class HttpTransform {
         Endpoint endpoint = new Endpoint("/transform");
         System.out.println("transform endpoint " + endpoint);
 
-        EncryptedPayload payload = new EncryptedPayload();
-        payload.setContents(data);
+        EncryptedPayload payload = EncryptedPayload.builder().contents(data).build();
         System.out.println("transform data " + data);
 
-        return new Http().postJson(endpoint, data, Result.class);
+        return new Http().postJson(endpoint, payload, Result.class);
     }
 }
