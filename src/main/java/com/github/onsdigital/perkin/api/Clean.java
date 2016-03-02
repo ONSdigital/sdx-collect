@@ -14,19 +14,16 @@ import java.io.IOException;
  * List files in ftp.
  */
 @Api
-public class Get {
+public class Clean {
 
     private FtpPublisher ftp = new FtpPublisher();
 
     @GET
-    public String get(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public FtpInfo deleteAll(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        String filename = request.getParameter("filename");
-        System.out.println("ftp >>>>>>>> get filename: " + filename);
+        FtpInfo ftpInfo = ftp.deleteAll();
+        System.out.println("ftp >>>>>>>> deleteAll: " + Json.format(ftpInfo));
 
-        String contents = ftp.get(filename);
-        System.out.println("ftp >>>>>>>> get filename: " + filename + " contents: " + contents);
-
-        return contents;
+        return ftpInfo;
     }
 }

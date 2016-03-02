@@ -47,7 +47,7 @@ public class FtpPublisher implements Publisher {
 
     public FtpInfo list() throws IOException {
 
-        FtpInfo.FtpInfoBuilder ftpInfo = FtpInfo.builder();
+        FtpInfo.FtpInfoBuilder ftpInfo = FtpInfo.builder().command("list");
 
         //new ftp client
         FTPClient ftp = new FTPClient();
@@ -142,6 +142,56 @@ public class FtpPublisher implements Publisher {
         }
 
         return data;
+    }
+
+    public FtpInfo deleteAll() throws IOException {
+
+        FtpInfo.FtpInfoBuilder ftpInfo = FtpInfo.builder().command("deleteAll");;
+
+        //new ftp client
+        FTPClient ftp = new FTPClient();
+        //try to connect
+        System.out.println("ftp connect to " + host + " " + port);
+        ftp.connect(host, port);
+
+        //login to server
+        System.out.println("ftp login user: " + user);
+        if (ftp.login(user, password)) {
+
+            int reply = ftp.getReplyCode();
+            //FTPReply stores a set of constants for FTP reply codes.
+            if (FTPReply.isPositiveCompletion(reply)) {
+
+                //get system name
+                System.out.println("ftp remote system is " + ftp.getSystemType());
+                //change current directory
+                ftp.changeWorkingDirectory(path);
+                System.out.println("ftp current directory is " + ftp.printWorkingDirectory());
+
+                FTPFile[] files = ftp.listFiles();
+                for (FTPFile file : files) {
+                    ftpInfo.filename(file.getName());
+                    System.out.println("ftp delete file: " + file.getName());
+                    ftp.deleteFile(file.getName());
+                }
+
+                System.out.println("ftp logout");
+                ftp.logout();
+                System.out.println("ftp disconnect");
+                ftp.disconnect();
+
+            } else {
+                System.out.println("ftp login to server was not positive completion. reply code: " + reply);
+                ftp.disconnect();
+            }
+        } else {
+            String msg = "ftp login to " + host + ":" + port + " failed for user: " + user;
+            System.out.println(msg);
+            ftp.logout();
+            throw new IOException(msg);
+        }
+
+        return ftpInfo.build();
     }
 
     private void ftpFile(InputStream inputStream, String path, String filename) throws IOException {

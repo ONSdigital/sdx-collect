@@ -13,6 +13,8 @@ import java.util.List;
 @Builder
 public class FtpInfo {
 
+    private String command;
+
     @Singular("filename")
     private List<String> filenames;
 }
