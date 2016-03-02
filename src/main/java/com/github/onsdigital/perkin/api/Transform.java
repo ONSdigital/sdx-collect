@@ -59,7 +59,10 @@ public class Transform {
 
         System.out.println("transform >>>>>>>> request: " + Json.format(payload));
 
-        Response<Survey> decryptResponse = decrypt.decrypt(payload);
+        System.out.println("decrypt >>>>>>>> request: " + payload.getContents());
+        Response<Survey> decryptResponse = decrypt.decrypt(payload.getContents());
+        System.out.println("decrypt <<<<<<<< response: " + Json.format(decryptResponse));
+
         if (isError(decryptResponse.statusLine)) {
             return new Response<>(decryptResponse.statusLine, Result.builder().error(true).message("problem decrypting").build());
         }

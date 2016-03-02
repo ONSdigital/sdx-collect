@@ -34,15 +34,12 @@ public class HttpDecrypt {
         //host = Configuration.get(HOST, "http://posie:80/");
         host = Configuration.get(HOST, "http://localhost:8080/");
         path = Configuration.get(PATH, "/decrypt");
-        //TODO: remove, Ian Wooten's machine
-        //host = Configuration.get(HOST, "http://172.28.47.39:5000/");
-        //path = Configuration.get(PATH, "/import");
     }
 
-    public Response<Survey> decrypt(final EncryptedPayload payload) throws IOException {
+    public Response<Survey> decrypt(final String data) throws IOException {
 
         Endpoint endpoint = new Endpoint(new Host(host), path);
         System.out.println("decrypt endpoint " + endpoint);
-        return new Http().postJson(endpoint, payload, Survey.class, APPLICATION_JSON);
+        return new Http().postJson(endpoint, data, Survey.class);
     }
 }
