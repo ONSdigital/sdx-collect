@@ -64,6 +64,7 @@ public class Transform {
         System.out.println("decrypt <<<<<<<< response: " + Json.format(decryptResponse));
 
         if (isError(decryptResponse.statusLine)) {
+            response.setStatus(decryptResponse.statusLine.getStatusCode());
             return new Response<>(decryptResponse.statusLine, Result.builder().error(true).message("problem decrypting").build());
         }
 
@@ -73,7 +74,8 @@ public class Transform {
 
         Response<Result> result = publisher.publish(receipt);
         System.out.println("transform <<<<<<<< response: " + Json.format(result));
-
+        System.out.println("transform <<<<<<<< response: result.body.isError() " + result.body.isError());
+        System.out.println("transform <<<<<<<< response: result.statusLine.getStatusCode() " + result.statusLine.getStatusCode());
         if (result.body.isError()) {
             response.setStatus(result.statusLine.getStatusCode());
         }
@@ -83,15 +85,5 @@ public class Transform {
 
     private boolean isError(StatusLine statusLine) {
         return statusLine.getStatusCode() != HttpStatus.OK_200;
-    }
-
-    private boolean responseOk(Response<Survey> response, HttpServletResponse servletResponse) {
-        boolean ok = response.statusLine.getStatusCode() == HttpStatus.OK_200;
-
-        if (! ok) {
-            servletResponse.setStatus(response.statusLine.getStatusCode());
-        }
-
-        return ok;
     }
 }

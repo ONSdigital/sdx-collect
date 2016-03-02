@@ -28,6 +28,7 @@ $(document).ready(function() {
             console.log('success: ');
             console.log(data);
             console.log(textStatus);
+            $('#response-json').css('color', 'black');
             $('#response-json').text(JSON.stringify(data, null, 4));
         })
         .fail (function(jqXHR, textStatus, errorThrown) {
@@ -38,8 +39,8 @@ $(document).ready(function() {
             var responseText = jQuery.parseJSON(jqXHR.responseText);
             var errorJson = JSON.stringify(responseText, null, 4);
             console.log(errorJson);
-            $('#response-json').text(errorJson);
             $('#response-json').css('color', 'red');
+            $('#response-json').text(errorJson);
         })
         .always (function(jqXHROrData, textStatus, jqXHROrErrorThrown) {
             console.log('complete');
