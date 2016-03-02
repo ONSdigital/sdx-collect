@@ -2,6 +2,7 @@ package com.github.onsdigital.perkin.api;
 
 import com.github.davidcarboni.restolino.framework.Api;
 
+import com.github.onsdigital.perkin.json.FtpInfo;
 import com.github.onsdigital.perkin.storage.FtpPublisher;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +19,7 @@ public class List {
     private FtpPublisher ftp = new FtpPublisher();
 
     @GET
-    public String get(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public FtpInfo get(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         return ftp.list();
     }

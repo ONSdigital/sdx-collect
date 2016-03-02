@@ -1,6 +1,7 @@
 package com.github.onsdigital.perkin.storage;
 
 import com.github.onsdigital.perkin.helpers.Configuration;
+import com.github.onsdigital.perkin.json.FtpInfo;
 import org.apache.commons.fileupload.FileItem;
 
 import java.io.InputStream;
@@ -41,9 +42,10 @@ public class FtpPublisher implements Publisher {
         ftpFile(data.getInputStream(), path, filename);
     }
 
-    public String list() throws IOException {
+    public FtpInfo list() throws IOException {
 
-        String NEW_LINE = System.getProperty("line.separator");
+        FtpInfo.FtpInfoBuilder ftpInfo = FtpInfo.builder();
+
         StringBuilder list = new StringBuilder();
 
         //new ftp client
@@ -68,7 +70,7 @@ public class FtpPublisher implements Publisher {
 
                 FTPFile[] files = ftp.listFiles();
                 for (FTPFile file : files) {
-                    list.append(file.getName()).append(NEW_LINE);
+                    ftpInfo.filename(file.getName());
                 }
 
                 System.out.println("ftp logout");
@@ -87,7 +89,7 @@ public class FtpPublisher implements Publisher {
             throw new IOException(msg);
         }
 
-        return list.toString();
+        return ftpInfo.build();
     }
 
     private void ftpFile(InputStream inputStream, String path, String filename) throws IOException {
