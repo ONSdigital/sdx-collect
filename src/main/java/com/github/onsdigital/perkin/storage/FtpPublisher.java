@@ -4,6 +4,7 @@ import com.github.onsdigital.perkin.helpers.Configuration;
 import com.github.onsdigital.perkin.json.FtpInfo;
 import org.apache.commons.fileupload.FileItem;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 import org.apache.commons.net.ftp.FTPClient;
@@ -11,6 +12,8 @@ import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  * FTP the FileItem.
@@ -45,8 +48,6 @@ public class FtpPublisher implements Publisher {
     public FtpInfo list() throws IOException {
 
         FtpInfo.FtpInfoBuilder ftpInfo = FtpInfo.builder();
-
-        StringBuilder list = new StringBuilder();
 
         //new ftp client
         FTPClient ftp = new FTPClient();
@@ -90,6 +91,57 @@ public class FtpPublisher implements Publisher {
         }
 
         return ftpInfo.build();
+    }
+
+    public String get(String filename) throws IOException {
+
+        String data = "<no data>";
+
+        FtpInfo.FtpInfoBuilder ftpInfo = FtpInfo.builder();
+
+        //new ftp client
+        FTPClient ftp = new FTPClient();
+        //try to connect
+        System.out.println("ftp connect to " + host + " " + port);
+        ftp.connect(host, port);
+
+        //login to server
+        System.out.println("ftp login user: " + user);
+        if (ftp.login(user, password)) {
+
+            int reply = ftp.getReplyCode();
+            //FTPReply stores a set of constants for FTP reply codes.
+            if (FTPReply.isPositiveCompletion(reply)) {
+
+                //get system name
+                System.out.println("ftp remote system is " + ftp.getSystemType());
+                //change current directory
+                ftp.changeWorkingDirectory(path);
+                System.out.println("ftp current directory is " + ftp.printWorkingDirectory());
+
+                System.out.println("ftp get file " + filename);
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                ftp.retrieveFile(filename, out);
+                data = out.toString();
+                System.out.println("ftp " + filename + " contents: " + data);
+
+                System.out.println("ftp logout");
+                ftp.logout();
+                System.out.println("ftp disconnect");
+                ftp.disconnect();
+
+            } else {
+                System.out.println("ftp login to server was not positive completion. reply code: " + reply);
+                ftp.disconnect();
+            }
+        } else {
+            String msg = "ftp login to " + host + ":" + port + " failed for user: " + user;
+            System.out.println(msg);
+            ftp.logout();
+            throw new IOException(msg);
+        }
+
+        return data;
     }
 
     private void ftpFile(InputStream inputStream, String path, String filename) throws IOException {
