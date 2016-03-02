@@ -28,7 +28,7 @@ public class HttpDecrypt {
     private String path;
 
     public HttpDecrypt() {
-        host = Configuration.get(HOST, "http://posie:8080/");
+        host = Configuration.get(HOST, "http://posie:5000/");
         path = Configuration.get(PATH, "/decrypt");
     }
 
