@@ -24,15 +24,11 @@ public class HttpDecrypt {
     protected static final String HOST = "decrypt.host";
     protected static final String PATH = "decrypt.path";
 
-    private static final NameValuePair APPLICATION_JSON = new BasicNameValuePair("Content-Type", "application/json");
-
     private String host;
     private String path;
 
     public HttpDecrypt() {
-        //TODO: integrate with posie
-        //host = Configuration.get(HOST, "http://posie:80/");
-        host = Configuration.get(HOST, "http://localhost:8080/");
+        host = Configuration.get(HOST, "http://posie:8080/");
         path = Configuration.get(PATH, "/decrypt");
     }
 
