@@ -24,7 +24,7 @@ public class List {
 
         FtpInfo ftpInfo = ftp.list();
         System.out.println("ftp >>>>>>>> list: " + Json.format(ftpInfo));
-        
+
         return ftpInfo;
     }
 }
