@@ -1,4 +1,4 @@
-package com.github.onsdigital.perkin.helpers;
+package com.github.onsdigital;
 
 import org.apache.commons.lang3.StringUtils;
 

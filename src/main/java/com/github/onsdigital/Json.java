@@ -1,4 +1,4 @@
-package com.github.onsdigital.perkin.helpers;
+package com.github.onsdigital;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

@@ -1,6 +1,6 @@
-package com.github.onsdigital.perkin.helpers;
+package com.github.onsdigital;
 
-import com.github.onsdigital.perkin.json.Survey;
+import com.github.onsdigital.Configuration;
 import org.junit.After;
 import org.junit.Test;
 

@@ -1,20 +1,13 @@
-package com.github.onsdigital.perkin.helpers;
+package com.github.onsdigital.perkin.decrypt;
 
 import com.github.davidcarboni.httpino.Endpoint;
 import com.github.davidcarboni.httpino.Host;
 import com.github.davidcarboni.httpino.Http;
 import com.github.davidcarboni.httpino.Response;
-import com.github.onsdigital.perkin.json.EncryptedPayload;
-import com.github.onsdigital.perkin.json.IdbrReceipt;
-import com.github.onsdigital.perkin.json.Result;
+import com.github.onsdigital.Configuration;
 import com.github.onsdigital.perkin.json.Survey;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 
 /**
  * Decrypt via HTTP.

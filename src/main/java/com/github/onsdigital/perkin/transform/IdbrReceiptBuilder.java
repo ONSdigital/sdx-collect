@@ -1,4 +1,4 @@
-package com.github.onsdigital.perkin.helpers;
+package com.github.onsdigital.perkin.transform;
 
 //import org.springframework.util.Assert;
 
@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter;
  *
  * An IDBR batch receipt file can contain multiple receipts.
  */
-public class IdbrReceiptFactory {
+public class IdbrReceiptBuilder {
 
     private static final String DELIMITER = ":";
 

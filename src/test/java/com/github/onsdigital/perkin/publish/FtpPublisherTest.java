@@ -1,7 +1,7 @@
-package com.github.onsdigital.perkin.storage;
+package com.github.onsdigital.perkin.publish;
 
-import com.github.onsdigital.perkin.helpers.Configuration;
-import com.github.onsdigital.perkin.helpers.Json;
+import com.github.onsdigital.Configuration;
+import com.github.onsdigital.Json;
 import com.github.onsdigital.perkin.json.Survey;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.net.ftp.FTPClient;
