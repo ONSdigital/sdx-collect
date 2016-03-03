@@ -6,7 +6,7 @@ import com.github.onsdigital.perkin.decrypt.HttpDecrypt;
 import com.github.onsdigital.perkin.json.IdbrReceipt;
 import com.github.onsdigital.perkin.json.Result;
 import com.github.onsdigital.perkin.json.Survey;
-import com.github.onsdigital.perkin.publish.HttpPublisher;
+import com.github.onsdigital.perkin.publish.FtpPublisher;
 import org.apache.http.StatusLine;
 import org.eclipse.jetty.http.HttpStatus;
 
@@ -21,9 +21,9 @@ public class Transformer {
     //TODO: service/api for batchId
     private static AtomicLong batchId = new AtomicLong(35000);
 
-    private HttpPublisher publisher = new HttpPublisher();
     private HttpDecrypt decrypt = new HttpDecrypt();
     private IdbrReceiptBuilder idbrReceiptFactory = new IdbrReceiptBuilder();
+    private FtpPublisher publisher = new FtpPublisher();
 
     public Response<Result> transform(final String data) throws IOException {
 
@@ -40,12 +40,20 @@ public class Transformer {
         IdbrReceipt receipt = idbrReceiptFactory.createIdbrReceipt(survey, batchId.getAndIncrement());
         System.out.println("transform created IDBR receipt: " + Json.format(receipt));
 
-        Response<Result> result = publisher.publish(receipt);
-        System.out.println("transform <<<<<<<< response: " + Json.format(result));
-        System.out.println("transform <<<<<<<< response: result.body.isError() " + result.body.isError());
-        System.out.println("transform <<<<<<<< response: result.statusLine.getStatusCode() " + result.statusLine.getStatusCode());
+        Response<Result> response = null;
+        try {
+            publisher.publish(receipt);
 
-        return result;
+            //TODO: finish
+            response = new Response<>(decryptResponse.statusLine, Result.builder().error(true).message("problem decrypting").build());
+
+        } catch (IOException e) {
+            response = new Response<>(decryptResponse.statusLine, Result.builder().error(true).message("problem decrypting").build());
+        }
+
+        System.out.println("transform <<<<<<<< response: " + Json.format(response));
+
+        return response;
     }
 
     private boolean isError(StatusLine statusLine) {

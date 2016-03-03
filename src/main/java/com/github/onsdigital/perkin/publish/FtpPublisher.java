@@ -1,14 +1,17 @@
 package com.github.onsdigital.perkin.publish;
 
 import com.github.onsdigital.Configuration;
+import com.github.onsdigital.perkin.json.IdbrReceipt;
 import org.apache.commons.fileupload.FileItem;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * FTP the FileItem.
@@ -34,11 +37,12 @@ public class FtpPublisher {
         password = Configuration.get(FTP_PASSWORD, "ons");
         path = Configuration.get(FTP_PATH, "/");
     }
-//
-//    public void publish(final FileItem data, final String path) throws IOException {
-//        String filename = data.getName();
-//        ftpFile(data.getInputStream(), path, filename);
-//    }
+
+    public void publish(IdbrReceipt receipt) throws IOException {
+        String filename = receipt.getFilename();
+        InputStream inputStream = new ByteArrayInputStream(receipt.getReceipt().getBytes(StandardCharsets.UTF_8));
+        ftpFile(inputStream, path, filename);
+    }
 
     public void publish(final FileItem data, final String path) throws IOException {
         String filename = data.getName();
