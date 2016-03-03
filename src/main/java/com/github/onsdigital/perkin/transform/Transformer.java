@@ -44,11 +44,10 @@ public class Transformer {
         try {
             publisher.publish(receipt);
 
-            //TODO: finish
-            response = new Response<>(decryptResponse.statusLine, Result.builder().error(true).message("problem decrypting").build());
+            response = new Response<>(decryptResponse.statusLine, Result.builder().error(true).message("published " + receipt.getFilename()).build());
 
         } catch (IOException e) {
-            response = new Response<>(decryptResponse.statusLine, Result.builder().error(true).message("problem decrypting").build());
+            response = new Response<>(decryptResponse.statusLine, Result.builder().error(true).message("problem publishing").build());
         }
 
         System.out.println("transform <<<<<<<< response: " + Json.format(response));
