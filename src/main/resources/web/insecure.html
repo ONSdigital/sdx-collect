@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ONS Survey Submitter</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script>
+$(document).ready(function() {
+
+
+    $("form").on("submit", function(event){
+
+        event.preventDefault();
+
+        var encrypted = $("#encrypted").val();
+
+        console.log('submitting encrypted survey: ', encrypted);
+
+        $.ajax({
+            url: "/insecure",
+            type: "POST",
+            dataType: 'json',
+            contentType:"application/json; charset=utf-8",
+            data: encrypted
+        })
+        .done (function(data, textStatus, jqXHR) {
+            console.log('success: ');
+            console.log(data);
+            console.log(textStatus);
+            $('#response-json').css('color', 'black');
+            $('#response-json').text(JSON.stringify(data, null, 4));
+        })
+        .fail (function(jqXHR, textStatus, errorThrown) {
+            console.log('error: ');
+            console.log(textStatus);
+            console.log(errorThrown);
+
+            var responseText = jQuery.parseJSON(jqXHR.responseText);
+            var errorJson = JSON.stringify(responseText, null, 4);
+            console.log(errorJson);
+            $('#response-json').css('color', 'red');
+            $('#response-json').text(errorJson);
+        })
+        .always (function(jqXHROrData, textStatus, jqXHROrErrorThrown) {
+            console.log('complete');
+        });
+
+    });
+
+});
+
+
+    </script>
+</head>
+
+<body>
+
+<h1>ONS Survey Submitter - Insecure - JSON Survey, no encryption</h1>
+
+<p>
+    survey POST---&gt; (perkin) transform --&gt; (pootle) publish --&gt; (pure-ftpd) IDBR receipt file<br/>
+</p>
+
+<table>
+    <!--<form action="/transform" method="post" enctype="application/json">-->
+    <form>
+        <tr>
+            <td><label for="encrypted">encrypted survey</label></td>
+            <td><input id="encrypted" name="encrypted" size="200" value=""></td>
+        </tr>
+        <!--
+        <tr>
+            <td><label for="id">Survey ID</label></td>
+            <td><input id="id" name="id" value="244"></td>
+        </tr>
+        <tr>
+            <td><label for="name">Name</label></td>
+            <td><input id="name" name="name" value="Monthly Wages and Salary Survey"></td>
+        </tr>
+        <tr>
+            <td><label for="date">Date</label></td>
+            <td><input id="date" name="date" value="01 Oct 2014"></td>
+        </tr>
+        <tr>
+            <td><label for="respondentId">Respondent</label></td>
+            <td><input id="respondentId" name="respondentId" value="99999994188"></td>
+        </tr>
+        <tr>
+            <td><label for="respondentCheckLetter">Check Letter</label></td>
+            <td><input id="respondentCheckLetter" name="respondentCheckLetter" value="F"></td>
+        </tr>
+        -->
+        <tr>
+            <td></td>
+            <td><input type="submit"></td>
+        </tr>
+    </form>
+</table>
+
+<div id="response">
+    <h2>Response</h2>
+    <pre id="response-json"></pre>
+</div>
+</body>
+</html>

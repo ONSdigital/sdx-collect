@@ -26,7 +26,7 @@ public class HttpPublisher {
     private String path;
 
     public HttpPublisher() {
-        host = Configuration.get(HOST, "http://pootle:80/");
+        host = Configuration.get(HOST, "http://pootle:8080/");
         path = Configuration.get(PATH, "/publish");
     }
 
