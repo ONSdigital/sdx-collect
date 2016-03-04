@@ -53,6 +53,8 @@ public class Transformer {
 
             Survey survey = decryptResponse.body;
             if (survey == null) {
+                System.out.println("transform decrypt returned a null survey - 400, bad request (data was not a valid json Survey)");
+                audit.increment("decrypt.400");
                 return false;
             }
             IdbrReceipt receipt = idbrReceiptFactory.createIdbrReceipt(survey, batchId.getAndIncrement());
