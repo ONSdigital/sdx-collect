@@ -57,10 +57,6 @@ public class IdbrBuilder {
      */
     private String createReceipt(final Survey survey) {
 
-        if (survey == null) {
-            throw new IllegalArgumentException("survey is null");
-        }
-
         final StringBuilder receipt = new StringBuilder()
             .append(survey.getRespondentId())
             .append(DELIMITER)

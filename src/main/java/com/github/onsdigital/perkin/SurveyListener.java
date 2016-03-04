@@ -32,6 +32,9 @@ public class SurveyListener {
         System.out.println("queue ******** listening to queue: " + QUEUE_NAME + " on host: " + QUEUE_HOST);
 
         Consumer consumer = new DefaultConsumer(channel) {
+            public static final boolean REQUEUE = true;
+            public static final boolean DONT_REQUEUE = false;
+
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                 String message = new String(body, "UTF-8");
@@ -42,11 +45,14 @@ public class SurveyListener {
                     if (transformer.transform(message)) {
                         System.out.println("queue ******** success, acknowledge '" + message + "'");
                         channel.basicAck(envelope.getDeliveryTag(), false);
+                    } else {
+                        channel.basicReject(envelope.getDeliveryTag(), DONT_REQUEUE);
                     }
 
                 } catch (Throwable t) {
                     System.out.println("ERROR queue ******** Throwable: " + t.toString());
                     t.printStackTrace();
+                    channel.basicReject(envelope.getDeliveryTag(), REQUEUE);
                 }
             }
         };

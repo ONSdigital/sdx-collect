@@ -52,6 +52,9 @@ public class Transformer {
             }
 
             Survey survey = decryptResponse.body;
+            if (survey == null) {
+                return false;
+            }
             IdbrReceipt receipt = idbrReceiptFactory.createIdbrReceipt(survey, batchId.getAndIncrement());
             System.out.println("transform created IDBR receipt: " + Json.format(receipt));
 
@@ -63,7 +66,7 @@ public class Transformer {
             System.out.println("transform <<<<<<<< success");
             return true;
 
-        } catch (IOException | IllegalArgumentException e) {
+        } catch (IOException e) {
             audit.increment("transform.500");
             System.out.println("transform <<<<<<<< ERROR: " + e.toString());
             throw e;
