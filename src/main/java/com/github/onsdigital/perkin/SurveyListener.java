@@ -35,6 +35,9 @@ public class SurveyListener {
             public static final boolean REQUEUE = true;
             public static final boolean DONT_REQUEUE = false;
 
+            int retry = 0;
+            int maxRetry = 3;
+
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                 String message = new String(body, "UTF-8");
@@ -45,6 +48,7 @@ public class SurveyListener {
                     if (transformer.transform(message)) {
                         System.out.println("queue ******** success, ack '" + message + "'");
                         channel.basicAck(envelope.getDeliveryTag(), false);
+                        retry = 0;
                     } else {
                         System.out.println("queue ******** fail, reject, don't requeue '" + message + "'");
 
@@ -55,7 +59,16 @@ public class SurveyListener {
                     System.out.println("ERROR queue ******** Throwable: " + t.toString());
                     t.printStackTrace();
                     System.out.println("queue ******** fail, reject, requeue '" + message + "'");
-                    channel.basicReject(envelope.getDeliveryTag(), REQUEUE);
+
+
+                    //TODO: primitive for now
+                    if (++retry <= maxRetry) {
+                        System.out.println("queue ******** fail, reject (" + retry + " retries), requeue '" + message + "'");
+                        channel.basicReject(envelope.getDeliveryTag(), REQUEUE);
+                    } else {
+                        System.out.println("queue ******** fail, reject (" + retry + " retries), DONT requeue '" + message + "'");
+                        channel.basicReject(envelope.getDeliveryTag(), DONT_REQUEUE);
+                    }
                 }
             }
         };
