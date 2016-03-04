@@ -1,6 +1,7 @@
 package com.github.onsdigital.perkin.transform;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +19,7 @@ public class Audit {
     }
 
     public void increment(String key) {
-        String message = LocalDate.now().toString() + " " + key;
+        String message = DateTimeFormatter.RFC_1123_DATE_TIME.format(LocalDate.now()) + " " + key;
         addMessage(message);
 
         AtomicLong current = counters.get(key);
