@@ -19,7 +19,7 @@ public class Audit {
     }
 
     public void increment(String key) {
-        String message = DateTimeFormatter.RFC_1123_DATE_TIME.format(LocalDate.now()) + " " + key;
+        String message = LocalDate.now() + " " + key;
         addMessage(message);
 
         AtomicLong current = counters.get(key);
