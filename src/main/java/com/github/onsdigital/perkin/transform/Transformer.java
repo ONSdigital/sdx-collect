@@ -25,7 +25,7 @@ public class Transformer {
     private static AtomicLong batchId = new AtomicLong(35000);
 
     private HttpDecrypt decrypt = new HttpDecrypt();
-    private IdbrReceiptBuilder idbrReceiptFactory = new IdbrReceiptBuilder();
+    private IdbrBuilder idbrReceiptFactory = new IdbrBuilder();
     private FtpPublisher publisher = new FtpPublisher();
     private Audit audit = new Audit();
 
@@ -37,36 +37,35 @@ public class Transformer {
         return INSTANCE;
     }
 
-    public Response<Result> transform(final String data) throws IOException {
+    public void transform(final String data) throws IOException {
 
-        System.out.println("transform data " + data);
-
-        Response<Survey> decryptResponse = decrypt.decrypt(data);
-        System.out.println("decrypt <<<<<<<< response: " + Json.format(decryptResponse));
-        audit.increment("decrypt." + decryptResponse.statusLine.getStatusCode());
-
-        if (isError(decryptResponse.statusLine)) {
-            return new Response<>(decryptResponse.statusLine, Result.builder().error(true).message("problem decrypting").build());
-        }
-
-        Survey survey = decryptResponse.body;
-        IdbrReceipt receipt = idbrReceiptFactory.createIdbrReceipt(survey, batchId.getAndIncrement());
-        System.out.println("transform created IDBR receipt: " + Json.format(receipt));
-
-        Response<Result> response = null;
         try {
+            System.out.println("transform data " + data);
+
+            Response<Survey> decryptResponse = decrypt.decrypt(data);
+            System.out.println("decrypt <<<<<<<< response: " + Json.format(decryptResponse));
+            audit.increment("decrypt." + decryptResponse.statusLine.getStatusCode());
+
+            if (isError(decryptResponse.statusLine)) {
+                throw new IOException("problem decrypting");
+            }
+
+            Survey survey = decryptResponse.body;
+            IdbrReceipt receipt = idbrReceiptFactory.createIdbrReceipt(survey, batchId.getAndIncrement());
+            System.out.println("transform created IDBR receipt: " + Json.format(receipt));
+
             publisher.publish(receipt);
+            System.out.println("transform published IDBR receipt");
             audit.increment("publish.idbr.200");
-            response = new Response<>(decryptResponse.statusLine, Result.builder().error(true).message("published " + receipt.getFilename()).build());
+            audit.increment("transform.200");
 
-        } catch (IOException e) {
-            audit.increment("publish.idbr.500");
-            response = new Response<>(decryptResponse.statusLine, Result.builder().error(true).message("problem publishing").build());
+            System.out.println("transform <<<<<<<< success");
+
+        } catch (IOException | IllegalArgumentException e) {
+            audit.increment("transform.500");
+            System.out.println("transform <<<<<<<< ERROR: " + e.toString());
+            throw e;
         }
-
-        System.out.println("transform <<<<<<<< response: " + Json.format(response));
-
-        return response;
     }
 
     private boolean isError(StatusLine statusLine) {

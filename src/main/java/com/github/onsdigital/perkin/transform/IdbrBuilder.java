@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter;
  *
  * An IDBR batch receipt file can contain multiple receipts.
  */
-public class IdbrReceiptBuilder {
+public class IdbrBuilder {
 
     private static final String DELIMITER = ":";
 
@@ -56,6 +56,11 @@ public class IdbrReceiptBuilder {
      * @throws java.text.ParseException if problem parsing the survey date e.g. 01 Oct 2014
      */
     private String createReceipt(final Survey survey) {
+
+        if (survey == null) {
+            throw new IllegalArgumentException("survey is null");
+        }
+
         final StringBuilder receipt = new StringBuilder()
             .append(survey.getRespondentId())
             .append(DELIMITER)
