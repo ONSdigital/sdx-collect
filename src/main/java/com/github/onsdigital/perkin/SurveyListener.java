@@ -10,7 +10,7 @@ public class SurveyListener {
     private final static String QUEUE_HOST = "rabbit";
     private final static String QUEUE_NAME = "survey";
 
-    private Transformer transformer = new Transformer();
+    private Transformer transformer = Transformer.getInstance();
 
     public void start() {
         try {
