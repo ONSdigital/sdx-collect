@@ -77,7 +77,7 @@ public class Transformer {
         return statusLine.getStatusCode() != HttpStatus.OK_200;
     }
 
-    public Map<String, AtomicLong> getInfo() {
-        return audit.getInfo();
+    public Audit getAudit() {
+        return audit;
     }
 }

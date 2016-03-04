@@ -43,15 +43,18 @@ public class SurveyListener {
                 try {
                     //TODO: decide whether to leave message on queue or move to dead letter q
                     if (transformer.transform(message)) {
-                        System.out.println("queue ******** success, acknowledge '" + message + "'");
+                        System.out.println("queue ******** success, ack '" + message + "'");
                         channel.basicAck(envelope.getDeliveryTag(), false);
                     } else {
+                        System.out.println("queue ******** fail, reject, don't requeue '" + message + "'");
+
                         channel.basicReject(envelope.getDeliveryTag(), DONT_REQUEUE);
                     }
 
                 } catch (Throwable t) {
                     System.out.println("ERROR queue ******** Throwable: " + t.toString());
                     t.printStackTrace();
+                    System.out.println("queue ******** fail, reject, requeue '" + message + "'");
                     channel.basicReject(envelope.getDeliveryTag(), REQUEUE);
                 }
             }
