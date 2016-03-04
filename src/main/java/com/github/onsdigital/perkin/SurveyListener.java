@@ -52,5 +52,6 @@ public class SurveyListener {
         };
 
         channel.basicConsume(QUEUE_NAME, true, consumer);
+        System.out.println("queue ******** STOPPED listening to queue: " + QUEUE_NAME + " on host: " + QUEUE_HOST);
     }
 }
