@@ -37,7 +37,7 @@ public class Transformer {
         return INSTANCE;
     }
 
-    public void transform(final String data) throws IOException {
+    public boolean transform(final String data) throws IOException {
 
         try {
             System.out.println("transform data " + data);
@@ -46,6 +46,7 @@ public class Transformer {
             System.out.println("decrypt <<<<<<<< response: " + Json.format(decryptResponse));
             audit.increment("decrypt." + decryptResponse.statusLine.getStatusCode());
 
+            //TODO 400 is bad request - add to DLQ, 500 is server error, retry
             if (isError(decryptResponse.statusLine)) {
                 throw new IOException("problem decrypting");
             }
@@ -60,6 +61,7 @@ public class Transformer {
             audit.increment("transform.200");
 
             System.out.println("transform <<<<<<<< success");
+            return true;
 
         } catch (IOException | IllegalArgumentException e) {
             audit.increment("transform.500");

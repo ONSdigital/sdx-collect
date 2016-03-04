@@ -37,7 +37,17 @@ public class SurveyListener {
                 String message = new String(body, "UTF-8");
                 System.out.println("queue ******** received '" + message + "'");
 
-                transformer.transform(message);
+                try {
+                    //TODO: decide whether to leave message on queue or move to dead letter q
+                    if (transformer.transform(message)) {
+                        System.out.println("queue ******** success, acknowledge '" + message + "'");
+                        channel.basicAck(envelope.getDeliveryTag(), false);
+                    }
+
+                } catch (Throwable t) {
+                    System.out.println("ERROR queue ******** Throwable: " + t.toString());
+                    t.printStackTrace();
+                }
             }
         };
 
