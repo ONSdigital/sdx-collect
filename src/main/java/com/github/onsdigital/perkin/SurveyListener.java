@@ -68,6 +68,7 @@ public class SurveyListener {
                     } else {
                         System.out.println("queue ******** fail, reject (" + retry + " retries), DONT requeue '" + message + "'");
                         channel.basicReject(envelope.getDeliveryTag(), DONT_REQUEUE);
+                        retry = 0;
                     }
                 }
             }
