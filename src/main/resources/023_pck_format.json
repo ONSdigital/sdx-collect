@@ -1,0 +1,61 @@
+{
+	"id": "023",
+	"name": "MCI",
+	"pckQuestionTemplates": [{
+
+		"questionNumber": "1",
+
+		"derivator": "BooleanDerivator",
+
+		"optional": true
+	}, {
+		"questionNumber": "11",
+
+		"derivator": "BooleanDerivator",
+
+		"optional": false
+	}, {
+		"questionNumber": "20",
+
+		"derivator": "BooleanDerivator",
+
+		"optional": false
+	}, {
+		"questionNumber": "30",
+
+		"derivator": "BooleanDerivator",
+
+		"optional": true
+	}, {
+		"questionNumber": "40",
+
+		"derivator": "DefaultDerivator",
+
+		"optional": false
+	}, {
+		"questionNumber": "50",
+
+		"derivator": "DefaultDerivator",
+
+		"optional": true
+	}, {
+		"questionNumber": "70",
+
+		"derivator": "DefaultDerivator",
+
+		"optional": false
+	}, {
+		"questionNumber": "90",
+
+		"derivator": "BooleanDerivator",
+
+		"optional": true
+	}, {
+		"questionNumber": "100",
+
+		"derivator": "ContainsDataDerivator",
+
+		"optional": false
+	}]
+}
+
