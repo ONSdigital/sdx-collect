@@ -4,8 +4,8 @@ import org.apache.commons.lang3.StringUtils;
 
 public class ContainsDerivator implements Derivator {
 
-	private final String TRUE =  "1";
-	private final String FALSE = "2";
+	public static final String TRUE =  "1";
+	public static final String FALSE = "2";
 	@Override
 	public String deriveValue(String surveyAnswer) {
 		

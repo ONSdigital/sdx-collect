@@ -41,14 +41,15 @@ public class DerviatorFactoryTest {
 	}
 
 	@Test
-	public void getDefaultDerivator() {
+	public void getDefaultDerivator() throws DerivatorNotFoundException{
 
-		try {
-			derivator = classUnderTest.getDerivator(" Default ");
-			assertTrue(derivator instanceof DefaultDerivator);
-		} catch (DerivatorNotFoundException e) {
-			fail("Derivator has not been intatiated correctly:"	+ e.getMessage());
-		}
+		//given
+
+		//when
+		derivator = classUnderTest.getDerivator(" Default ");
+
+		//then
+		assertTrue(derivator instanceof DefaultDerivator);
 
 	}
 

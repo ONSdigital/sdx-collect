@@ -11,7 +11,6 @@ public class BooleanDerivatorTest {
 	private BooleanDerivator classUnderTest;
 
 	private Derivator derivator;
-	private String derivedValue = null;
 
 	@Before
 	public void setUp() {
@@ -21,9 +20,10 @@ public class BooleanDerivatorTest {
 	@Test
 	public void shouldDeriveBooleanTrueLowerCase() {
 		//given
+		String data = "y";
 
 		//when
-		String value = classUnderTest.deriveValue("y");
+		String value = classUnderTest.deriveValue(data);
 
 		//then
 		assertThat(value, is(BooleanDerivator.TRUE));
@@ -32,9 +32,10 @@ public class BooleanDerivatorTest {
 	@Test
 	public void shouldDeriveBooleanTrueWhitespace() {
 		//given
+		String data = " y ";
 
 		//when
-		String value = classUnderTest.deriveValue(" y ");
+		String value = classUnderTest.deriveValue(data);
 
 		//then
 		assertThat(value, is(BooleanDerivator.TRUE));
@@ -43,9 +44,10 @@ public class BooleanDerivatorTest {
 	@Test
 	public void shouldDeriveBooleanTrueUpperCase() {
 		//given
+		String data = "Y";
 
 		//when
-		String value = classUnderTest.deriveValue("Y");
+		String value = classUnderTest.deriveValue(data);
 
 		//then
 		assertThat(value, is(BooleanDerivator.TRUE));
@@ -54,9 +56,10 @@ public class BooleanDerivatorTest {
 	@Test
 	public void shouldDeriveBooleanFalseLowerCase() {
 		//given
+		String data = "n";
 
 		//when
-		String value = classUnderTest.deriveValue("n");
+		String value = classUnderTest.deriveValue(data);
 
 		//then
 		assertThat(value, is(BooleanDerivator.FALSE));
@@ -65,6 +68,7 @@ public class BooleanDerivatorTest {
 	@Test
 	public void shouldDeriveBooleanFalseUpperCase() {
 		//given
+		String data = "N";
 
 		//when
 		String value = classUnderTest.deriveValue("N");
@@ -76,6 +80,7 @@ public class BooleanDerivatorTest {
 	@Test
 	public void shouldDeriveBooleanFalseEmptyString() {
 		//given
+		String data = "";
 
 		//when
 		String value = classUnderTest.deriveValue("");
@@ -87,6 +92,7 @@ public class BooleanDerivatorTest {
 	@Test
 	public void shouldDeriveBooleanFalseNull() {
 		//given
+		String data = null;
 
 		//when
 		String value = classUnderTest.deriveValue(null);

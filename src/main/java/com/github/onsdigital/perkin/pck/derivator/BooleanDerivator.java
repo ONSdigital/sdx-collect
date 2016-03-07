@@ -12,7 +12,7 @@ public class BooleanDerivator implements Derivator {
 			return FALSE;
 		}
 
-		if(surveyAnswer.equalsIgnoreCase("y")) {
+		if(surveyAnswer.trim().equalsIgnoreCase("y")) {
 			return TRUE;
 		} else {
 			return FALSE;
