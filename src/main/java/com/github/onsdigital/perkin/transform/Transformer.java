@@ -83,6 +83,7 @@ public class Transformer {
             System.out.println("transform created pck file: " + Json.format(pck));
             publisher.publish(pck);
             System.out.println("transform published pck file");
+            audit.increment("publish.pck.200");
 
 
             audit.increment("transform.200");

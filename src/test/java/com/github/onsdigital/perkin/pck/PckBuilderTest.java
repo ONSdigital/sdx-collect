@@ -1,4 +1,4 @@
-package com.github.onsdigital.perkin.pck.builder;
+package com.github.onsdigital.perkin.pck;
 
 import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.pck.Pck;
