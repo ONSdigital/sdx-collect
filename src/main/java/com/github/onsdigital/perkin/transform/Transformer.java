@@ -67,10 +67,6 @@ public class Transformer {
             //TODO: determine batch number
             long batch = batchId.getAndIncrement();
 
-            //TODO: create images
-            ImageInfo imageInfo = imageBuilder.createImages(survey, batch);
-            System.out.println("transform created images: " + imageInfo);
-
             //idbr
             IdbrReceipt receipt = idbrBuilder.createIdbrReceipt(survey, batch);
             System.out.println("transform created IDBR receipt: " + Json.format(receipt));
@@ -85,6 +81,10 @@ public class Transformer {
             System.out.println("transform published pck file");
             audit.increment("publish.pck.200");
 
+            //images
+            //TODO: create images
+            ImageInfo imageInfo = imageBuilder.createImages(survey, batch);
+            System.out.println("transform created images: " + imageInfo);
 
             audit.increment("transform.200");
 
