@@ -1,11 +1,8 @@
 package com.github.onsdigital.perkin.pck;
 
 import com.github.onsdigital.perkin.json.Survey;
-import com.github.onsdigital.perkin.pck.derivator.Derivator;
 import com.github.onsdigital.perkin.pck.derivator.DerivatorFactory;
 import com.github.onsdigital.perkin.pck.derivator.DerivatorNotFoundException;
-import com.github.onsdigital.perkin.pck.questions.PCKQuestion;
-import com.github.onsdigital.perkin.pck.questions.PCKQuestionTemplate;
 import com.github.onsdigital.perkin.pck.survey.SurveyTemplate;
 import org.apache.commons.lang3.StringUtils;
 
@@ -44,7 +41,7 @@ public class PckBuilder {
 		Pck pck = new Pck();
 		pck.setHeader(generateHeader(batch));
 		pck.setFormIdentifier(generateFormIdentifier());
-		pck.setQuestions(generatePCKQuestions(survey, template));
+		pck.setQuestions(generatePckQuestions(survey, template));
 		pck.setFormLead(FORM_LEAD);
 
         //TODO: made up a filename structure for now
@@ -55,26 +52,21 @@ public class PckBuilder {
 		return pck;
 	}
 	
-	private List <PCKQuestion> generatePCKQuestions(Survey survey, SurveyTemplate surveytemplate) throws DerivatorNotFoundException {
+	private List <PckQuestion> generatePckQuestions(Survey survey, SurveyTemplate surveyTemplate) throws DerivatorNotFoundException {
 		
-		List <PCKQuestion> pckQuestions = new ArrayList<>();
+		List <PckQuestion> pckQuestions = new ArrayList<>();
 		
-		for (PCKQuestionTemplate questionTemplate: surveytemplate.getPckQuestionTemplates()) {
+		for (PckQuestionTemplate questionTemplate: surveyTemplate.getPckQuestionTemplates()) {
 			
 			String questionNumber = questionTemplate.getQuestionNumber();
 			String answer = survey.getAnswer(questionNumber);
 
-			pckQuestions.add(new PCKQuestion(questionNumber, deriveAnswer(questionTemplate, answer)));
+			pckQuestions.add(new PckQuestion(questionNumber, derivatorFactory.deriveAnswer(questionTemplate.getDerivator(), answer)));
 		}
 		
 		return pckQuestions;
 	}
-	
-	private String deriveAnswer(PCKQuestionTemplate question, String surveyAnswer) throws DerivatorNotFoundException {
-		Derivator derivator = derivatorFactory.getDerivator(question.getDerivator());
-		return derivator.deriveValue(surveyAnswer);
-	}
-		
+
 	private String generateHeader(long batchId) {
 
         //TODO: think the date should be a date from the survey
@@ -133,15 +125,15 @@ public class PckBuilder {
         return SurveyTemplate.builder()
                 .id("023")
                 .name("MCI")
-                .question(new PCKQuestionTemplate("1", "boolean", true))
-                .question(new PCKQuestionTemplate("11", "boolean", false))
-                .question(new PCKQuestionTemplate("20", "boolean", false))
-                .question(new PCKQuestionTemplate("30", "boolean", true))
-                .question(new PCKQuestionTemplate("40", "default", false))
-                .question(new PCKQuestionTemplate("50", "default", true))
-                .question(new PCKQuestionTemplate("70", "boolean", false))
-                .question(new PCKQuestionTemplate("90", "boolean", true))
-                .question(new PCKQuestionTemplate("100", "contains", false))
+                .question(new PckQuestionTemplate("1", "boolean", true))
+                .question(new PckQuestionTemplate("11", "boolean", false))
+                .question(new PckQuestionTemplate("20", "boolean", false))
+                .question(new PckQuestionTemplate("30", "boolean", true))
+                .question(new PckQuestionTemplate("40", "default", false))
+                .question(new PckQuestionTemplate("50", "default", true))
+                .question(new PckQuestionTemplate("70", "boolean", false))
+                .question(new PckQuestionTemplate("90", "boolean", true))
+                .question(new PckQuestionTemplate("100", "contains", false))
                 .build();
     }
 }

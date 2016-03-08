@@ -13,6 +13,7 @@ public class DerivatorFactory {
 		derivators = new HashMap<>();
 	}
 
+    //TODO make private? i.e. just use deriveAnswer(...)
 	public Derivator getDerivator(String name) throws DerivatorNotFoundException {
 
 		if (derivators.containsKey(name)) {
@@ -24,6 +25,13 @@ public class DerivatorFactory {
             return derivator;
 		}
 	}
+
+    public String deriveAnswer(String derivatorName, String answer) throws DerivatorNotFoundException {
+        Derivator derivator = getDerivator(derivatorName);
+        String derivedAnswer = derivator.deriveValue(answer);
+        System.out.println("derived answer: " + derivedAnswer + " from: " + answer + " using: " + derivatorName);
+        return derivedAnswer;
+    }
 
 	private Derivator loadDerivator(String name) throws DerivatorNotFoundException {
 		try {

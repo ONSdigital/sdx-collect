@@ -83,4 +83,30 @@ public class DerviatorFactoryTest {
 	public void shouldThrowDerivatorNotFoundException() throws DerivatorNotFoundException {
 		derivator = classUnderTest.getDerivator("no-such-derivator");
 	}
+
+    @Test
+    public void shouldDeriveBooleanTrue() throws DerivatorNotFoundException{
+        //given
+        String name = "boolean";
+        String answer = "y";
+
+        //when
+        String derivedAnswer = classUnderTest.deriveAnswer(name, answer);
+
+        //then
+        assertThat(derivedAnswer, is("1"));
+    }
+
+    @Test
+    public void shouldDeriveBooleanFalse() throws DerivatorNotFoundException{
+        //given
+        String name = "boolean";
+        String answer = "n";
+
+        //when
+        String derivedAnswer = classUnderTest.deriveAnswer(name, answer);
+
+        //then
+        assertThat(derivedAnswer, is("2"));
+    }
 }
