@@ -1,5 +1,6 @@
 package com.github.onsdigital.perkin;
 
+import com.github.onsdigital.Configuration;
 import com.github.onsdigital.perkin.transform.Transformer;
 import com.rabbitmq.client.*;
 
@@ -7,10 +8,21 @@ import java.io.IOException;
 
 public class SurveyListener {
 
-    private final static String QUEUE_HOST = "rabbit";
-    private final static String QUEUE_NAME = "survey";
+    protected static final String QUEUE_HOST = "queue.host";
+    protected static final String QUEUE_NAME = "queue.name";
+
+    private String host = "rabbit";
+    private String name = "survey";
 
     private Transformer transformer = Transformer.getInstance();
+
+    /**
+     * Updates configured values if environment variables have been set.
+     */
+    public SurveyListener() {
+        host = Configuration.get(QUEUE_HOST, host);
+        name = Configuration.get(QUEUE_NAME, name);
+    }
 
     public void start() {
         try {
@@ -24,12 +36,12 @@ public class SurveyListener {
     private void startListening() throws java.io.IOException, java.lang.InterruptedException {
 
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost(QUEUE_HOST);
+        factory.setHost(host);
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
 
-        channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-        System.out.println("queue ******** listening to queue: " + QUEUE_NAME + " on host: " + QUEUE_HOST);
+        channel.queueDeclare(name, false, false, false, null);
+        System.out.println("queue ******** listening to queue: " + name + " on host: " + host);
 
         Consumer consumer = new DefaultConsumer(channel) {
             public static final boolean REQUEUE = true;
@@ -75,7 +87,7 @@ public class SurveyListener {
         };
 
         boolean NO_AUTO_ACK = false;
-        channel.basicConsume(QUEUE_NAME, NO_AUTO_ACK, consumer);
-        System.out.println("queue ******** STOPPED listening to queue: " + QUEUE_NAME + " on host: " + QUEUE_HOST);
+        channel.basicConsume(name, NO_AUTO_ACK, consumer);
+        System.out.println("queue ******** STOPPED listening to queue: " + name + " on host: " + host);
     }
 }
