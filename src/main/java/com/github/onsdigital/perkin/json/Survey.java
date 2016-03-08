@@ -23,6 +23,10 @@ public class Survey {
     private Map<String, String> answers;
 
     public String getAnswer(String key) {
+        if (answers == null) {
+            return null;
+        }
+
         return answers.get(key);
     }
 }
