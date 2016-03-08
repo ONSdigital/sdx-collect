@@ -1,4 +1,4 @@
-package com.github.onsdigital.perkin.pck.pckbuilder;
+package com.github.onsdigital.perkin.pck.builder;
 
 import com.github.onsdigital.perkin.pck.questions.PCKQuestion;
 
@@ -10,6 +10,8 @@ public class Pck {
 	private String formLead;
 	private String formIdentifier;
 	private List <PCKQuestion> questions;
+
+    private String filename;
 	
 	
 	public String getHeader() {
@@ -36,8 +38,15 @@ public class Pck {
 	public void setQuestions(List<PCKQuestion> questions) {
 		this.questions = questions;
 	}
-	
-	@Override
+
+    public String getFilename() {
+        return filename;
+    }
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
+    @Override
 	public String toString(){
 		
 		final String LINE_BREAK = System.lineSeparator();

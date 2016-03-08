@@ -5,6 +5,9 @@ import com.github.onsdigital.Json;
 import com.github.onsdigital.perkin.decrypt.HttpDecrypt;
 import com.github.onsdigital.perkin.json.IdbrReceipt;
 import com.github.onsdigital.perkin.json.Survey;
+import com.github.onsdigital.perkin.pck.builder.Pck;
+import com.github.onsdigital.perkin.pck.builder.PckBuilder;
+import com.github.onsdigital.perkin.pck.derivator.DerivatorNotFoundException;
 import com.github.onsdigital.perkin.publish.FtpPublisher;
 import com.github.onsdigital.perkin.transform.idbr.IdbrBuilder;
 import com.github.onsdigital.perkin.transform.jpg.ImageBuilder;
@@ -28,6 +31,7 @@ public class Transformer {
     private HttpDecrypt decrypt = new HttpDecrypt();
     private IdbrBuilder idbrBuilder = new IdbrBuilder();
     private ImageBuilder imageBuilder = new ImageBuilder();
+    private PckBuilder pckBuilder = new PckBuilder();
     private FtpPublisher publisher = new FtpPublisher();
     private Audit audit = new Audit();
 
@@ -39,7 +43,7 @@ public class Transformer {
         return INSTANCE;
     }
 
-    public boolean transform(final String data) throws IOException {
+    public boolean transform(final String data) throws IOException, DerivatorNotFoundException {
 
         try {
             System.out.println("transform data " + data);
@@ -67,13 +71,20 @@ public class Transformer {
             ImageInfo imageInfo = imageBuilder.createImages(survey, batch);
             System.out.println("transform created images: " + imageInfo);
 
-
+            //idbr
             IdbrReceipt receipt = idbrBuilder.createIdbrReceipt(survey, batch);
             System.out.println("transform created IDBR receipt: " + Json.format(receipt));
-
             publisher.publish(receipt);
             System.out.println("transform published IDBR receipt");
             audit.increment("publish.idbr.200");
+
+            //pck
+            Pck pck = pckBuilder.build(survey, batch);
+            System.out.println("transform created pck file: " + Json.format(pck));
+            publisher.publish(pck);
+            System.out.println("transform published pck file");
+
+
             audit.increment("transform.200");
 
             System.out.println("transform <<<<<<<< success");

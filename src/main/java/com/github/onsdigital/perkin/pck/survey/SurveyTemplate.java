@@ -1,47 +1,18 @@
 package com.github.onsdigital.perkin.pck.survey;
 
 import com.github.onsdigital.perkin.pck.questions.PCKQuestionTemplate;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Singular;
 
 import java.util.List;
 
-
+@Data
+@Builder
 public class SurveyTemplate {
-	
-	
+
 	private String id;
 	private String name;
+    @Singular("question")
 	private List<PCKQuestionTemplate> pckQuestionTemplates;
-	
-	
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
-	
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	
-	public List<PCKQuestionTemplate> getPckQuestionTemplates() {
-		return pckQuestionTemplates;
-	}
-	public void setPckQuestionTemplates(List<PCKQuestionTemplate> pckQuestionTemplates) {
-		this.pckQuestionTemplates = pckQuestionTemplates;
-	}
-	
-	@Override
-	public String toString(){
-		StringBuilder sb = new StringBuilder();
-		sb.append("This is a SurveyTemplate Class :");
-		sb.append("Name :" +name);
-		sb.append("Conatins a List with PCK question mappings for a given survey");
-		return sb.toString();
-	}
-
 }

@@ -2,6 +2,7 @@ package com.github.onsdigital.perkin.publish;
 
 import com.github.onsdigital.Configuration;
 import com.github.onsdigital.perkin.json.IdbrReceipt;
+import com.github.onsdigital.perkin.pck.builder.Pck;
 import org.apache.commons.fileupload.FileItem;
 
 import java.io.ByteArrayInputStream;
@@ -36,6 +37,13 @@ public class FtpPublisher {
         user = Configuration.get(FTP_USER, "ons");
         password = Configuration.get(FTP_PASSWORD, "ons");
         path = Configuration.get(FTP_PATH, "/");
+    }
+
+    //TODO: replace publish methods with something more generic (input stream and filename)
+    public void publish(Pck pck) throws IOException {
+        String filename = pck.getFilename();
+        InputStream inputStream = new ByteArrayInputStream(pck.toString().getBytes(StandardCharsets.UTF_8));
+        ftpFile(inputStream, path, filename);
     }
 
     public void publish(IdbrReceipt receipt) throws IOException {
