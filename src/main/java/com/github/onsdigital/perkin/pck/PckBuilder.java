@@ -116,8 +116,8 @@ public class PckBuilder {
                 .question(new PckQuestionTemplate("30", "boolean", true))
                 .question(new PckQuestionTemplate("40", "default", false))
                 .question(new PckQuestionTemplate("50", "default", true))
-                .question(new PckQuestionTemplate("70", "boolean", false))
-                .question(new PckQuestionTemplate("90", "boolean", true))
+                .question(new PckQuestionTemplate("70", "default", false))
+                .question(new PckQuestionTemplate("90", "default", true))
                 .question(new PckQuestionTemplate("100", "contains", false))
                 .build();
     }
