@@ -41,7 +41,7 @@ public class PckBuilder {
 		Pck pck = new Pck();
 		pck.setHeader(generateHeader(batch));
 		pck.setFormIdentifier(generateFormIdentifier());
-		pck.setQuestions(generatePckQuestions(survey, template));
+		pck.setQuestions(derivatorFactory.deriveAllAnswers(survey, template));
 		pck.setFormLead(FORM_LEAD);
 
         //TODO: made up a filename structure for now
@@ -50,21 +50,6 @@ public class PckBuilder {
         System.out.println("pck built: " + pck);
 		
 		return pck;
-	}
-	
-	private List <PckQuestion> generatePckQuestions(Survey survey, SurveyTemplate surveyTemplate) throws DerivatorNotFoundException {
-		
-		List <PckQuestion> pckQuestions = new ArrayList<>();
-		
-		for (PckQuestionTemplate questionTemplate: surveyTemplate.getPckQuestionTemplates()) {
-			
-			String questionNumber = questionTemplate.getQuestionNumber();
-			String answer = survey.getAnswer(questionNumber);
-
-			pckQuestions.add(new PckQuestion(questionNumber, derivatorFactory.deriveAnswer(questionTemplate.getDerivator(), answer)));
-		}
-		
-		return pckQuestions;
 	}
 
 	private String generateHeader(long batchId) {

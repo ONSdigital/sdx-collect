@@ -1,9 +1,16 @@
 package com.github.onsdigital.perkin.pck.derivator;
 
+import com.github.onsdigital.perkin.json.Survey;
+import com.github.onsdigital.perkin.pck.PckQuestion;
+import com.github.onsdigital.perkin.pck.PckQuestionTemplate;
+import com.github.onsdigital.perkin.pck.survey.SurveyTemplate;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -87,26 +94,43 @@ public class DerviatorFactoryTest {
     @Test
     public void shouldDeriveBooleanTrue() throws DerivatorNotFoundException{
         //given
-        String name = "boolean";
-        String answer = "y";
+        Survey survey = createSurvey("y");
+        SurveyTemplate surveyTemplate = createSurveyTemplate();
 
         //when
-        String derivedAnswer = classUnderTest.deriveAnswer(name, answer);
+        List<PckQuestion> derived = classUnderTest.deriveAllAnswers(survey, surveyTemplate);
 
         //then
-        assertThat(derivedAnswer, is("1"));
+        assertThat(derived, hasSize(1));
+        assertThat(derived.get(0).getQuestionNumber(), is("0001"));
+        assertThat(derived.get(0).getAnswer(), is("00000000001"));
     }
 
     @Test
     public void shouldDeriveBooleanFalse() throws DerivatorNotFoundException{
         //given
-        String name = "boolean";
-        String answer = "n";
+        Survey survey = createSurvey("n");
+        SurveyTemplate surveyTemplate = createSurveyTemplate();
 
         //when
-        String derivedAnswer = classUnderTest.deriveAnswer(name, answer);
+        List<PckQuestion> derived = classUnderTest.deriveAllAnswers(survey, surveyTemplate);
 
         //then
-        assertThat(derivedAnswer, is("2"));
+        assertThat(derived, hasSize(1));
+        assertThat(derived.get(0).getQuestionNumber(), is("0001"));
+        assertThat(derived.get(0).getAnswer(), is("00000000002"));
+    }
+
+    private SurveyTemplate createSurveyTemplate() {
+        String questionNumber = "1";
+        PckQuestionTemplate question = new PckQuestionTemplate(questionNumber, "boolean", true);
+
+        return SurveyTemplate.builder().question(question).build();
+    }
+
+    private Survey createSurvey(String answer) {
+        String questionNumber = "1";
+
+        return Survey.builder().answer(questionNumber, answer).build();
     }
 }
