@@ -4,14 +4,15 @@ import com.github.davidcarboni.httpino.Response;
 import com.github.onsdigital.Json;
 import com.github.onsdigital.perkin.decrypt.HttpDecrypt;
 import com.github.onsdigital.perkin.json.IdbrReceipt;
-import com.github.onsdigital.perkin.json.Result;
 import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.publish.FtpPublisher;
+import com.github.onsdigital.perkin.transform.idbr.IdbrBuilder;
+import com.github.onsdigital.perkin.transform.jpg.ImageBuilder;
+import com.github.onsdigital.perkin.transform.jpg.ImageInfo;
 import org.apache.http.StatusLine;
 import org.eclipse.jetty.http.HttpStatus;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -25,7 +26,8 @@ public class Transformer {
     private static AtomicLong batchId = new AtomicLong(35000);
 
     private HttpDecrypt decrypt = new HttpDecrypt();
-    private IdbrBuilder idbrReceiptFactory = new IdbrBuilder();
+    private IdbrBuilder idbrBuilder = new IdbrBuilder();
+    private ImageBuilder imageBuilder = new ImageBuilder();
     private FtpPublisher publisher = new FtpPublisher();
     private Audit audit = new Audit();
 
@@ -57,7 +59,16 @@ public class Transformer {
                 audit.increment("decrypt.400");
                 return false;
             }
-            IdbrReceipt receipt = idbrReceiptFactory.createIdbrReceipt(survey, batchId.getAndIncrement());
+
+            //TODO: determine batch number
+            long batch = batchId.getAndIncrement();
+
+            //TODO: create images
+            ImageInfo imageInfo = imageBuilder.createImages(survey, batch);
+            System.out.println("transform created images: " + imageInfo);
+
+
+            IdbrReceipt receipt = idbrBuilder.createIdbrReceipt(survey, batch);
             System.out.println("transform created IDBR receipt: " + Json.format(receipt));
 
             publisher.publish(receipt);
