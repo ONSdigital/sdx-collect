@@ -1,19 +1,21 @@
 package com.github.onsdigital.perkin.pck;
 
+import com.github.davidcarboni.httpino.Serialiser;
+import com.github.onsdigital.perkin.helper.FileHelper;
 import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.pck.derivator.DerivatorFactory;
 import com.github.onsdigital.perkin.pck.derivator.DerivatorNotFoundException;
 import com.github.onsdigital.perkin.pck.survey.SurveyTemplate;
 import org.apache.commons.lang3.StringUtils;
 
+
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  * This class converts the survey questionnaire data from key/answer pairs into PCK format String.
@@ -31,13 +33,15 @@ public class PckBuilder {
     private SurveyTemplate template;
 
 	public PckBuilder() {
-        //we only have the MCI survey template for now
-        template = getMciSurveyTemplate();
+
 	}
 
-	public Pck build(Survey survey, long batch) throws DerivatorNotFoundException {
+	public Pck build(Survey survey, long batch) throws DerivatorNotFoundException, IOException {
 
         System.out.println("pck building from survey: " + survey);
+
+		//we only have the MCI survey template for now
+		template = getMciSurveyTemplate();
 		Pck pck = new Pck();
 		pck.setHeader(generateHeader(batch));
 		pck.setFormIdentifier(generateFormIdentifier());
@@ -106,19 +110,10 @@ public class PckBuilder {
 
 	}
 
-    private SurveyTemplate getMciSurveyTemplate() {
-        return SurveyTemplate.builder()
-                .id("023")
-                .name("MCI")
-                .question(new PckQuestionTemplate("1", "boolean", true))
-                .question(new PckQuestionTemplate("11", "boolean", false))
-                .question(new PckQuestionTemplate("20", "boolean", false))
-                .question(new PckQuestionTemplate("30", "boolean", true))
-                .question(new PckQuestionTemplate("40", "default", false))
-                .question(new PckQuestionTemplate("50", "default", true))
-                .question(new PckQuestionTemplate("70", "default", false))
-                .question(new PckQuestionTemplate("90", "default", true))
-                .question(new PckQuestionTemplate("100", "contains", false))
-                .build();
+    private SurveyTemplate getMciSurveyTemplate() throws IOException {
+
+		String surveyTemplateJson = new String(FileHelper.loadFileAsBytes("template.023.json"));
+		return Serialiser.deserialise(surveyTemplateJson,SurveyTemplate.class);
+
     }
 }

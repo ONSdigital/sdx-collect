@@ -111,7 +111,7 @@ public class PckBuilderTest {
     }
 
     @Test
-	public void tryToBuildPCKWithCorrectData(){
+	public void tryToBuildPCKWithCorrect(){
 		
 	}
 	

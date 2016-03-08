@@ -1,1 +1,61 @@
-{"id":"023","name":"MCI","pckQuestionTemplates":[{"questionNumber":"1","derivator":"boolean","optional":true},{"questionNumber":"11","derivator":"boolean","optional":false},{"questionNumber":"20","derivator":"boolean","optional":false},{"questionNumber":"30","derivator":"boolean","optional":true},{"questionNumber":"40","derivator":"default","optional":false},{"questionNumber":"50","derivator":"default","optional":true},{"questionNumber":"70","derivator":"boolean","optional":false},{"questionNumber":"90","derivator":"boolean","optional":true},{"questionNumber":"100","derivator":"contains","optional":false}]}
+{
+  "id": "023",
+  "name": "MCI",
+  "pckQuestionTemplates": [{
+
+    "questionNumber": "1",
+
+    "derivator": "boolean",
+
+    "optional": true
+  }, {
+    "questionNumber": "11",
+
+    "derivator": "boolean",
+
+    "optional": false
+  }, {
+    "questionNumber": "20",
+
+    "derivator": "boolean",
+
+    "optional": false
+  }, {
+    "questionNumber": "30",
+
+    "derivator": "boolean",
+
+    "optional": true
+  }, {
+    "questionNumber": "40",
+
+    "derivator": "default",
+
+    "optional": false
+  }, {
+    "questionNumber": "50",
+
+    "derivator": "default",
+
+    "optional": true
+  }, {
+    "questionNumber": "70",
+
+    "derivator": "default",
+
+    "optional": false
+  }, {
+    "questionNumber": "90",
+
+    "derivator": "default",
+
+    "optional": true
+  }, {
+    "questionNumber": "100",
+
+    "derivator": "contains",
+
+    "optional": false
+  }]
+}
+
