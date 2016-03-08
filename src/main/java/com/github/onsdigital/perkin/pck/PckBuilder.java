@@ -63,9 +63,8 @@ public class PckBuilder {
 			
 			String questionNumber = questionTemplate.getQuestionNumber();
 			String answer = survey.getAnswer(questionNumber);
-			if (!answer.isEmpty()){
-				pckQuestions.add(new PCKQuestion(questionNumber, deriveAnswer(questionTemplate, answer)));
-			}
+
+			pckQuestions.add(new PCKQuestion(questionNumber, deriveAnswer(questionTemplate, answer)));
 		}
 		
 		return pckQuestions;

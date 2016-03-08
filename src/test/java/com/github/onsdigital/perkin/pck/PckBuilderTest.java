@@ -49,6 +49,35 @@ public class PckBuilderTest {
         assertThat(pck.getFilename(), is("30001_respondentId.pck"));
     }
 
+    @Test
+    public void shouldBuildPckIfNoAnswers() throws IOException, DerivatorNotFoundException {
+        //Given
+        long batchId = 30001L;
+        Survey survey = createSurveyNoAnswers();
+        String expectedDate = PckBuilder.getCurrentDateAsString();
+        //TODO: as we provided no answers, we should get an error for each mandatory answer?
+        //TODO: for answers that were optional, should we be adding them to the pck file?
+        String expectedPck = "FBFV" + batchId + expectedDate + "\n" +
+                "FV\n" +
+                "0005:99999994188F:201410\n" +
+                "0001 00000000002\n" +
+                "0011 00000000002\n" +
+                "0020 00000000002\n" +
+                "0030 00000000002\n" +
+                "0040 00000000000\n" +
+                "0050 00000000000\n" +
+                "0070 00000000002\n" +
+                "0090 00000000002\n" +
+                "0100 00000000002\n";
+
+        //When
+        Pck pck = classUnderTest.build(survey, batchId);
+
+        //Then
+        assertThat(pck.toString(), is(expectedPck));
+        assertThat(pck.getFilename(), is("30001_respondentId.pck"));
+    }
+
     private Survey createSurvey() {
         return Survey.builder()
                 .id("id")
@@ -66,6 +95,17 @@ public class PckBuilderTest {
                 .answer("70", "74")
                 .answer("90", "74")
                 .answer("100", "some comment")
+
+                .build();
+    }
+
+    private Survey createSurveyNoAnswers() {
+        return Survey.builder()
+                .id("id")
+                .name("name")
+                .respondentId("respondentId")
+                .date("date")
+                .respondentCheckLetter("A")
 
                 .build();
     }
