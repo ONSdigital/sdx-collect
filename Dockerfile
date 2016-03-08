@@ -1,4 +1,4 @@
-FROM iron/java
+FROM onsdigital/java-component
 
 # Add the build artifacts
 WORKDIR /usr/src

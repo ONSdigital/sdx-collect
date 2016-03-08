@@ -10,6 +10,7 @@ import com.github.onsdigital.perkin.pck.PckBuilder;
 import com.github.onsdigital.perkin.pck.derivator.DerivatorNotFoundException;
 import com.github.onsdigital.perkin.publish.FtpPublisher;
 import com.github.onsdigital.perkin.transform.idbr.IdbrBuilder;
+import com.github.onsdigital.perkin.transform.jpg.Image;
 import com.github.onsdigital.perkin.transform.jpg.ImageBuilder;
 import com.github.onsdigital.perkin.transform.jpg.ImageInfo;
 import org.apache.http.StatusLine;
@@ -85,6 +86,12 @@ public class Transformer {
             //TODO: create images
             ImageInfo imageInfo = imageBuilder.createImages(survey, batch);
             System.out.println("transform created images: " + imageInfo);
+            for (Image image : imageInfo.getImages()) {
+                System.out.println("transform created jpg file: " + image.getFilename());
+                publisher.publish(image);
+                System.out.println("transform published jpg file");
+                audit.increment("publish.jpg.200");
+            }
 
             audit.increment("transform.200");
 
