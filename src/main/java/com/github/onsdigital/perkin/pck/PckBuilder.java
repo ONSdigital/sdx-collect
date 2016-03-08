@@ -59,7 +59,7 @@ public class PckBuilder {
 		
 		List <PCKQuestion> pckQuestions = new ArrayList<>();
 		
-		for (PCKQuestionTemplate questionTemplate: surveytemplate.getPckQuestionTemplates()){
+		for (PCKQuestionTemplate questionTemplate: surveytemplate.getPckQuestionTemplates()) {
 			
 			String questionNumber = questionTemplate.getQuestionNumber();
 			String answer = survey.getAnswer(questionNumber);
