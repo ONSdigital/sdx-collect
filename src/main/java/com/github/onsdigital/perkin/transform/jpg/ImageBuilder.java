@@ -1,6 +1,7 @@
 package com.github.onsdigital.perkin.transform.jpg;
 
 import com.github.onsdigital.perkin.json.Survey;
+import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 
@@ -9,6 +10,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,16 +35,11 @@ public class ImageBuilder {
     private byte[] createPdf(final Survey survey, final long batchId) throws IOException {
         //TODO: create pdf for the survey
 
-
-        //TODO for now we have hardcoded a 2 page pdf
-        Path path = null;
-        try {
-            path = Paths.get(ClassLoader.getSystemResource("to-jpg/2page.pdf").toURI());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            throw new IOException("problem loading pdf", e);
-        }
-        return Files.readAllBytes(path);
+        String filename = "to-jpg/2page.pdf";
+        System.out.println("loading pdf:  " + filename);
+        InputStream in = getClass().getClassLoader().getResourceAsStream(filename);
+        System.out.println("loaded pdf:  " + filename + " as: " + in);
+        return IOUtils.toByteArray(in);
     }
 
     public ImageInfo createImages(final byte[] pdf, final Survey survey, final long batchId) throws IOException {
