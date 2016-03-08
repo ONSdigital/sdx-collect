@@ -1,6 +1,5 @@
 package com.github.onsdigital.perkin.pck.derivator;
 
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,7 +8,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ContainsDerivatorTest {
 
-    ContainsDerivator classUnderTest ;
+    //TODO: Andy - turn this into a parameterized test?
+    //e.g. http://www.tutorialspoint.com/junit/junit_parameterized_test.htm
+
+    private ContainsDerivator classUnderTest;
 
     @Before
     public void setUp(){
@@ -17,7 +19,7 @@ public class ContainsDerivatorTest {
     }
 
     @Test
-    public void shouldDeriveBooleanTrueWithData(){
+    public void shouldContainData(){
         //given
         String data = "We are no longer trading...";
 
@@ -29,9 +31,10 @@ public class ContainsDerivatorTest {
     }
 
     @Test
-    public void shouldDeriveBooleanTrueWithExtraWhiteSpace(){
+    public void shoulContainDataForExtraWhitespace(){
         //given
         String data = "  We are closed ";
+
         //when
         String value = classUnderTest.deriveValue(data);
 
@@ -40,9 +43,10 @@ public class ContainsDerivatorTest {
     }
 
     @Test
-    public void shouldDeriveBooleanFalseWithNull(){
+    public void shouldNotContainDataForNull(){
         //given
         String data = null;
+
         //when
         String value = classUnderTest.deriveValue(data);
 
@@ -51,9 +55,10 @@ public class ContainsDerivatorTest {
     }
 
     @Test
-    public void shouldDeriveBooleanFalseWithEmptyString(){
+    public void shouldNotContainDataForEmptyString(){
         //given
         String data = "";
+
         //when
         String value = classUnderTest.deriveValue(data);
 
@@ -62,9 +67,10 @@ public class ContainsDerivatorTest {
     }
 
     @Test
-    public void shouldDeriveBooleanTrueWithNumbers(){
+    public void shouldContainDataForANumber(){
         //given
         String data = String.valueOf(12345);
+
         //when
         String value = classUnderTest.deriveValue(data);
 
@@ -73,14 +79,14 @@ public class ContainsDerivatorTest {
     }
 
     @Test
-    public void shouldDeriveBooleanFalseWhenDataWhiteSpace(){
+    public void shouldNotContainDataForWhitespace(){
         //given
         String data = "    ";
+
         //when
         String value = classUnderTest.deriveValue(data);
 
         //then
         assertThat(value, is(ContainsDerivator.FALSE));
     }
-
 }

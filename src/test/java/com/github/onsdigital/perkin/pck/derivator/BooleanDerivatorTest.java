@@ -71,7 +71,7 @@ public class BooleanDerivatorTest {
 		String data = "N";
 
 		//when
-		String value = classUnderTest.deriveValue("N");
+		String value = classUnderTest.deriveValue(data);
 
 		//then
 		assertThat(value, is(BooleanDerivator.FALSE));
@@ -83,7 +83,7 @@ public class BooleanDerivatorTest {
 		String data = "";
 
 		//when
-		String value = classUnderTest.deriveValue("");
+		String value = classUnderTest.deriveValue(data);
 
 		//then
 		assertThat(value, is(BooleanDerivator.FALSE));
@@ -95,7 +95,7 @@ public class BooleanDerivatorTest {
 		String data = null;
 
 		//when
-		String value = classUnderTest.deriveValue(null);
+		String value = classUnderTest.deriveValue(data);
 
 		//then
 		assertThat(value, is(BooleanDerivator.FALSE));

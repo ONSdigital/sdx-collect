@@ -6,15 +6,14 @@ public class ContainsDerivator implements Derivator {
 
 	public static final String TRUE =  "1";
 	public static final String FALSE = "2";
+
 	@Override
-	public String deriveValue(String surveyAnswer) {
+	public String deriveValue(String answer) {
 		
-		if(StringUtils.isBlank(surveyAnswer)){
+		if(StringUtils.isBlank(answer)){
 			return FALSE;
-		}
-		else {
+		} else {
 			return TRUE;
 		}
 	}
-
 }

@@ -16,9 +16,12 @@ public class DerivatorFactory {
 	public Derivator getDerivator(String name) throws DerivatorNotFoundException {
 
 		if (derivators.containsKey(name)) {
+            System.out.println("found derivator: " + name);
 			return derivators.get(name);
 		} else {
-			return loadDerivator(name);
+			Derivator derivator = loadDerivator(name);
+            derivators.put(name, derivator);
+            return derivator;
 		}
 	}
 

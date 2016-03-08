@@ -2,7 +2,9 @@ package com.github.onsdigital.perkin.pck.derivator;
 
 public class BooleanDerivator implements Derivator {
 
-	public static final String TRUE = "1";
+    public static final String NAME = "boolean";
+
+    public static final String TRUE = "1";
 	public static final String FALSE = "2";
 
 	@Override
