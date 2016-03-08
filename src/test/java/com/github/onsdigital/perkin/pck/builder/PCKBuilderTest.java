@@ -1,6 +1,8 @@
 package com.github.onsdigital.perkin.pck.builder;
 
 import com.github.onsdigital.perkin.json.Survey;
+import com.github.onsdigital.perkin.pck.Pck;
+import com.github.onsdigital.perkin.pck.PckBuilder;
 import com.github.onsdigital.perkin.pck.derivator.DerivatorNotFoundException;
 import org.junit.Before;
 import org.junit.Test;

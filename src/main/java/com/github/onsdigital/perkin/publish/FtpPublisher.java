@@ -2,7 +2,7 @@ package com.github.onsdigital.perkin.publish;
 
 import com.github.onsdigital.Configuration;
 import com.github.onsdigital.perkin.json.IdbrReceipt;
-import com.github.onsdigital.perkin.pck.builder.Pck;
+import com.github.onsdigital.perkin.pck.Pck;
 import org.apache.commons.fileupload.FileItem;
 
 import java.io.ByteArrayInputStream;
