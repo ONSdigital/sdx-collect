@@ -37,7 +37,7 @@ public class ImageBuilder {
         //TODO for now we have hardcoded a 2 page pdf
         Path path = null;
         try {
-            path = Paths.get(ClassLoader.getSystemResource("/to-jpg/2page.pdf").toURI());
+            path = Paths.get(ClassLoader.getSystemResource("to-jpg/2page.pdf").toURI());
         } catch (URISyntaxException e) {
             e.printStackTrace();
             throw new IOException("problem loading pdf", e);
