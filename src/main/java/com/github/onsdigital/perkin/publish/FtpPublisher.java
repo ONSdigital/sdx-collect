@@ -9,6 +9,7 @@ import org.apache.commons.fileupload.FileItem;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 
@@ -87,7 +88,8 @@ public class FtpPublisher {
                 System.out.println("ftp current directory is " + ftp.printWorkingDirectory());
 
                 //store the file in the remote server
-                System.out.println("ftp storing file: " + filename);
+                System.out.println("ftp storing binary file: " + filename);
+                ftp.setFileStructure(FTP.BINARY_FILE_TYPE);
                 ftp.storeFile(filename, inputStream);
                 //close the stream
                 System.out.println("ftp closing stream");
