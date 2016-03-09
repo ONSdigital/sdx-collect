@@ -5,7 +5,7 @@ import com.github.onsdigital.perkin.helper.FileHelper;
 import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.pck.derivator.DerivatorFactory;
 import com.github.onsdigital.perkin.pck.derivator.DerivatorNotFoundException;
-import com.github.onsdigital.perkin.pck.survey.SurveyTemplate;
+import com.github.onsdigital.perkin.json.SurveyTemplate;
 import org.apache.commons.lang3.StringUtils;
 
 
@@ -30,22 +30,16 @@ public class PckBuilder {
 	private static final int QUESTION_PAD_LENGTH = 4;
 
 	private DerivatorFactory derivatorFactory = new DerivatorFactory();
-    private SurveyTemplate template;
-
-	public PckBuilder() {
-
-	}
 
 	public Pck build(Survey survey, long batch) throws DerivatorNotFoundException, IOException {
 
         System.out.println("pck building from survey: " + survey);
 
 		//we only have the MCI survey template for now
-		template = getMciSurveyTemplate();
 		Pck pck = new Pck();
 		pck.setHeader(generateHeader(batch));
 		pck.setFormIdentifier(generateFormIdentifier());
-		pck.setQuestions(derivatorFactory.deriveAllAnswers(survey, template));
+		pck.setQuestions(derivatorFactory.deriveAllAnswers(survey, getTemplate(survey)));
 		pck.setFormLead(FORM_LEAD);
 
         //TODO: made up a filename structure for now
@@ -56,7 +50,13 @@ public class PckBuilder {
 		return pck;
 	}
 
-	private String generateHeader(long batchId) {
+    private SurveyTemplate getTemplate(Survey survey) throws IOException {
+        //we only have the MCI survey template for now
+        String json = new String(FileHelper.loadFileAsBytes("surveys/template.023.json"));
+        return Serialiser.deserialise(json, SurveyTemplate.class);
+    }
+
+    private String generateHeader(long batchId) {
 
         //TODO: think the date should be a date from the survey
 	
@@ -105,15 +105,6 @@ public class PckBuilder {
 	public static String getCurrentDateAsString(){
 		LocalDate date = LocalDate.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy");
-		String text = date.format(formatter);
-		return text;
-
+		return date.format(formatter);
 	}
-
-    private SurveyTemplate getMciSurveyTemplate() throws IOException {
-
-		String surveyTemplateJson = new String(FileHelper.loadFileAsBytes("template.023.json"));
-		return Serialiser.deserialise(surveyTemplateJson,SurveyTemplate.class);
-
-    }
 }

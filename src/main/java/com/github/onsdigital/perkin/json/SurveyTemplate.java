@@ -1,4 +1,4 @@
-package com.github.onsdigital.perkin.pck.survey;
+package com.github.onsdigital.perkin.json;
 
 import com.github.onsdigital.perkin.pck.PckQuestionTemplate;
 import lombok.Builder;
