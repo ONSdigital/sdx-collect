@@ -4,7 +4,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.Singular;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Simple object to contain Survey data.
@@ -28,5 +31,13 @@ public class Survey {
         }
 
         return answers.get(key);
+    }
+
+    public Set<String> getKeys() {
+        if (answers == null) {
+            return Collections.emptySet();
+        }
+
+        return answers.keySet();
     }
 }

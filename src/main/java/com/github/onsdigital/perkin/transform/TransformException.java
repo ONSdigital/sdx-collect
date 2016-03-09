@@ -1,6 +1,8 @@
 package com.github.onsdigital.perkin.transform;
 
-public class TransformException extends Exception {
+import java.io.IOException;
+
+public class TransformException extends IOException {
 
     private static final long serialVersionUID = 1L;
 

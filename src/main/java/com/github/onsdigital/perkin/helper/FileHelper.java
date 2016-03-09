@@ -5,6 +5,7 @@ import org.apache.commons.io.IOUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,5 +26,12 @@ public abstract class FileHelper {
         InputStream in = FileHelper.class.getClassLoader().getResourceAsStream(filename);
         System.out.println("loaded file:  " + filename + " as: " + in);
         return IOUtils.toByteArray(in);
+    }
+
+    public static String loadFile(String filename) throws IOException {
+
+        InputStream in = FileHelper.class.getClassLoader().getResourceAsStream(filename);
+        System.out.println("loaded file:  " + filename + " as: " + in);
+        return new String(IOUtils.toByteArray(in), StandardCharsets.UTF_8);
     }
 }
