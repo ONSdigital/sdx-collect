@@ -22,7 +22,7 @@ public class SurveyTemplateTest {
     @Test
     public void shouldBuildTemplateFromJson() throws IOException {
         //Given
-        String surveyTemplateJson = new String(FileHelper.loadFileAsBytes("template.023.json"));
+        String surveyTemplateJson = loadSurveyTemplateFromFile("template.023.json");
 
         //When
         SurveyTemplate surveyTemplate = Serialiser.deserialise(surveyTemplateJson,SurveyTemplate.class);
@@ -35,19 +35,21 @@ public class SurveyTemplateTest {
     @Test
     public void shouldBuildTemplateIfNoQuestions() throws IOException {
         //Given
-        String surveyTemplateJson = new String(FileHelper.loadFileAsBytes("template.023.no.questions.json"));
+        String surveyTemplateJson = loadSurveyTemplateFromFile("template.023.no.questions.json");
 
         //When
         SurveyTemplate surveyTemplate = Serialiser.deserialise(surveyTemplateJson,SurveyTemplate.class);
         System.out.println(surveyTemplate);
 
         //Then
-
-
         //TODO Should this be allowed to happen... Should a template be created with no questions?
         assertThat(surveyTemplate, instanceOf(SurveyTemplate.class));
         //TODO should this return null?
         assertNull(surveyTemplate.getPckQuestionTemplates());
+    }
+
+    private String loadSurveyTemplateFromFile(String filename) throws IOException {
+        return new String(FileHelper.loadFileAsBytes(filename));
     }
 
 
