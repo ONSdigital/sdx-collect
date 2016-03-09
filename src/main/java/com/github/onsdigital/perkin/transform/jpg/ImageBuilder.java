@@ -55,6 +55,8 @@ public class ImageBuilder {
             int dpiImageResolution = 300;
             BufferedImage image = page.convertToImage(BufferedImage.TYPE_INT_RGB, dpiImageResolution);
             ImageIO.write(image, "JPG", baos);
+            baos.flush();
+            baos.close();
 
             builder.image(
                     Image.builder()
@@ -67,6 +69,8 @@ public class ImageBuilder {
             System.out.println("created image: " + "page" + i + ".jpg");
             //TODO: create/append to image index csv
         }
+
+        document.close();
 
         return builder.build();
     }
