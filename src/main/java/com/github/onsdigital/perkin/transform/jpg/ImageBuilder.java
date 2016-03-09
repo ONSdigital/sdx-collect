@@ -1,9 +1,12 @@
 package com.github.onsdigital.perkin.transform.jpg;
 
 import com.github.onsdigital.perkin.json.Survey;
+import com.github.onsdigital.perkin.transform.TransformException;
+import com.github.onsdigital.perkin.transform.pdf.PdfCreator;
 import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
+import org.xml.sax.SAXException;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -11,14 +14,16 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Create one or more images representing the survey questions and answers.
  */
 public class ImageBuilder {
 
-    public ImageInfo createImages(final Survey survey, final long batchId) throws IOException {
+    public ImageInfo createImages(final Survey survey, final long batchId) throws TransformException {
 
         byte[] pdf = createPdf(survey, batchId);
 
@@ -28,8 +33,13 @@ public class ImageBuilder {
     //TODO: change to throw TransformException
     //TODO: make it a runtime exception?
 
-    private byte[] createPdf(final Survey survey, final long batchId) throws IOException {
-        //TODO: create pdf for the survey
+    private byte[] createPdf(final Survey survey, final long batchId) throws TransformException {
+        PdfCreator pdfCreator = new PdfCreator();
+        return pdfCreator.createPdf(survey);
+    }
+
+    //TODO: remove - this is a hardcoded pdf
+    private byte[] createHardcodedPdf(final Survey survey, final long batchId) throws IOException {
 
         String filename = "to-jpg/2page.pdf";
         System.out.println("loading pdf:  " + filename);
@@ -38,34 +48,42 @@ public class ImageBuilder {
         return IOUtils.toByteArray(in);
     }
 
-    public ImageInfo createImages(final byte[] pdf, final Survey survey, final long batchId) throws IOException {
+    public ImageInfo createImages(final byte[] pdf, final Survey survey, final long batchId) throws TransformException {
 
         ImageInfo.ImageInfoBuilder builder = ImageInfo.builder();
 
-        ByteArrayInputStream is = new ByteArrayInputStream(pdf);
-        PDDocument document = PDDocument.load(is);
+        try {
+            ByteArrayInputStream is = new ByteArrayInputStream(pdf);
+            PDDocument document = PDDocument.load(is);
 
-        List<PDPage> pages = document.getDocumentCatalog().getAllPages();
-        int i = 0;
-        for (PDPage page : pages) {
-            i++;
+            List<PDPage> pages = document.getDocumentCatalog().getAllPages();
+            int i = 0;
+            for (PDPage page : pages) {
+                i++;
 
-            //TODO: convert pdf page to image
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            int dpiImageResolution = 300;
-            BufferedImage image = page.convertToImage(BufferedImage.TYPE_INT_RGB, dpiImageResolution);
-            ImageIO.write(image, "JPG", baos);
+                //TODO: convert pdf page to image
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                int dpiImageResolution = 300;
+                BufferedImage image = page.convertToImage(BufferedImage.TYPE_INT_RGB, dpiImageResolution);
+                ImageIO.write(image, "JPG", baos);
+                baos.flush();
+                baos.close();
 
-            builder.image(
-                    Image.builder()
-                            //TODO: generate proper image filename (info from Rachel)
-                            .filename("page" + i + ".jpg")
-                            .data(baos.toByteArray())
-                            .build()
-            );
+                builder.image(
+                        Image.builder()
+                                //TODO: generate proper image filename (info from Rachel)
+                                .filename(batchId + "_page" + i + ".jpg")
+                                .data(baos.toByteArray())
+                                .build()
+                );
 
-            System.out.println("created image: " + "page" + i + ".jpg");
-            //TODO: create/append to image index csv
+                System.out.println("created image: " + "page" + i + ".jpg");
+                //TODO: create/append to image index csv
+            }
+
+            document.close();
+        } catch (IOException e) {
+            throw new TransformException("error creating images from pdf", e);
         }
 
         return builder.build();

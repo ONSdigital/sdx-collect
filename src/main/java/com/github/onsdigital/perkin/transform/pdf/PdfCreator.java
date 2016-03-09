@@ -1,5 +1,7 @@
 package com.github.onsdigital.perkin.transform.pdf;
 
+import com.github.onsdigital.perkin.helper.FileHelper;
+import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.transform.TransformException;
 import org.apache.fop.apps.*;
 import org.xml.sax.SAXException;
@@ -7,23 +9,38 @@ import org.xml.sax.SAXException;
 import javax.xml.transform.*;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class PdfCreator {
 
     private FopFactory fopFactory;
+    private boolean init = false;
+    private String pdfTemplate;
 
-    public PdfCreator() throws IOException, SAXException, URISyntaxException {
-        URL url = this.getClass().getResource("/to-jpg/fop-config.xml");
-        File config = new File(url.toURI());
-        fopFactory = FopFactory.newInstance(config);
+    private void init() throws TransformException {
+        if (!init) {
+            try {
+                InputStream in = getClass().getClassLoader().getResourceAsStream("to-jpg/fop-config.xml");
+                URI baseUri = new URL("http://survey.ons.gov.uk/whatever").toURI();
+                fopFactory = FopFactory.newInstance(baseUri, in);
+
+                //TODO: manage multiple pdf templates for surveys
+                pdfTemplate = FileHelper.loadFile("to-jpg/mci.fo");
+                init = true;
+            } catch (URISyntaxException | IOException | SAXException e) {
+                throw new TransformException("error configuring fop", e);
+            }
+        }
     }
 
-    public byte[] createPdf() throws TransformException {
+    public byte[] createPdf(Survey survey) throws TransformException {
+
+        init();
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         try {
@@ -37,12 +54,8 @@ public class PdfCreator {
             // Step 5: Setup input and output for XSLT transformation
             // Setup input stream
 
-            //TODO: will take an inputstream - load template into byte[] for reuse?
             //TODO: make configurable once > 1 survey
-            URL url = this.getClass().getResource("/to-jpg/mci.fo");
-            File template = new File(url.toURI());
-
-            Source src = new StreamSource(template);
+            Source src = getPdfTemplate(survey);
 
             // Resulting SAX events (the generated FO) must be piped through to FOP
             Result res = new SAXResult(fop.getDefaultHandler());
@@ -50,7 +63,7 @@ public class PdfCreator {
             // Step 6: Start XSLT transformation and FOP processing
             transformer.transform(src, res);
 
-        } catch (FOPException | TransformerException | URISyntaxException e) {
+        } catch (FOPException | TransformerException e) {
             throw new TransformException("problem creating pdf", e);
         } finally {
             //Clean-up
@@ -62,5 +75,28 @@ public class PdfCreator {
         }
 
         return out.toByteArray();
+    }
+
+    //TODO: we have only one pdf template for now for MCI survey
+    private Source getPdfTemplate(Survey survey) {
+
+        //TODO: clone fop template
+        String template = pdfTemplate;
+
+        //TODO: populate fop template
+        for (String key : survey.getKeys()) {
+            template = populateAnswer(template, key, survey.getAnswer(key));
+        }
+
+        return new StreamSource(new ByteArrayInputStream(template.getBytes(StandardCharsets.UTF_8)));
+    }
+
+    private String populateAnswer(String template, String key, String answer) {
+        if (answer == null) {
+            //TODO:
+        }
+
+        System.out.println("pdf populating question: " + key + " answer: " + answer);
+        return template.replace("$" + key + "$", answer);
     }
 }

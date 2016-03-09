@@ -3,7 +3,7 @@ package com.github.onsdigital.perkin.pck.derivator;
 import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.pck.PckQuestion;
 import com.github.onsdigital.perkin.pck.PckQuestionTemplate;
-import com.github.onsdigital.perkin.pck.survey.SurveyTemplate;
+import com.github.onsdigital.perkin.json.SurveyTemplate;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

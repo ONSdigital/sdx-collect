@@ -63,20 +63,36 @@
       <fo:table-column column-width="50mm"/>
       <fo:table-body>
         <fo:table-row>
-          <fo:table-cell ><fo:block>question1</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>answer1</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>question 1</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>$1$</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>question2</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>answer2</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>question 11</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>$11$</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>question3</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>answer3</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>question 20</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>$20$</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>question4</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>answer4</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>question 30</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>$30$</fo:block></fo:table-cell>
+        </fo:table-row>
+        <fo:table-row>
+          <fo:table-cell ><fo:block>question 40</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>$40$</fo:block></fo:table-cell>
+        </fo:table-row>
+        <fo:table-row>
+          <fo:table-cell ><fo:block>question 50</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>$50$</fo:block></fo:table-cell>
+        </fo:table-row>
+        <fo:table-row>
+          <fo:table-cell ><fo:block>question 70</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>$70$</fo:block></fo:table-cell>
+        </fo:table-row>
+        <fo:table-row>
+          <fo:table-cell ><fo:block>question 90</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>$90$</fo:block></fo:table-cell>
         </fo:table-row>
       </fo:table-body>
     </fo:table>
@@ -92,7 +108,7 @@
             Comments
           </fo:block>
 
-    <fo:block text-align="start">comments go here
+    <fo:block text-align="start">$100$
     </fo:block>
 
 

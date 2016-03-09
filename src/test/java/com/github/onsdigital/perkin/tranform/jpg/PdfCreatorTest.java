@@ -1,25 +1,33 @@
 package com.github.onsdigital.perkin.tranform.jpg;
 
-import com.github.onsdigital.FileHelper;
-import com.github.onsdigital.perkin.transform.TransformException;
+import com.github.onsdigital.perkin.helper.FileHelper;
+import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.transform.pdf.PdfCreator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.HashSet;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PdfCreatorTest {
 
     private PdfCreator classUnderTest;
+
+    @Mock
+    private Survey survey;
 
     @Before
     public void setUp() throws IOException, URISyntaxException, SAXException {
@@ -27,11 +35,13 @@ public class PdfCreatorTest {
     }
 
     @Test
-    public void shouldCreatePdf() throws TransformException, IOException {
+    public void shouldCreatePdf() throws IOException {
         //given
+        when(survey.getAnswer(anyString())).thenReturn("answer");
+        when(survey.getKeys()).thenReturn(new HashSet(Arrays.asList("1", "11")));
 
         //when
-        byte[] pdf = classUnderTest.createPdf();
+        byte[] pdf = classUnderTest.createPdf(survey);
         FileHelper.saveFile(pdf, "mci.pdf");
 
         //then
