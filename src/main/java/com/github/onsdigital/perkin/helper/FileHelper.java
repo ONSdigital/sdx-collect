@@ -1,6 +1,9 @@
 package com.github.onsdigital.perkin.helper;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,16 +20,10 @@ public abstract class FileHelper {
         System.out.println("FileHelper saved file target/" + filename);
     }
 
-    public static byte[] loadFileAsBytes(String name) throws IOException {
-        Path path = null;
+    public static byte[] loadFileAsBytes(String filename) throws IOException {
 
-        try {
-            path = Paths.get(ClassLoader.getSystemResource(name).toURI());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            throw new IOException("problem loading file: " + name, e);
-        }
-
-        return Files.readAllBytes(path);
+        InputStream in = FileHelper.class.getClassLoader().getResourceAsStream(filename);
+        System.out.println("loaded file:  " + filename + " as: " + in);
+        return IOUtils.toByteArray(in);
     }
 }
