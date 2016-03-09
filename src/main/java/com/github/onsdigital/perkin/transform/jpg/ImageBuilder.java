@@ -72,7 +72,7 @@ public class ImageBuilder {
                 builder.image(
                         Image.builder()
                                 //TODO: generate proper image filename (info from Rachel)
-                                .filename("page" + i + ".jpg")
+                                .filename(batchId + "_page" + i + ".jpg")
                                 .data(baos.toByteArray())
                                 .build()
                 );
