@@ -10,9 +10,13 @@ public class SurveyListener {
 
     protected static final String QUEUE_HOST = "queue.host";
     protected static final String QUEUE_NAME = "queue.name";
+    protected static final String QUEUE_USERNAME = "queue.username";
+    protected static final String QUEUE_PASSWORD = "queue.password";
 
     private String host = "rabbit";
-    private String name = "survey";
+    private String queue = "survey";
+    private String username = null;
+    private String password = null;
 
     private Transformer transformer = Transformer.getInstance();
 
@@ -21,7 +25,9 @@ public class SurveyListener {
      */
     public SurveyListener() {
         host = Configuration.get(QUEUE_HOST, host);
-        name = Configuration.get(QUEUE_NAME, name);
+        queue = Configuration.get(QUEUE_NAME, queue);
+        username = Configuration.get(QUEUE_USERNAME, username);
+        password = Configuration.get(QUEUE_PASSWORD, password);
     }
 
     public void start() {
@@ -37,11 +43,13 @@ public class SurveyListener {
 
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(host);
+        if (username!=null) factory.setUsername(username);
+        if (password!=null) factory.setPassword(password);
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
 
-        channel.queueDeclare(name, false, false, false, null);
-        System.out.println("queue ******** listening to queue: " + name + " on host: " + host);
+        channel.queueDeclare(queue, false, false, false, null);
+        System.out.println("queue ******** listening to queue: " + queue + " on host: " + host);
 
         Consumer consumer = new DefaultConsumer(channel) {
             public static final boolean REQUEUE = true;
@@ -87,7 +95,7 @@ public class SurveyListener {
         };
 
         boolean NO_AUTO_ACK = false;
-        channel.basicConsume(name, NO_AUTO_ACK, consumer);
-        System.out.println("queue ******** STOPPED listening to queue: " + name + " on host: " + host);
+        channel.basicConsume(queue, NO_AUTO_ACK, consumer);
+        System.out.println("queue ******** STOPPED listening to queue: " + queue + " on host: " + host);
     }
 }
