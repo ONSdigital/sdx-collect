@@ -1,8 +1,7 @@
 package com.github.onsdigital.perkin.json;
 
 import com.github.davidcarboni.httpino.Serialiser;
-import com.github.onsdigital.FileHelper;
-import com.github.onsdigital.perkin.json.SurveyTemplate;
+import com.github.onsdigital.perkin.helper.FileHelper;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -10,9 +9,7 @@ import java.io.IOException;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public class SurveyTemplateTest {
 

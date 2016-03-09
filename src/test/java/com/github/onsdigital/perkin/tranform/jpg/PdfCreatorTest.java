@@ -1,6 +1,6 @@
 package com.github.onsdigital.perkin.tranform.jpg;
 
-import com.github.onsdigital.FileHelper;
+import com.github.onsdigital.perkin.helper.FileHelper;
 import com.github.onsdigital.perkin.transform.TransformException;
 import com.github.onsdigital.perkin.transform.pdf.PdfCreator;
 import org.junit.Before;
