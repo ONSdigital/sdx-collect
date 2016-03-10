@@ -1,5 +1,6 @@
 package com.github.onsdigital.perkin.transform.pck;
 
+import com.github.onsdigital.Json;
 import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.transform.TransformException;
 import org.junit.Before;
@@ -10,11 +11,11 @@ import static org.junit.Assert.assertThat;
 
 public class PckBuilderTest {
 
-	private PckBuilder classUnderTest;
+	private PckTransformer classUnderTest;
 
 	@Before
 	public void setUp(){
-		classUnderTest = new PckBuilder();
+		classUnderTest = new PckTransformer();
 	}
 
     @Test
@@ -22,7 +23,8 @@ public class PckBuilderTest {
         //Given
         long batchId = 30001L;
         Survey survey = createSurvey();
-        String expectedDate = PckBuilder.getCurrentDateAsString();
+        System.out.println(Json.format(survey));
+        String expectedDate = PckTransformer.getCurrentDateAsString();
         String expectedPck = "FBFV" + batchId + expectedDate + "\n" +
                 "FV\n" +
                 "0005:99999994188F:201410\n" +
@@ -37,7 +39,7 @@ public class PckBuilderTest {
                 "0100 00000000001\n";
 
         //When
-        Pck pck = classUnderTest.build(survey, batchId);
+        Pck pck = (Pck) classUnderTest.transform(survey, batchId);
 
         //Then
         assertThat(pck.toString(), is(expectedPck));
@@ -49,7 +51,7 @@ public class PckBuilderTest {
         //Given
         long batchId = 30001L;
         Survey survey = createSurveyNoAnswers();
-        String expectedDate = PckBuilder.getCurrentDateAsString();
+        String expectedDate = PckTransformer.getCurrentDateAsString();
         //TODO: as we provided no answers, we should get an error for each mandatory answer?
         //TODO: for answers that were optional, should we be adding them to the pck file?
         String expectedPck = "FBFV" + batchId + expectedDate + "\n" +
@@ -66,7 +68,7 @@ public class PckBuilderTest {
                 "0100 00000000002\n";
 
         //When
-        Pck pck = classUnderTest.build(survey, batchId);
+        Pck pck = (Pck) classUnderTest.transform(survey, batchId);
 
         //Then
         assertThat(pck.toString(), is(expectedPck));
@@ -78,7 +80,7 @@ public class PckBuilderTest {
         //Given
         long batchId = 30001L;
         Survey survey = createSurveyWrongQuestions();
-        String expectedDate = PckBuilder.getCurrentDateAsString();
+        String expectedDate = PckTransformer.getCurrentDateAsString();
         //TODO: as we provided no matching answers to the template should we get an error when a question can't be found?
         String expectedPck = "FBFV" + batchId + expectedDate + "\n" +
                 "FV\n" +
@@ -94,7 +96,7 @@ public class PckBuilderTest {
                 "0100 00000000002\n";
 
         //When
-        Pck pck = classUnderTest.build(survey, batchId);
+        Pck pck = (Pck) classUnderTest.transform(survey, batchId);
 
         //Then
         assertThat(pck.toString(), is(expectedPck));

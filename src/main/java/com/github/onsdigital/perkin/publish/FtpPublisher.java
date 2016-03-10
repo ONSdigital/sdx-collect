@@ -2,6 +2,7 @@ package com.github.onsdigital.perkin.publish;
 
 import com.github.onsdigital.Configuration;
 import com.github.onsdigital.perkin.json.IdbrReceipt;
+import com.github.onsdigital.perkin.transform.DataFile;
 import com.github.onsdigital.perkin.transform.pck.Pck;
 import com.github.onsdigital.perkin.transform.jpg.Image;
 import org.apache.commons.fileupload.FileItem;
@@ -42,25 +43,27 @@ public class FtpPublisher {
         path = Configuration.get(FTP_PATH, "/");
     }
 
-    //TODO: replace publish methods with something more generic (input stream and filename)
+    public void publish(DataFile data) throws IOException {
+        String filename = data.getFilename();
+        InputStream inputStream = new ByteArrayInputStream(data.getBytes());
+        ftpFile(inputStream, path, filename);
+    }
+
+    //TODO: remove
     public void publish(Image image) throws IOException {
         String filename = image.getFilename();
         InputStream inputStream = new ByteArrayInputStream(image.getData());
         ftpFile(inputStream, path, filename);
     }
 
-    public void publish(Pck pck) throws IOException {
-        String filename = pck.getFilename();
-        InputStream inputStream = new ByteArrayInputStream(pck.toString().getBytes(StandardCharsets.UTF_8));
-        ftpFile(inputStream, path, filename);
-    }
-
+    //TODO: remove
     public void publish(IdbrReceipt receipt) throws IOException {
         String filename = receipt.getFilename();
         InputStream inputStream = new ByteArrayInputStream(receipt.getReceipt().getBytes(StandardCharsets.UTF_8));
         ftpFile(inputStream, path, filename);
     }
 
+    //TODO: remove?
     public void publish(final FileItem data, final String path) throws IOException {
         String filename = data.getName();
         ftpFile(data.getInputStream(), path, filename);

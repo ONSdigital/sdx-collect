@@ -1,5 +1,6 @@
 package com.github.onsdigital.perkin.json;
 
+import com.github.onsdigital.perkin.transform.DataFile;
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,8 +10,13 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class IdbrReceipt {
+public class IdbrReceipt implements DataFile {
 
     private String receipt;
     private String filename;
+
+    @Override
+    public byte[] getBytes() {
+        return receipt.getBytes();
+    }
 }

@@ -4,6 +4,9 @@ package com.github.onsdigital.perkin.transform.idbr;
 
 import com.github.onsdigital.perkin.json.IdbrReceipt;
 import com.github.onsdigital.perkin.json.Survey;
+import com.github.onsdigital.perkin.transform.DataFile;
+import com.github.onsdigital.perkin.transform.TransformException;
+import com.github.onsdigital.perkin.transform.Transformer;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -14,7 +17,7 @@ import java.time.format.DateTimeFormatter;
  *
  * An IDBR batch receipt file can contain multiple receipts.
  */
-public class IdbrBuilder {
+public class IdbrTransformer implements Transformer {
 
     private static final String DELIMITER = ":";
 
@@ -28,7 +31,8 @@ public class IdbrBuilder {
     private DateTimeFormatter idbrReceiptFormatter = DateTimeFormatter.ofPattern("yyyyMM");
     private DateTimeFormatter idbrFilenameFormatter = DateTimeFormatter.ofPattern("ddMM");
 
-    public IdbrReceipt createIdbrReceipt(final Survey survey, final long batchId) {
+    @Override
+    public DataFile transform(final Survey survey, final long batchId) throws TransformException {
         return createIdbrReceipt(survey, LocalDate.now(), batchId);
     }
 

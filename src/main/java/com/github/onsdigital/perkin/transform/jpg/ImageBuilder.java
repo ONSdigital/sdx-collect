@@ -1,8 +1,9 @@
 package com.github.onsdigital.perkin.transform.jpg;
 
 import com.github.onsdigital.perkin.json.Survey;
+import com.github.onsdigital.perkin.transform.DataFile;
 import com.github.onsdigital.perkin.transform.TransformException;
-import org.apache.commons.io.IOUtils;
+import com.github.onsdigital.perkin.transform.Transformer;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 
@@ -11,16 +12,15 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 /**
  * Create one or more images representing the survey questions and answers.
  */
-public class ImageBuilder {
+public class ImageBuilder implements Transformer {
 
-    public ImageInfo createImages(final Survey survey, final long batchId) throws TransformException {
-
+    @Override
+    public DataFile transform(final Survey survey, final long batchId) throws TransformException {
         byte[] pdf = createPdf(survey, batchId);
 
         return createImages(pdf, survey, batchId);
@@ -32,16 +32,6 @@ public class ImageBuilder {
     private byte[] createPdf(final Survey survey, final long batchId) throws TransformException {
         PdfCreator pdfCreator = new PdfCreator();
         return pdfCreator.createPdf(survey);
-    }
-
-    //TODO: remove - this is a hardcoded pdf
-    private byte[] createHardcodedPdf(final Survey survey, final long batchId) throws IOException {
-
-        String filename = "to-jpg/2page.pdf";
-        System.out.println("loading pdf:  " + filename);
-        InputStream in = getClass().getClassLoader().getResourceAsStream(filename);
-        System.out.println("loaded pdf:  " + filename + " as: " + in);
-        return IOUtils.toByteArray(in);
     }
 
     public ImageInfo createImages(final byte[] pdf, final Survey survey, final long batchId) throws TransformException {

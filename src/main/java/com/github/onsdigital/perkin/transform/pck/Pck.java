@@ -1,8 +1,11 @@
 package com.github.onsdigital.perkin.transform.pck;
 
+import com.github.onsdigital.perkin.transform.DataFile;
+
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-public class Pck {
+public class Pck implements DataFile {
 
     private static final String NEW_LINE = System.lineSeparator();
 
@@ -12,8 +15,7 @@ public class Pck {
 	private List <Question> questions;
 
     private String filename;
-	
-	
+
 	public String getHeader() {
 		return header;
 	}
@@ -46,6 +48,7 @@ public class Pck {
 		this.questions = questions;
 	}
 
+    @Override
     public String getFilename() {
         return filename;
     }
@@ -54,6 +57,21 @@ public class Pck {
         this.filename = filename;
     }
 
+    @Override
+    public byte[] getBytes() {
+        StringBuilder sb = new StringBuilder()
+                .append(header).append(NEW_LINE)
+                .append(formLead).append(NEW_LINE)
+                .append(formIdentifier).append(NEW_LINE);
+
+        for (Question question : questions) {
+            sb.append(question.toString()).append(NEW_LINE);
+        }
+
+        return sb.toString().getBytes(StandardCharsets.UTF_8);
+    }
+
+    //TODO: remove?
     @Override
 	public String toString(){
 

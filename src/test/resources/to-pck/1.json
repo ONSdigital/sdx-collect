@@ -1,0 +1,18 @@
+{
+  "id": "id",
+  "name": "name",
+  "date": "date",
+  "respondentId": "respondentId",
+  "respondentCheckLetter": "A",
+  "answers": {
+    "1": "y",
+    "11": "y",
+    "20": "n",
+    "30": "y",
+    "40": "700",
+    "50": "311008",
+    "70": "74",
+    "90": "74",
+    "100": "some comment"
+  }
+}

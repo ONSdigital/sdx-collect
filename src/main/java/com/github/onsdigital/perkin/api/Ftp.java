@@ -24,7 +24,7 @@ public class Ftp {
         Survey survey = createSurvey();
 
         //create image
-        ImageInfo imageInfo = new ImageBuilder().createImages(survey, 30000);
+        ImageInfo imageInfo = (ImageInfo) new ImageBuilder().transform(survey, 30000);
         com.github.onsdigital.perkin.transform.jpg.Image image = imageInfo.getImages().get(0);
         System.out.println("image >>>>>>>> generated image: " + image.getFilename() + " size: " + image.getData().length);
 

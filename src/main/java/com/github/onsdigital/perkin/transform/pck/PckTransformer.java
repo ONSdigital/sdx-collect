@@ -3,6 +3,8 @@ package com.github.onsdigital.perkin.transform.pck;
 import com.github.davidcarboni.httpino.Serialiser;
 import com.github.onsdigital.perkin.helper.FileHelper;
 import com.github.onsdigital.perkin.json.Survey;
+import com.github.onsdigital.perkin.transform.DataFile;
+import com.github.onsdigital.perkin.transform.Transformer;
 import com.github.onsdigital.perkin.transform.pck.derivator.DerivatorFactory;
 import com.github.onsdigital.perkin.json.SurveyTemplate;
 import com.github.onsdigital.perkin.transform.TemplateNotFoundException;
@@ -19,12 +21,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
- * This class converts the survey questionnaire data from key/answer pairs into PCK format String.
- * 
- * @author altafm
- * 
+ * Convert a survey into PCK format.
  */
-public class PckBuilder {
+public class PckTransformer implements Transformer {
 
 	private static final String HEADER_SEPARATOR = ":";
 	private static final String FORM_LEAD = "FV";
@@ -32,24 +31,24 @@ public class PckBuilder {
 
 	private DerivatorFactory derivatorFactory = new DerivatorFactory();
 
-	public Pck build(Survey survey, long batch) throws TransformException {
-
+    @Override
+    public DataFile transform(final Survey survey, final long batchId) throws TransformException {
         System.out.println("pck building from survey: " + survey);
 
-		//we only have the MCI survey template for now
-		Pck pck = new Pck();
-		pck.setHeader(generateHeader(batch));
-		pck.setFormIdentifier(generateFormIdentifier());
-		pck.setQuestions(derivatorFactory.deriveAllAnswers(survey, getTemplate(survey)));
-		pck.setFormLead(FORM_LEAD);
+        //we only have the MCI survey template for now
+        Pck pck = new Pck();
+        pck.setHeader(generateHeader(batchId));
+        pck.setFormIdentifier(generateFormIdentifier());
+        pck.setQuestions(derivatorFactory.deriveAllAnswers(survey, getTemplate(survey)));
+        pck.setFormLead(FORM_LEAD);
 
         //TODO: made up a filename structure for now
-        pck.setFilename(batch + "_" + survey.getRespondentId() + ".pck");
+        pck.setFilename(batchId + "_" + survey.getRespondentId() + ".pck");
 
         System.out.println("pck built: " + pck);
-		
-		return pck;
-	}
+
+        return pck;
+    }
 
     private SurveyTemplate getTemplate(Survey survey) throws TemplateNotFoundException {
 

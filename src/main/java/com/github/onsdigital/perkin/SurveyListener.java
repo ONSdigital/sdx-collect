@@ -1,7 +1,7 @@
 package com.github.onsdigital.perkin;
 
 import com.github.onsdigital.Configuration;
-import com.github.onsdigital.perkin.transform.Transformer;
+import com.github.onsdigital.perkin.transform.TransformEngine;
 import com.rabbitmq.client.*;
 
 import java.io.IOException;
@@ -18,7 +18,7 @@ public class SurveyListener {
     private String username = null;
     private String password = null;
 
-    private Transformer transformer = Transformer.getInstance();
+    private TransformEngine transformer = TransformEngine.getInstance();
 
     /**
      * Updates configured values if environment variables have been set.
@@ -31,7 +31,8 @@ public class SurveyListener {
     }
 
     public void start() {
-        while (true) {
+        //TODO: need to kickoff a new thread i think
+        //while (true) {
 
             try {
                 startListening();
@@ -46,8 +47,8 @@ public class SurveyListener {
                 //ignore
             }
 
-            System.out.println("queue *** attempting to restart connection... ");
-        }
+           // System.out.println("queue *** attempting to restart connection... ");
+        //}
     }
 
     private void startListening() throws java.io.IOException, java.lang.InterruptedException {
