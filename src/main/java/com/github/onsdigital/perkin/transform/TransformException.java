@@ -6,6 +6,10 @@ public class TransformException extends IOException {
 
     private static final long serialVersionUID = 1L;
 
+    public TransformException(String message) {
+        super(message);
+    }
+
     public TransformException(String message, Throwable cause) {
         super(message, cause);
     }

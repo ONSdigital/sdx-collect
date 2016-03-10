@@ -1,6 +1,6 @@
 package com.github.onsdigital.perkin.json;
 
-import com.github.onsdigital.perkin.pck.derivator.DerivatorNotFoundException;
+import com.github.onsdigital.perkin.transform.pck.derivator.DerivatorNotFoundException;
 import org.junit.Test;
 
 import java.io.IOException;

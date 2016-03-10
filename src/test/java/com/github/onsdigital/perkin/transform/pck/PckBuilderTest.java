@@ -1,17 +1,12 @@
-package com.github.onsdigital.perkin.pck;
+package com.github.onsdigital.perkin.transform.pck;
 
 import com.github.onsdigital.perkin.json.Survey;
-import com.github.onsdigital.perkin.pck.Pck;
-import com.github.onsdigital.perkin.pck.PckBuilder;
-import com.github.onsdigital.perkin.pck.derivator.DerivatorNotFoundException;
+import com.github.onsdigital.perkin.transform.TransformException;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
-
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-
 
 public class PckBuilderTest {
 
@@ -23,7 +18,7 @@ public class PckBuilderTest {
 	}
 
     @Test
-    public void shouldBuildPck() throws IOException, DerivatorNotFoundException {
+    public void shouldBuildPck() throws TransformException {
         //Given
         long batchId = 30001L;
         Survey survey = createSurvey();
@@ -50,7 +45,7 @@ public class PckBuilderTest {
     }
 
     @Test
-    public void shouldBuildPckIfNoAnswers() throws IOException, DerivatorNotFoundException {
+    public void shouldBuildPckIfNoAnswers() throws TransformException {
         //Given
         long batchId = 30001L;
         Survey survey = createSurveyNoAnswers();
@@ -79,7 +74,7 @@ public class PckBuilderTest {
     }
 
     @Test
-    public void shouldBuildPckIfNoQuestionsMatch() throws IOException, DerivatorNotFoundException {
+    public void shouldBuildPckIfNoQuestionsMatch() throws TransformException {
         //Given
         long batchId = 30001L;
         Survey survey = createSurveyWrongQuestions();

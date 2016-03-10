@@ -1,11 +1,11 @@
-package com.github.onsdigital.perkin.pck;
+package com.github.onsdigital.perkin.transform.pck;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class PckQuestionTemplate {
+public class QuestionTemplate {
 
 	private String questionNumber;
 	private String derivator;

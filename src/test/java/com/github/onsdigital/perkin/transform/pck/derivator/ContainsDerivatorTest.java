@@ -1,4 +1,4 @@
-package com.github.onsdigital.perkin.pck.derivator;
+package com.github.onsdigital.perkin.transform.pck.derivator;
 
 import org.junit.Before;
 import org.junit.Test;

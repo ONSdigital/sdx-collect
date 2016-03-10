@@ -1,11 +1,11 @@
-package com.github.onsdigital.perkin.pck;
+package com.github.onsdigital.perkin.transform.pck;
 
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-public class PckQuestionTest {
+public class QuestionTest {
 
     @Test
     public void shouldLeftPad() {
@@ -14,11 +14,11 @@ public class PckQuestionTest {
         String answer = "27";
 
         //When
-        PckQuestion question = new PckQuestion(questionNumber, answer);
+        Question question = new Question(questionNumber, answer);
 
         //Then
-        assertThat(question.getQuestionNumber().length(), is(4));
-        assertThat(question.getQuestionNumber(), is("0001"));
+        assertThat(question.getNumber().length(), is(4));
+        assertThat(question.getNumber(), is("0001"));
         assertThat(question.getAnswer().length(), is(11));
         assertThat(question.getAnswer(), is("00000000027"));
     }

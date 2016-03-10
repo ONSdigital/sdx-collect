@@ -1,8 +1,8 @@
-package com.github.onsdigital.perkin.pck.derivator;
+package com.github.onsdigital.perkin.transform.pck.derivator;
 
 import com.github.onsdigital.perkin.json.Survey;
-import com.github.onsdigital.perkin.pck.PckQuestion;
-import com.github.onsdigital.perkin.pck.PckQuestionTemplate;
+import com.github.onsdigital.perkin.transform.pck.Question;
+import com.github.onsdigital.perkin.transform.pck.QuestionTemplate;
 import com.github.onsdigital.perkin.json.SurveyTemplate;
 import org.apache.commons.lang3.StringUtils;
 
@@ -32,20 +32,20 @@ public class DerivatorFactory {
 		}
 	}
 
-    public List<PckQuestion> deriveAllAnswers(Survey survey, SurveyTemplate surveyTemplate) throws DerivatorNotFoundException {
+    public List<Question> deriveAllAnswers(Survey survey, SurveyTemplate surveyTemplate) throws DerivatorNotFoundException {
 
-        List<PckQuestion> result = new ArrayList<>();
+        List<Question> result = new ArrayList<>();
 
-        for (PckQuestionTemplate question : surveyTemplate.getPckQuestionTemplates()) {
+        for (QuestionTemplate questionTemplate : surveyTemplate.getQuestionTemplates()) {
 
-            String answer = survey.getAnswer(question.getQuestionNumber());
+            String answer = survey.getAnswer(questionTemplate.getQuestionNumber());
 
-            Derivator derivator = getDerivator(question.getDerivator());
+            Derivator derivator = getDerivator(questionTemplate.getDerivator());
             String derivedAnswer = derivator.deriveValue(answer);
 
-            PckQuestion pckQuestion = new PckQuestion(question.getQuestionNumber(), derivedAnswer);
-            result.add(pckQuestion);
-            System.out.println("derived: " + pckQuestion + " from question: " + question + " answer: " + answer);
+            Question question = new Question(questionTemplate.getQuestionNumber(), derivedAnswer);
+            result.add(question);
+            System.out.println("derived: " + question + " from question template: " + questionTemplate + " answer: " + answer);
         }
 
         return result;
@@ -57,7 +57,7 @@ public class DerivatorFactory {
 				throw new DerivatorNotFoundException(name);
 			}
 
-			String className = "com.github.onsdigital.perkin.pck.derivator." + StringUtils.capitalize(name.trim().toLowerCase()) + "Derivator";
+			String className = "com.github.onsdigital.perkin.transform.pck.derivator." + StringUtils.capitalize(name.trim().toLowerCase()) + "Derivator";
 			System.out.println("loading derivator: " + className);
 
 			Derivator derivator = (Derivator) Class.forName(className).newInstance();

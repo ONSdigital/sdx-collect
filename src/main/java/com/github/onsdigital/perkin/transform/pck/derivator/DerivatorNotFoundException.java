@@ -1,6 +1,8 @@
-package com.github.onsdigital.perkin.pck.derivator;
+package com.github.onsdigital.perkin.transform.pck.derivator;
 
-public class DerivatorNotFoundException extends Exception {
+import com.github.onsdigital.perkin.transform.TransformException;
+
+public class DerivatorNotFoundException extends TransformException {
 
 	private static final long serialVersionUID = 2610098058834428466L;
 

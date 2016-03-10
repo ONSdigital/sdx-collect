@@ -1,7 +1,7 @@
 {
   "id": "023",
   "name": "MCI",
-  "pckQuestionTemplates": [
+  "questionTemplates": [
     {
       "questionNumber": "1",
       "derivator": "boolean",

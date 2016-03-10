@@ -2,7 +2,7 @@ package com.github.onsdigital.perkin.tranform.jpg;
 
 import com.github.onsdigital.perkin.helper.FileHelper;
 import com.github.onsdigital.perkin.json.Survey;
-import com.github.onsdigital.perkin.transform.pdf.PdfCreator;
+import com.github.onsdigital.perkin.transform.jpg.PdfCreator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,8 +1,8 @@
-package com.github.onsdigital.perkin.pck.derivator;
+package com.github.onsdigital.perkin.transform.pck.derivator;
 
 import com.github.onsdigital.perkin.json.Survey;
-import com.github.onsdigital.perkin.pck.PckQuestion;
-import com.github.onsdigital.perkin.pck.PckQuestionTemplate;
+import com.github.onsdigital.perkin.transform.pck.Question;
+import com.github.onsdigital.perkin.transform.pck.QuestionTemplate;
 import com.github.onsdigital.perkin.json.SurveyTemplate;
 import org.junit.After;
 import org.junit.Before;
@@ -98,11 +98,11 @@ public class DerviatorFactoryTest {
         SurveyTemplate surveyTemplate = createSurveyTemplate();
 
         //when
-        List<PckQuestion> derived = classUnderTest.deriveAllAnswers(survey, surveyTemplate);
+        List<Question> derived = classUnderTest.deriveAllAnswers(survey, surveyTemplate);
 
         //then
         assertThat(derived, hasSize(1));
-        assertThat(derived.get(0).getQuestionNumber(), is("0001"));
+        assertThat(derived.get(0).getNumber(), is("0001"));
         assertThat(derived.get(0).getAnswer(), is("00000000001"));
     }
 
@@ -113,17 +113,17 @@ public class DerviatorFactoryTest {
         SurveyTemplate surveyTemplate = createSurveyTemplate();
 
         //when
-        List<PckQuestion> derived = classUnderTest.deriveAllAnswers(survey, surveyTemplate);
+        List<Question> derived = classUnderTest.deriveAllAnswers(survey, surveyTemplate);
 
         //then
         assertThat(derived, hasSize(1));
-        assertThat(derived.get(0).getQuestionNumber(), is("0001"));
+        assertThat(derived.get(0).getNumber(), is("0001"));
         assertThat(derived.get(0).getAnswer(), is("00000000002"));
     }
 
     private SurveyTemplate createSurveyTemplate() {
         String questionNumber = "1";
-        PckQuestionTemplate question = new PckQuestionTemplate(questionNumber, "boolean", true);
+        QuestionTemplate question = new QuestionTemplate(questionNumber, "boolean", true);
 
         return SurveyTemplate.builder().question(question).build();
     }

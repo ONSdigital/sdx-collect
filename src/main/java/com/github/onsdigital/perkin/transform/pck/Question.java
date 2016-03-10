@@ -1,28 +1,28 @@
-package com.github.onsdigital.perkin.pck;
+package com.github.onsdigital.perkin.transform.pck;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class PckQuestion {
+public class Question {
 
     private static final char PAD_CHARACTER = '0';
 
-    private String questionNumber;
+    private String number;
 	private String answer;
 	
 	private static final int LENGTH_QUESTION = 4;
 	private static final int LENGTH_ANSWER = 11;
 	
-	public PckQuestion(String questionNumber, String answer) {
-		setQuestionNumber(questionNumber);
+	public Question(String number, String answer) {
+		setNumber(number);
         setAnswer(answer);
 	}
 	
-	public String getQuestionNumber() {
-		return questionNumber;
+	public String getNumber() {
+		return number;
 	}
 
-	public void setQuestionNumber(String questionNumber) {
-		this.questionNumber = leftPad(questionNumber, LENGTH_QUESTION);
+	public void setNumber(String number) {
+		this.number = leftPad(number, LENGTH_QUESTION);
 	}
 	public String getAnswer() {
 		return answer;
@@ -38,6 +38,6 @@ public class PckQuestion {
 	
 	@Override
 	public String toString(){
-		return questionNumber + " " + answer;
+		return number + " " + answer;
 	}
 }

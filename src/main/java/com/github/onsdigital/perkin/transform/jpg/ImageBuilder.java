@@ -2,11 +2,9 @@ package com.github.onsdigital.perkin.transform.jpg;
 
 import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.transform.TransformException;
-import com.github.onsdigital.perkin.transform.pdf.PdfCreator;
 import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
-import org.xml.sax.SAXException;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -14,9 +12,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Create one or more images representing the survey questions and answers.

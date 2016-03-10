@@ -1,6 +1,6 @@
 package com.github.onsdigital.perkin.json;
 
-import com.github.onsdigital.perkin.pck.PckQuestionTemplate;
+import com.github.onsdigital.perkin.transform.pck.QuestionTemplate;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Singular;
@@ -14,5 +14,5 @@ public class SurveyTemplate {
 	private String id;
 	private String name;
     @Singular("question")
-	private List<PckQuestionTemplate> pckQuestionTemplates;
+	private List<QuestionTemplate> questionTemplates;
 }
