@@ -31,11 +31,22 @@ public class SurveyListener {
     }
 
     public void start() {
-        try {
-            startListening();
-        } catch (IOException | InterruptedException e) {
-            System.out.println("queue exception: " + e.toString());
-            e.printStackTrace();
+        while (true) {
+
+            try {
+                startListening();
+            } catch (IOException | InterruptedException e) {
+                System.out.println("queue exception: " + e.toString());
+                e.printStackTrace();
+            }
+
+            try {
+                Thread.sleep(3 * 1000);
+            } catch (InterruptedException e) {
+                //ignore
+            }
+
+            System.out.println("queue *** attempting to restart connection... ");
         }
     }
 
@@ -81,7 +92,7 @@ public class SurveyListener {
                     System.out.println("queue ******** fail, reject, requeue '" + message + "'");
 
 
-                    //TODO: primitive for now
+                    //TODO: primitive for now - needs a delay?
                     if (++retry <= maxRetry) {
                         System.out.println("queue ******** fail, reject (" + retry + " retries), requeue '" + message + "'");
                         channel.basicReject(envelope.getDeliveryTag(), REQUEUE);

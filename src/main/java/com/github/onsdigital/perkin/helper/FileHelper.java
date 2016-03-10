@@ -29,9 +29,6 @@ public abstract class FileHelper {
     }
 
     public static String loadFile(String filename) throws IOException {
-
-        InputStream in = FileHelper.class.getClassLoader().getResourceAsStream(filename);
-        System.out.println("loaded file:  " + filename + " as: " + in);
-        return new String(IOUtils.toByteArray(in), StandardCharsets.UTF_8);
+        return new String(loadFileAsBytes(filename), StandardCharsets.UTF_8);
     }
 }

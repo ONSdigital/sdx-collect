@@ -1,4 +1,4 @@
-package com.github.onsdigital.perkin.pck.derivator;
+package com.github.onsdigital.perkin.transform.pck.derivator;
 
 public class BooleanDerivator implements Derivator {
 

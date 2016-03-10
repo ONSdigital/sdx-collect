@@ -1,4 +1,4 @@
-package com.github.onsdigital.perkin.pck;
+package com.github.onsdigital.perkin.transform.pck;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ public class Pck {
 	private String header;
 	private String formLead;
 	private String formIdentifier;
-	private List <PckQuestion> questions;
+	private List <Question> questions;
 
     private String filename;
 	
@@ -38,11 +38,11 @@ public class Pck {
 		this.formIdentifier = formIdentifier;
 	}
 
-	public List<PckQuestion> getQuestions() {
+	public List<Question> getQuestions() {
 		return questions;
 	}
 
-	public void setQuestions(List<PckQuestion> questions) {
+	public void setQuestions(List<Question> questions) {
 		this.questions = questions;
 	}
 
@@ -62,7 +62,7 @@ public class Pck {
 		        .append(formLead).append(NEW_LINE)
 		        .append(formIdentifier).append(NEW_LINE);
 		
-		for (PckQuestion question : questions) {
+		for (Question question : questions) {
 			sb.append(question.toString()).append(NEW_LINE);
 		}
 		

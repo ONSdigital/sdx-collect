@@ -16,34 +16,29 @@ public class SurveyTemplateTest {
     @Test
     public void shouldBuildTemplateFromJson() throws IOException {
         //Given
-        String surveyTemplateJson = new String(FileHelper.loadFileAsBytes("surveys/template.023.json"));
+        String json = FileHelper.loadFile("surveys/template.023.json");
 
         //When
-        SurveyTemplate surveyTemplate = Serialiser.deserialise(surveyTemplateJson,SurveyTemplate.class);
-        System.out.println(surveyTemplate);
+        SurveyTemplate template = Serialiser.deserialise(json, SurveyTemplate.class);
+
         //Then
-        System.out.println(surveyTemplate);
-        assertThat(surveyTemplate, instanceOf(SurveyTemplate.class));
+        System.out.println(template);
+        assertThat(template, instanceOf(SurveyTemplate.class));
     }
 
     @Test
     public void shouldBuildTemplateIfNoQuestions() throws IOException {
         //Given
-        String surveyTemplateJson = new String(FileHelper.loadFileAsBytes("surveys/template.023.no.questions.json"));
+        String json = FileHelper.loadFile("surveys/template.023.no.questions.json");
+
         //When
-        SurveyTemplate surveyTemplate = Serialiser.deserialise(surveyTemplateJson,SurveyTemplate.class);
-        System.out.println(surveyTemplate);
+        SurveyTemplate template = Serialiser.deserialise(json, SurveyTemplate.class);
 
         //Then
-        System.out.println(surveyTemplate);
+        System.out.println(template);
         //TODO Should this be allowed to happen... Should a template be created with no questions?
-        assertThat(surveyTemplate, instanceOf(SurveyTemplate.class));
+        assertThat(template, instanceOf(SurveyTemplate.class));
         //TODO should this return null?
-        assertThat(surveyTemplate.getPckQuestionTemplates(), is(nullValue()));
-    }
-
-
-    private String loadSurveyTemplateFromFile(String filename) throws IOException {
-        return new String(this.getClass().getClassLoader().getResource(filename).getFile().getBytes());
+        assertThat(template.getQuestionTemplates(), is(nullValue()));
     }
 }

@@ -1,4 +1,4 @@
-package com.github.onsdigital.perkin.transform.pdf;
+package com.github.onsdigital.perkin.transform.jpg;
 
 import com.github.onsdigital.perkin.helper.FileHelper;
 import com.github.onsdigital.perkin.json.Survey;
@@ -80,10 +80,12 @@ public class PdfCreator {
     //TODO: we have only one pdf template for now for MCI survey
     private Source getPdfTemplate(Survey survey) {
 
-        //TODO: clone fop template
         String template = pdfTemplate;
 
-        //TODO: populate fop template
+        //populate fop template
+        //TODO: add question text from the template
+
+        //TODO: need to get the survey template to get the keys
         for (String key : survey.getKeys()) {
             template = populateAnswer(template, key, survey.getAnswer(key));
         }

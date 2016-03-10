@@ -1,11 +1,12 @@
-package com.github.onsdigital.perkin.pck;
+package com.github.onsdigital.perkin.transform.pck;
 
 import com.github.davidcarboni.httpino.Serialiser;
 import com.github.onsdigital.perkin.helper.FileHelper;
 import com.github.onsdigital.perkin.json.Survey;
-import com.github.onsdigital.perkin.pck.derivator.DerivatorFactory;
-import com.github.onsdigital.perkin.pck.derivator.DerivatorNotFoundException;
+import com.github.onsdigital.perkin.transform.pck.derivator.DerivatorFactory;
 import com.github.onsdigital.perkin.json.SurveyTemplate;
+import com.github.onsdigital.perkin.transform.TemplateNotFoundException;
+import com.github.onsdigital.perkin.transform.TransformException;
 import org.apache.commons.lang3.StringUtils;
 
 
@@ -31,7 +32,7 @@ public class PckBuilder {
 
 	private DerivatorFactory derivatorFactory = new DerivatorFactory();
 
-	public Pck build(Survey survey, long batch) throws DerivatorNotFoundException, IOException {
+	public Pck build(Survey survey, long batch) throws TransformException {
 
         System.out.println("pck building from survey: " + survey);
 
@@ -50,10 +51,16 @@ public class PckBuilder {
 		return pck;
 	}
 
-    private SurveyTemplate getTemplate(Survey survey) throws IOException {
-        //we only have the MCI survey template for now
-        String json = new String(FileHelper.loadFileAsBytes("surveys/template.023.json"));
-        return Serialiser.deserialise(json, SurveyTemplate.class);
+    private SurveyTemplate getTemplate(Survey survey) throws TemplateNotFoundException {
+
+        try {
+            //we only have the MCI survey template for now
+            String json = new String(FileHelper.loadFileAsBytes("surveys/template.023.json"));
+            return Serialiser.deserialise(json, SurveyTemplate.class);
+        } catch (IOException e) {
+            throw new TemplateNotFoundException("surveys/template.023.json", e);
+        }
+
     }
 
     private String generateHeader(long batchId) {
