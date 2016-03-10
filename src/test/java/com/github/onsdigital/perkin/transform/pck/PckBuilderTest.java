@@ -157,10 +157,7 @@ public class PckBuilderTest {
                 .build();
     }
 
-    @Test
-	public void tryToBuildPCKWithCorrect(){
-		
-	}
+
 	
 	@Test
 	public void tryToBuildPCKWithExtraSurveyQuestions(){
