@@ -60,7 +60,6 @@ public class PckBuilder {
         } catch (IOException e) {
             throw new TemplateNotFoundException("surveys/template.023.json", e);
         }
-
     }
 
     private String generateHeader(long batchId) {
