@@ -1,5 +1,7 @@
 package com.github.onsdigital.perkin.transform;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
+@Slf4j
 public class Audit {
 
     private Map<String, AtomicLong> counters;
@@ -30,6 +33,7 @@ public class Audit {
     }
 
     private void addMessage(String message) {
+        log.info("AUDIT|" + message);
         messages.add(message);
     }
 }

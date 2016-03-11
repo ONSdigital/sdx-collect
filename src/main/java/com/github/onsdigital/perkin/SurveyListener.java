@@ -3,9 +3,11 @@ package com.github.onsdigital.perkin;
 import com.github.onsdigital.Configuration;
 import com.github.onsdigital.perkin.transform.TransformEngine;
 import com.rabbitmq.client.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
+@Slf4j
 public class SurveyListener {
 
     protected static final String QUEUE_HOST = "queue.host";
@@ -31,14 +33,13 @@ public class SurveyListener {
     }
 
     public void start() {
-        //TODO: need to kickoff a new thread i think
+        //TODO: need to kickoff a new thread - otherwise if queue down, will never start
         //while (true) {
 
             try {
                 startListening();
             } catch (IOException | InterruptedException e) {
-                System.out.println("queue exception: " + e.toString());
-                e.printStackTrace();
+                log.error("QUEUE|problem processing queue message: ", e);
             }
 
             try {
@@ -51,7 +52,7 @@ public class SurveyListener {
         //}
     }
 
-    private void startListening() throws java.io.IOException, java.lang.InterruptedException {
+    private void startListening() throws IOException, InterruptedException {
 
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(host);
@@ -61,7 +62,7 @@ public class SurveyListener {
         Channel channel = connection.createChannel();
 
         channel.queueDeclare(queue, false, false, false, null);
-        System.out.println("queue ******** listening to queue: " + queue + " on host: " + host);
+        log.info("QUEUE|CONNECTION|START|listening to queue: {} on host: {} username: {}", queue, host, username);
 
         Consumer consumer = new DefaultConsumer(channel) {
             public static final boolean REQUEUE = true;
@@ -73,32 +74,29 @@ public class SurveyListener {
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                 String message = new String(body, "UTF-8");
-                System.out.println("queue ******** received '" + message + "'");
+                log.info("QUEUE|MESSAGE|RECV|got message: {}", message);
 
                 try {
-                    //TODO: decide whether to leave message on queue or move to dead letter q
                     if (transformer.transform(message)) {
-                        System.out.println("queue ******** success, ack '" + message + "'");
+                        log.info("QUEUE|MESSAGE|ACK|transform success, remove msg from queue. message: {}", message);
                         channel.basicAck(envelope.getDeliveryTag(), false);
                         retry = 0;
                     } else {
-                        System.out.println("queue ******** fail, reject, don't requeue '" + message + "'");
-
+                        log.info("QUEUE|MESSAGE|REJECT|transform fail, reject, don't requeue. message: {}", message);
+                        //TODO: place message on DLQ? if transform fails - should do this
+                        //TODO: place message on DLQ? if publish fails - should retry
                         channel.basicReject(envelope.getDeliveryTag(), DONT_REQUEUE);
                     }
 
                 } catch (Throwable t) {
-                    System.out.println("ERROR queue ******** Throwable: " + t.toString());
-                    t.printStackTrace();
-                    System.out.println("queue ******** fail, reject, requeue '" + message + "'");
-
+                    log.error("QUEUE|MESSAGE|error during message processing", t);
 
                     //TODO: primitive for now - needs a delay?
                     if (++retry <= maxRetry) {
-                        System.out.println("queue ******** fail, reject (" + retry + " retries), requeue '" + message + "'");
+                        log.info("QUEUE|MESSAGE|RETRY|fail, reject ({} retries), requeue. message: {}", retry, message);
                         channel.basicReject(envelope.getDeliveryTag(), REQUEUE);
                     } else {
-                        System.out.println("queue ******** fail, reject (" + retry + " retries), DONT requeue '" + message + "'");
+                        log.info("QUEUE|MESSAGE|FAIL|fail, reject ({} retries), DONT requeue. message: {}", retry, message);
                         channel.basicReject(envelope.getDeliveryTag(), DONT_REQUEUE);
                         retry = 0;
                     }
@@ -108,6 +106,6 @@ public class SurveyListener {
 
         boolean NO_AUTO_ACK = false;
         channel.basicConsume(queue, NO_AUTO_ACK, consumer);
-        System.out.println("queue ******** STOPPED listening to queue: " + queue + " on host: " + host);
+        log.warn("QUEUE|CONNECTION|END|stopped listening to queue: {} on host: {}",queue, host);
     }
 }

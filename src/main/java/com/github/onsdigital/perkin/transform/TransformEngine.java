@@ -8,6 +8,7 @@ import com.github.onsdigital.perkin.transform.idbr.IdbrTransformer;
 import com.github.onsdigital.perkin.transform.jpg.ImageTransformer;
 import com.github.onsdigital.perkin.transform.pck.PckTransformer;
 import com.github.onsdigital.perkin.publish.FtpPublisher;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.StatusLine;
 import org.eclipse.jetty.http.HttpStatus;
 
@@ -20,6 +21,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * Transform a Survey into a format for downstream systems.
  */
+@Slf4j
 public class TransformEngine {
 
     private static TransformEngine INSTANCE = new TransformEngine();
@@ -49,10 +51,10 @@ public class TransformEngine {
     public boolean transform(final String data) throws TransformException {
 
         try {
-            System.out.println("transform data " + data);
+            log.debug("transform data: {}", data);
 
             Response<Survey> decryptResponse = decrypt.decrypt(data);
-            System.out.println("decrypt <<<<<<<< response: " + Json.prettyPrint(decryptResponse));
+            log.debug("decrypt <<<<<<<< response: {}", Json.prettyPrint(decryptResponse));
             audit.increment("decrypt." + decryptResponse.statusLine.getStatusCode());
 
             //TODO 400 is bad request - add to DLQ, 500 is server error, retry
@@ -64,7 +66,7 @@ public class TransformEngine {
 
             Survey survey = decryptResponse.body;
             if (survey == null) {
-                System.out.println("transform decrypt returned a null survey - 400, bad request (data was not a valid json Survey)");
+                log.warn("transform decrypt did not parse to a Survey. JSON mismatch? data: {}", data);
                 audit.increment("decrypt.400");
                 return false;
             }
@@ -82,16 +84,13 @@ public class TransformEngine {
             }
 
             audit.increment("transform.200");
-            System.out.println("transform <<<<<<<< success");
             return true;
 
         } catch (TransformException e) {
             audit.increment("transform.500");
-            System.out.println("transform <<<<<<<< ERROR: " + e.toString());
             throw e;
         } catch (IOException e) {
             audit.increment("transform.500");
-            System.out.println("transform <<<<<<<< ERROR: " + e.toString());
             throw new TransformException("Problem transforming survey", e);
         }
     }
