@@ -102,10 +102,14 @@ public class SurveyListener {
                     }
                 }
             }
+
+            @Override
+            public void handleShutdownSignal(String consumerTag, ShutdownSignalException e) {
+                log.warn("QUEUE|CONNECTION|END|handle shutdown - stopped listening to queue: {} on host: {}", queue, host, e);
+            }
         };
 
         boolean NO_AUTO_ACK = false;
         channel.basicConsume(queue, NO_AUTO_ACK, consumer);
-        log.warn("QUEUE|CONNECTION|END|stopped listening to queue: {} on host: {}",queue, host);
     }
 }
