@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Transform a Survey into a format for downstream systems.
@@ -54,14 +53,13 @@ public class TransformEngine {
         try {
             Survey survey = decrypt(data);
 
-            SurveyTemplate template = getTemplate(survey);
-
-            long batch = batchNumberService.getNext();
+            TransformContext context = createTransformContext(survey);
+            SurveyTemplate template = getSurveyTemplate(survey);
 
             List<DataFile> files = new ArrayList<>();
             //TODO: use executors (multithreading)
             for (Transformer transformer : transformers) {
-                files.addAll(transformer.transform(survey, template, batch));
+                files.addAll(transformer.transform(survey, context));
             }
 
             for (DataFile file : files) {
@@ -77,6 +75,41 @@ public class TransformEngine {
         } catch (IOException e) {
             audit.increment("transform.500");
             throw new TransformException("Problem transforming survey", e);
+        }
+    }
+
+    //TODO: make private
+    public TransformContext createTransformContext(Survey survey) throws TemplateNotFoundException {
+        return TransformContext.builder()
+                .batch(batchNumberService.getNext())
+                .surveyTemplate(getSurveyTemplate(survey))
+                .pdfTemplate(getPdfTemplate(survey))
+                .build();
+    }
+
+    private String getPdfTemplate(Survey survey) throws TemplateNotFoundException {
+
+        String pdfTemplate = null;
+
+        try {
+            //TODO: only load a template once
+            pdfTemplate = FileHelper.loadFile("to-jpg/mci.fo");
+        } catch (IOException e) {
+            throw new TemplateNotFoundException("problem loading pdf template: to-jpg/mci.fo");
+        }
+
+        return pdfTemplate;
+    }
+
+    private SurveyTemplate getSurveyTemplate(Survey survey) throws TemplateNotFoundException {
+
+        //TODO: only load a template once
+        try {
+            //we only have the MCI survey template for now
+            String json = new String(FileHelper.loadFileAsBytes("surveys/template.023.json"));
+            return Serialiser.deserialise(json, SurveyTemplate.class);
+        } catch (IOException e) {
+            throw new TemplateNotFoundException("surveys/template.023.json", e);
         }
     }
 
@@ -99,19 +132,6 @@ public class TransformEngine {
         }
 
         return survey;
-    }
-
-    //TODO: make private
-    public SurveyTemplate getTemplate(Survey survey) throws TemplateNotFoundException {
-
-        //TODO: only load a survey template once
-        try {
-            //we only have the MCI survey template for now
-            String json = new String(FileHelper.loadFileAsBytes("surveys/template.023.json"));
-            return Serialiser.deserialise(json, SurveyTemplate.class);
-        } catch (IOException e) {
-            throw new TemplateNotFoundException("surveys/template.023.json", e);
-        }
     }
 
     private boolean isError(StatusLine statusLine) {

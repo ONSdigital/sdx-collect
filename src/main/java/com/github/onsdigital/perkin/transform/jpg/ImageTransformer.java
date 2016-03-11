@@ -1,8 +1,8 @@
 package com.github.onsdigital.perkin.transform.jpg;
 
 import com.github.onsdigital.perkin.json.Survey;
-import com.github.onsdigital.perkin.json.SurveyTemplate;
 import com.github.onsdigital.perkin.transform.DataFile;
+import com.github.onsdigital.perkin.transform.TransformContext;
 import com.github.onsdigital.perkin.transform.TransformException;
 import com.github.onsdigital.perkin.transform.Transformer;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -22,16 +22,15 @@ import java.util.List;
 public class ImageTransformer implements Transformer {
 
     @Override
-    public List<DataFile> transform(final Survey survey, final SurveyTemplate template, final long batchId) throws TransformException {
+    public List<DataFile> transform(final Survey survey, final TransformContext context) throws TransformException {
         PdfCreator pdfCreator = new PdfCreator();
 
-        //TODO: does the pdf need the batchId?
-        byte[] pdf = pdfCreator.createPdf(survey, template);
+        byte[] pdf = pdfCreator.createPdf(survey, context);
 
-        return createImages(pdf, survey, batchId);
+        return createImages(pdf, survey, context.getBatch());
     }
 
-    public List<DataFile> createImages(final byte[] pdf, final Survey survey, final long batchId) throws TransformException {
+    private List<DataFile> createImages(final byte[] pdf, final Survey survey, final long batchId) throws TransformException {
 
         List<DataFile> files = new ArrayList<>();
 

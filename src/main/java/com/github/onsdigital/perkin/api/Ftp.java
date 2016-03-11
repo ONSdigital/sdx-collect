@@ -2,9 +2,9 @@ package com.github.onsdigital.perkin.api;
 
 import com.github.davidcarboni.restolino.framework.Api;
 import com.github.onsdigital.perkin.json.Survey;
-import com.github.onsdigital.perkin.json.SurveyTemplate;
 import com.github.onsdigital.perkin.publish.FtpPublisher;
 import com.github.onsdigital.perkin.transform.DataFile;
+import com.github.onsdigital.perkin.transform.TransformContext;
 import com.github.onsdigital.perkin.transform.TransformEngine;
 import com.github.onsdigital.perkin.transform.jpg.*;
 
@@ -26,10 +26,10 @@ public class Ftp {
 
         //spoof survey
         Survey survey = createSurvey();
-        SurveyTemplate surveyTemplate = TransformEngine.getInstance().getTemplate(survey);
+        TransformContext context = TransformEngine.getInstance().createTransformContext(survey);
 
         //create image
-        List<DataFile> files = new ImageTransformer().transform(survey, surveyTemplate, 30000);
+        List<DataFile> files = new ImageTransformer().transform(survey, context);
         com.github.onsdigital.perkin.transform.jpg.Image image = (Image) files.get(0);
         System.out.println("image >>>>>>>> generated image: " + image.getFilename() + " size: " + image.getData().length);
 

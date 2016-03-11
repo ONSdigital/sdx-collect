@@ -2,7 +2,7 @@ package com.github.onsdigital.perkin.tranform.jpg;
 
 import com.github.onsdigital.perkin.helper.FileHelper;
 import com.github.onsdigital.perkin.json.Survey;
-import com.github.onsdigital.perkin.json.SurveyTemplate;
+import com.github.onsdigital.perkin.transform.TransformContext;
 import com.github.onsdigital.perkin.transform.TransformEngine;
 import com.github.onsdigital.perkin.transform.jpg.PdfCreator;
 import org.junit.Before;
@@ -41,10 +41,10 @@ public class PdfCreatorTest {
         //given
         when(survey.getAnswer(anyString())).thenReturn("answer");
         when(survey.getKeys()).thenReturn(new HashSet(Arrays.asList("1", "11")));
-        SurveyTemplate template = TransformEngine.getInstance().getTemplate(survey);
+        TransformContext context = TransformEngine.getInstance().createTransformContext(survey);
 
         //when
-        byte[] pdf = classUnderTest.createPdf(survey, template);
+        byte[] pdf = classUnderTest.createPdf(survey, context);
         FileHelper.saveFile(pdf, "mci.pdf");
 
         //then

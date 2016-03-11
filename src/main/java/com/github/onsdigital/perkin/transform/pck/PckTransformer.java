@@ -3,12 +3,9 @@ package com.github.onsdigital.perkin.transform.pck;
 import com.github.davidcarboni.httpino.Serialiser;
 import com.github.onsdigital.perkin.helper.FileHelper;
 import com.github.onsdigital.perkin.json.Survey;
-import com.github.onsdigital.perkin.transform.DataFile;
-import com.github.onsdigital.perkin.transform.Transformer;
+import com.github.onsdigital.perkin.transform.*;
 import com.github.onsdigital.perkin.transform.pck.derivator.DerivatorFactory;
 import com.github.onsdigital.perkin.json.SurveyTemplate;
-import com.github.onsdigital.perkin.transform.TemplateNotFoundException;
-import com.github.onsdigital.perkin.transform.TransformException;
 import org.apache.commons.lang3.StringUtils;
 
 
@@ -34,18 +31,18 @@ public class PckTransformer implements Transformer {
 	private DerivatorFactory derivatorFactory = new DerivatorFactory();
 
     @Override
-    public List<DataFile> transform(final Survey survey, final SurveyTemplate template, final long batchId) throws TransformException {
+    public List<DataFile> transform(final Survey survey, final TransformContext context) throws TransformException {
         System.out.println("pck building from survey: " + survey);
 
         //we only have the MCI survey template for now
         Pck pck = new Pck();
-        pck.setHeader(generateHeader(batchId));
+        pck.setHeader(generateHeader(context.getBatch()));
         pck.setFormIdentifier(generateFormIdentifier());
-        pck.setQuestions(derivatorFactory.deriveAllAnswers(survey, template));
+        pck.setQuestions(derivatorFactory.deriveAllAnswers(survey, context.getSurveyTemplate()));
         pck.setFormLead(FORM_LEAD);
 
         //TODO: made up a filename structure for now
-        pck.setFilename(batchId + "_" + survey.getRespondentId() + ".pck");
+        pck.setFilename(context.getBatch() + "_" + survey.getRespondentId() + ".pck");
 
         System.out.println("pck built: " + pck);
 
@@ -55,6 +52,7 @@ public class PckTransformer implements Transformer {
     private String generateHeader(long batchId) {
 
         //TODO: the date should be a date from the survey
+        //TODO: think the batchId should be 6 chars? (we have 5 - or less if the number is e.g. 100) - need to add tests
 	
 		return "FBFV" + String.valueOf(batchId) + getCurrentDateAsString();
 	}

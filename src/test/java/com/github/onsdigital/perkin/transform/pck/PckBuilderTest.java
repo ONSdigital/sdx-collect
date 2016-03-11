@@ -3,9 +3,7 @@ package com.github.onsdigital.perkin.transform.pck;
 import com.github.onsdigital.Json;
 import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.json.SurveyTemplate;
-import com.github.onsdigital.perkin.transform.DataFile;
-import com.github.onsdigital.perkin.transform.TransformEngine;
-import com.github.onsdigital.perkin.transform.TransformException;
+import com.github.onsdigital.perkin.transform.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,12 +25,13 @@ public class PckBuilderTest {
     @Test
     public void shouldBuildPck() throws TransformException {
         //Given
-        long batchId = 30001L;
+        long batch = 30001L;
         Survey survey = createSurvey();
-        SurveyTemplate template = TransformEngine.getInstance().getTemplate(survey);
+        TransformContext context = createTransformContext(survey, batch);
+
         System.out.println(Json.prettyPrint(survey));
         String expectedDate = PckTransformer.getCurrentDateAsString();
-        String expectedPck = "FBFV" + batchId + expectedDate + "\n" +
+        String expectedPck = "FBFV" + batch + expectedDate + "\n" +
                 "FV\n" +
                 "0005:99999994188F:201410\n" +
                 "0001 00000000001\n" +
@@ -46,7 +45,7 @@ public class PckBuilderTest {
                 "0100 00000000001\n";
 
         //When
-        List<DataFile> files = classUnderTest.transform(survey, template, batchId);
+        List<DataFile> files = classUnderTest.transform(survey, context);
 
         //Then
         assertThat(files, hasSize(1));
@@ -57,13 +56,14 @@ public class PckBuilderTest {
     @Test
     public void shouldBuildPckIfNoAnswers() throws TransformException {
         //Given
-        long batchId = 30001L;
+        long batch = 30001L;
         Survey survey = createSurveyNoAnswers();
-        SurveyTemplate template = TransformEngine.getInstance().getTemplate(survey);
+        TransformContext context = createTransformContext(survey, batch);
+
         String expectedDate = PckTransformer.getCurrentDateAsString();
         //TODO: as we provided no answers, we should get an error for each mandatory answer?
         //TODO: for answers that were optional, should we be adding them to the pck file?
-        String expectedPck = "FBFV" + batchId + expectedDate + "\n" +
+        String expectedPck = "FBFV" + batch + expectedDate + "\n" +
                 "FV\n" +
                 "0005:99999994188F:201410\n" +
                 "0001 00000000002\n" +
@@ -77,7 +77,7 @@ public class PckBuilderTest {
                 "0100 00000000002\n";
 
         //When
-        List<DataFile> files = classUnderTest.transform(survey, template, batchId);
+        List<DataFile> files = classUnderTest.transform(survey, context);
 
         //Then
         assertThat(files, hasSize(1));
@@ -88,12 +88,13 @@ public class PckBuilderTest {
     @Test
     public void shouldBuildPckIfNoQuestionsMatch() throws TransformException {
         //Given
-        long batchId = 30001L;
+        long batch = 30001L;
         Survey survey = createSurveyWrongQuestions();
-        SurveyTemplate template = TransformEngine.getInstance().getTemplate(survey);
+        TransformContext context = createTransformContext(survey, batch);
+
         String expectedDate = PckTransformer.getCurrentDateAsString();
         //TODO: as we provided no matching answers to the template should we get an error when a question can't be found?
-        String expectedPck = "FBFV" + batchId + expectedDate + "\n" +
+        String expectedPck = "FBFV" + batch + expectedDate + "\n" +
                 "FV\n" +
                 "0005:99999994188F:201410\n" +
                 "0001 00000000002\n" +
@@ -107,7 +108,7 @@ public class PckBuilderTest {
                 "0100 00000000002\n";
 
         //When
-        List<DataFile> files = classUnderTest.transform(survey, template, batchId);
+        List<DataFile> files = classUnderTest.transform(survey, context);
 
         //Then
         assertThat(files, hasSize(1));
@@ -167,29 +168,10 @@ public class PckBuilderTest {
 
                 .build();
     }
-	
-	@Test
-	public void tryToBuildPCKWithExtraSurveyQuestions(){
-		
-	}
-	
-	@Test
-	public void tryToBuildPCKWithMissingSurveyQuestions(){
-		
-	}
-	
-	@Test
-	public void tryToBuildPCKWithUnKnowDerivator(){
-		
-	}
-	
-	@Test
-	public void tryToBuildPCKWithBadSurveyFile(){
-		
-	}
-	
-	@Test
-	public void tryTobuildPCKWithBadTemplateFile(){
-		
-	}
+
+    private TransformContext createTransformContext(Survey survey, long batch) throws TemplateNotFoundException {
+        TransformContext context = TransformEngine.getInstance().createTransformContext(survey);
+        context.setBatch(batch);
+        return context;
+    }
 }

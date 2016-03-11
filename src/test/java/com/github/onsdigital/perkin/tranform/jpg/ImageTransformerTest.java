@@ -3,6 +3,8 @@ package com.github.onsdigital.perkin.tranform.jpg;
 import com.github.onsdigital.perkin.helper.FileHelper;
 import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.transform.DataFile;
+import com.github.onsdigital.perkin.transform.TransformContext;
+import com.github.onsdigital.perkin.transform.TransformEngine;
 import com.github.onsdigital.perkin.transform.jpg.ImageTransformer;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +18,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ImageBuilderTest {
+public class ImageTransformerTest {
 
     private ImageTransformer classUnderTest;
 
@@ -28,16 +30,15 @@ public class ImageBuilderTest {
     @Test
     public void shouldCreateImagesFromPdf() throws IOException {
         //given
-        byte[] pdf = FileHelper.loadFileAsBytes("to-jpg/2page.pdf");
         Survey survey = Survey.builder().build();
-        long batchId = 30000;
+        TransformContext context = TransformEngine.getInstance().createTransformContext(survey);
 
         //when
-        List<DataFile> files = classUnderTest.createImages(pdf, survey, batchId);
+        List<DataFile> files = classUnderTest.transform(survey, context);
         save(files);
 
         //then
-        assertThat(files.size(), is(2));
+        assertThat(files.size(), is(1));
     }
 
     private void save(List<DataFile> files) throws IOException {

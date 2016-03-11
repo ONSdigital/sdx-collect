@@ -1,8 +1,7 @@
 package com.github.onsdigital.perkin.transform.jpg;
 
-import com.github.onsdigital.perkin.helper.FileHelper;
 import com.github.onsdigital.perkin.json.Survey;
-import com.github.onsdigital.perkin.json.SurveyTemplate;
+import com.github.onsdigital.perkin.transform.TransformContext;
 import com.github.onsdigital.perkin.transform.TransformException;
 import org.apache.fop.apps.*;
 import org.xml.sax.SAXException;
@@ -20,7 +19,6 @@ public class PdfCreator {
 
     private FopFactory fopFactory;
     private boolean init = false;
-    private String pdfTemplate;
 
     //TODO: have a Template object that has the PdfTemplate?
     private void init() throws TransformException {
@@ -30,8 +28,6 @@ public class PdfCreator {
                 URI baseUri = new URL("http://survey.ons.gov.uk/whatever").toURI();
                 fopFactory = FopFactory.newInstance(baseUri, in);
 
-                //TODO: manage multiple pdf templates for surveys
-                pdfTemplate = FileHelper.loadFile("to-jpg/mci.fo");
                 init = true;
             } catch (URISyntaxException | IOException | SAXException e) {
                 throw new TransformException("error configuring fop", e);
@@ -39,7 +35,7 @@ public class PdfCreator {
         }
     }
 
-    public byte[] createPdf(final Survey survey, final SurveyTemplate surveyTemplate) throws TransformException {
+    public byte[] createPdf(final Survey survey, final TransformContext context) throws TransformException {
 
         init();
 
@@ -55,9 +51,7 @@ public class PdfCreator {
 
             // Step 5: Setup input and output for XSLT transformation
             // Setup input stream
-
-            //TODO: make configurable once > 1 survey
-            Source src = getPdfTemplate(survey);
+            Source src = populateFopTemplate(survey, context);
 
             // Resulting SAX events (the generated FO) must be piped through to FOP
             Result res = new SAXResult(fop.getDefaultHandler());
@@ -68,22 +62,20 @@ public class PdfCreator {
         } catch (FOPException | TransformerException e) {
             throw new TransformException("problem creating pdf", e);
         } finally {
-            //Clean-up
             try {
                 out.close();
             } catch (IOException e) {
-                throw new TransformException("problem closing output stream", e);
+                //TODO: should we just log and not re-throw?
+                throw new TransformException("problem closing output stream of pdf", e);
             }
         }
 
         return out.toByteArray();
     }
 
-    //TODO: we have only one pdf template for now for MCI survey
-    //TODO: make this part of the Template - SuveyTemplate, PdfTemplate
-    private Source getPdfTemplate(Survey survey) {
+    private Source populateFopTemplate(final Survey survey, final TransformContext context) {
 
-        String template = pdfTemplate;
+        String template = context.getPdfTemplate();
 
         //populate fop template
         //TODO: add question text from the template
