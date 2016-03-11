@@ -10,6 +10,8 @@ import com.github.onsdigital.perkin.transform.Transformer;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * An IDBR receipt records that a respondent unit (RU) has completed a survey (id)
@@ -32,8 +34,9 @@ public class IdbrTransformer implements Transformer {
     private DateTimeFormatter idbrFilenameFormatter = DateTimeFormatter.ofPattern("ddMM");
 
     @Override
-    public DataFile transform(final Survey survey, final long batchId) throws TransformException {
-        return createIdbrReceipt(survey, LocalDate.now(), batchId);
+    public List<DataFile> transform(final Survey survey, final long batchId) throws TransformException {
+        //TODO: use a date from the survey - submitted date?
+        return Arrays.asList(createIdbrReceipt(survey, LocalDate.now(), batchId));
     }
 
     public IdbrReceipt createIdbrReceipt(final Survey survey, final LocalDate date, final long batchId) {

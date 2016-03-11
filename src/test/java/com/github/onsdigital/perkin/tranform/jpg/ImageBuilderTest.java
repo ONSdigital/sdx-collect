@@ -2,15 +2,15 @@ package com.github.onsdigital.perkin.tranform.jpg;
 
 import com.github.onsdigital.perkin.helper.FileHelper;
 import com.github.onsdigital.perkin.json.Survey;
-import com.github.onsdigital.perkin.transform.jpg.Image;
-import com.github.onsdigital.perkin.transform.jpg.ImageBuilder;
-import com.github.onsdigital.perkin.transform.jpg.ImageInfo;
+import com.github.onsdigital.perkin.transform.DataFile;
+import com.github.onsdigital.perkin.transform.jpg.ImageTransformer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -18,11 +18,11 @@ import static org.hamcrest.Matchers.is;
 @RunWith(MockitoJUnitRunner.class)
 public class ImageBuilderTest {
 
-    private ImageBuilder classUnderTest;
+    private ImageTransformer classUnderTest;
 
     @Before
     public void setUp() throws IOException {
-        classUnderTest = new ImageBuilder();
+        classUnderTest = new ImageTransformer();
     }
 
     @Test
@@ -33,17 +33,17 @@ public class ImageBuilderTest {
         long batchId = 30000;
 
         //when
-        ImageInfo images = classUnderTest.createImages(pdf, survey, batchId);
-        save(images);
+        List<DataFile> files = classUnderTest.createImages(pdf, survey, batchId);
+        save(files);
 
         //then
-        assertThat(images.getImages().size(), is(2));
+        assertThat(files.size(), is(2));
     }
 
-    private void save(ImageInfo images) throws IOException {
+    private void save(List<DataFile> files) throws IOException {
 
-        for (Image image : images.getImages()) {
-            FileHelper.saveFile(image.getData(), image.getFilename());
+        for (DataFile file : files) {
+            FileHelper.saveFile(file.getBytes(), file.getFilename());
         }
     }
 }

@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 
 public abstract class Json {
 
-    public static String format(Object o) {
+    public static String prettyPrint(Object o) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         return gson.toJson(o);
     }

@@ -18,10 +18,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
- * Convert a survey into PCK format.
+ * Convert a survey into PCK prettyPrint.
  */
 public class PckTransformer implements Transformer {
 
@@ -32,7 +34,7 @@ public class PckTransformer implements Transformer {
 	private DerivatorFactory derivatorFactory = new DerivatorFactory();
 
     @Override
-    public DataFile transform(final Survey survey, final long batchId) throws TransformException {
+    public List<DataFile> transform(final Survey survey, final long batchId) throws TransformException {
         System.out.println("pck building from survey: " + survey);
 
         //we only have the MCI survey template for now
@@ -47,9 +49,10 @@ public class PckTransformer implements Transformer {
 
         System.out.println("pck built: " + pck);
 
-        return pck;
+        return Arrays.asList(pck);
     }
 
+    //TODO: the survey template will be needed by other transformers - move to transformer engine
     private SurveyTemplate getTemplate(Survey survey) throws TemplateNotFoundException {
 
         try {
@@ -63,7 +66,7 @@ public class PckTransformer implements Transformer {
 
     private String generateHeader(long batchId) {
 
-        //TODO: think the date should be a date from the survey
+        //TODO: the date should be a date from the survey
 	
 		return "FBFV" + String.valueOf(batchId) + getCurrentDateAsString();
 	}
@@ -84,7 +87,7 @@ public class PckTransformer implements Transformer {
 	}
 
 	/**
-	 * Converts the refp start date String (dd MMM yyyy) into period in 'yyyyMM' format
+	 * Converts the refp start date String (dd MMM yyyy) into period in 'yyyyMM' prettyPrint
 	 * 
 	 * @param refpStartDateStr
 	 *            the date String

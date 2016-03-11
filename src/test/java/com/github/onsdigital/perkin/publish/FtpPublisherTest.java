@@ -43,7 +43,7 @@ public class FtpPublisherTest {
     @Before
     public void setUp() throws IOException {
         //example json file
-        String json = Json.format(Survey.builder().id("id").respondentId("respondentId").build());
+        String json = Json.prettyPrint(Survey.builder().id("id").respondentId("respondentId").build());
         InputStream in = new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8));
         when(data.getInputStream()).thenReturn(in);
         when(data.getName()).thenReturn("test.json");

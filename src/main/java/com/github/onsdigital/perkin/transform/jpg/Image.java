@@ -1,14 +1,20 @@
 package com.github.onsdigital.perkin.transform.jpg;
 
+import com.github.onsdigital.perkin.transform.DataFile;
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-public class Image {
+public class Image implements DataFile {
 
     private String filename;
     private byte[] data;
+
+    @Override
+    public byte[] getBytes() {
+        return data;
+    }
 
     @Override
     public String toString() {

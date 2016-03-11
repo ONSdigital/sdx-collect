@@ -5,11 +5,9 @@ import com.github.onsdigital.Json;
 import com.github.onsdigital.perkin.decrypt.HttpDecrypt;
 import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.transform.idbr.IdbrTransformer;
+import com.github.onsdigital.perkin.transform.jpg.ImageTransformer;
 import com.github.onsdigital.perkin.transform.pck.PckTransformer;
 import com.github.onsdigital.perkin.publish.FtpPublisher;
-import com.github.onsdigital.perkin.transform.jpg.Image;
-import com.github.onsdigital.perkin.transform.jpg.ImageBuilder;
-import com.github.onsdigital.perkin.transform.jpg.ImageInfo;
 import org.apache.http.StatusLine;
 import org.eclipse.jetty.http.HttpStatus;
 
@@ -41,7 +39,7 @@ public class TransformEngine {
         //use getInstance()
         //TODO: make configurable
         //TODO: also, transformers on a per survey id basis?
-        transformers = Arrays.asList(new IdbrTransformer(), new PckTransformer(), new ImageBuilder());
+        transformers = Arrays.asList(new IdbrTransformer(), new PckTransformer(), new ImageTransformer());
     }
 
     public static TransformEngine getInstance() {
@@ -54,7 +52,7 @@ public class TransformEngine {
             System.out.println("transform data " + data);
 
             Response<Survey> decryptResponse = decrypt.decrypt(data);
-            System.out.println("decrypt <<<<<<<< response: " + Json.format(decryptResponse));
+            System.out.println("decrypt <<<<<<<< response: " + Json.prettyPrint(decryptResponse));
             audit.increment("decrypt." + decryptResponse.statusLine.getStatusCode());
 
             //TODO 400 is bad request - add to DLQ, 500 is server error, retry
@@ -74,11 +72,9 @@ public class TransformEngine {
             long batch = batchId.getAndIncrement();
 
             List<DataFile> files = new ArrayList<>();
+            //TODO: use executors (multithreading)
             for (Transformer transformer : transformers) {
-                //TODO: use executors (multithreading)
-                DataFile file = transformer.transform(survey, batch);
-                System.out.println(transformer + " created: " + file.getFilename());
-                files.add(file);
+                files.addAll(transformer.transform(survey, batch));
             }
 
             for (DataFile file : files) {

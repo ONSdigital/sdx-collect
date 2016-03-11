@@ -44,7 +44,7 @@ public class PdfCreator {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         try {
-            // Step 3: Construct fop with desired output format
+            // Step 3: Construct fop with desired output prettyPrint
             Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
 
             // Step 4: Setup JAXP using identity transformer

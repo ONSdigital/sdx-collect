@@ -3,6 +3,7 @@ package com.github.onsdigital.perkin.api;
 import com.github.davidcarboni.restolino.framework.Api;
 import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.publish.FtpPublisher;
+import com.github.onsdigital.perkin.transform.DataFile;
 import com.github.onsdigital.perkin.transform.jpg.*;
 
 import javax.servlet.ServletOutputStream;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
 import java.io.IOException;
+import java.util.List;
 
 @Api
 public class Ftp {
@@ -24,8 +26,8 @@ public class Ftp {
         Survey survey = createSurvey();
 
         //create image
-        ImageInfo imageInfo = (ImageInfo) new ImageBuilder().transform(survey, 30000);
-        com.github.onsdigital.perkin.transform.jpg.Image image = imageInfo.getImages().get(0);
+        List<DataFile> files = new ImageTransformer().transform(survey, 30000);
+        com.github.onsdigital.perkin.transform.jpg.Image image = (Image) files.get(0);
         System.out.println("image >>>>>>>> generated image: " + image.getFilename() + " size: " + image.getData().length);
 
         //save to ftp

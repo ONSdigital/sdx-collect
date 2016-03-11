@@ -12,31 +12,29 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Create one or more images representing the survey questions and answers.
  */
-public class ImageBuilder implements Transformer {
+public class ImageTransformer implements Transformer {
 
     @Override
-    public DataFile transform(final Survey survey, final long batchId) throws TransformException {
+    public List<DataFile> transform(final Survey survey, final long batchId) throws TransformException {
         byte[] pdf = createPdf(survey, batchId);
 
         return createImages(pdf, survey, batchId);
     }
-
-    //TODO: change to throw TransformException
-    //TODO: make it a runtime exception?
 
     private byte[] createPdf(final Survey survey, final long batchId) throws TransformException {
         PdfCreator pdfCreator = new PdfCreator();
         return pdfCreator.createPdf(survey);
     }
 
-    public ImageInfo createImages(final byte[] pdf, final Survey survey, final long batchId) throws TransformException {
+    public List<DataFile> createImages(final byte[] pdf, final Survey survey, final long batchId) throws TransformException {
 
-        ImageInfo.ImageInfoBuilder builder = ImageInfo.builder();
+        List<DataFile> files = new ArrayList<>();
 
         try {
             ByteArrayInputStream is = new ByteArrayInputStream(pdf);
@@ -47,7 +45,7 @@ public class ImageBuilder implements Transformer {
             for (PDPage page : pages) {
                 i++;
 
-                //TODO: convert pdf page to image
+                //convert pdf page to image
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 int dpiImageResolution = 300;
                 BufferedImage image = page.convertToImage(BufferedImage.TYPE_INT_RGB, dpiImageResolution);
@@ -55,7 +53,7 @@ public class ImageBuilder implements Transformer {
                 baos.flush();
                 baos.close();
 
-                builder.image(
+                files.add(
                         Image.builder()
                                 //TODO: generate proper image filename (info from Rachel)
                                 .filename(batchId + "_page" + i + ".jpg")
@@ -72,6 +70,6 @@ public class ImageBuilder implements Transformer {
             throw new TransformException("error creating images from pdf", e);
         }
 
-        return builder.build();
+        return files;
     }
 }

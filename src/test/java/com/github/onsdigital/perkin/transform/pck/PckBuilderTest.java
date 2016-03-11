@@ -2,10 +2,14 @@ package com.github.onsdigital.perkin.transform.pck;
 
 import com.github.onsdigital.Json;
 import com.github.onsdigital.perkin.json.Survey;
+import com.github.onsdigital.perkin.transform.DataFile;
 import com.github.onsdigital.perkin.transform.TransformException;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -23,7 +27,7 @@ public class PckBuilderTest {
         //Given
         long batchId = 30001L;
         Survey survey = createSurvey();
-        System.out.println(Json.format(survey));
+        System.out.println(Json.prettyPrint(survey));
         String expectedDate = PckTransformer.getCurrentDateAsString();
         String expectedPck = "FBFV" + batchId + expectedDate + "\n" +
                 "FV\n" +
@@ -39,11 +43,12 @@ public class PckBuilderTest {
                 "0100 00000000001\n";
 
         //When
-        Pck pck = (Pck) classUnderTest.transform(survey, batchId);
+        List<DataFile> files = classUnderTest.transform(survey, batchId);
 
         //Then
-        assertThat(pck.toString(), is(expectedPck));
-        assertThat(pck.getFilename(), is("30001_respondentId.pck"));
+        assertThat(files, hasSize(1));
+        assertThat(files.get(0).toString(), is(expectedPck));
+        assertThat(files.get(0).getFilename(), is("30001_respondentId.pck"));
     }
 
     @Test
@@ -68,11 +73,12 @@ public class PckBuilderTest {
                 "0100 00000000002\n";
 
         //When
-        Pck pck = (Pck) classUnderTest.transform(survey, batchId);
+        List<DataFile> files = classUnderTest.transform(survey, batchId);
 
         //Then
-        assertThat(pck.toString(), is(expectedPck));
-        assertThat(pck.getFilename(), is("30001_respondentId.pck"));
+        assertThat(files, hasSize(1));
+        assertThat(files.get(0).toString(), is(expectedPck));
+        assertThat(files.get(0).getFilename(), is("30001_respondentId.pck"));
     }
 
     @Test
@@ -96,12 +102,12 @@ public class PckBuilderTest {
                 "0100 00000000002\n";
 
         //When
-        Pck pck = (Pck) classUnderTest.transform(survey, batchId);
+        List<DataFile> files = classUnderTest.transform(survey, batchId);
 
         //Then
-        assertThat(pck.toString(), is(expectedPck));
-        assertThat(pck.getFilename(), is("30001_respondentId.pck"));
-
+        assertThat(files, hasSize(1));
+        assertThat(files.get(0).toString(), is(expectedPck));
+        assertThat(files.get(0).getFilename(), is("30001_respondentId.pck"));
     }
 
     private Survey createSurvey() {
@@ -156,8 +162,6 @@ public class PckBuilderTest {
 
                 .build();
     }
-
-
 	
 	@Test
 	public void tryToBuildPCKWithExtraSurveyQuestions(){
