@@ -1,15 +1,10 @@
 package com.github.onsdigital.perkin.transform.pck;
 
-import com.github.davidcarboni.httpino.Serialiser;
-import com.github.onsdigital.perkin.helper.FileHelper;
 import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.transform.*;
 import com.github.onsdigital.perkin.transform.pck.derivator.DerivatorFactory;
-import com.github.onsdigital.perkin.json.SurveyTemplate;
 import org.apache.commons.lang3.StringUtils;
 
-
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

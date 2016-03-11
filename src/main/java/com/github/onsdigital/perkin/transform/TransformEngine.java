@@ -54,7 +54,6 @@ public class TransformEngine {
             Survey survey = decrypt(data);
 
             TransformContext context = createTransformContext(survey);
-            SurveyTemplate template = getSurveyTemplate(survey);
 
             List<DataFile> files = new ArrayList<>();
             //TODO: use executors (multithreading)
@@ -62,6 +61,7 @@ public class TransformEngine {
                 files.addAll(transformer.transform(survey, context));
             }
 
+            //TODO: give list to publisher
             for (DataFile file : files) {
                 publisher.publish(file);
             }
