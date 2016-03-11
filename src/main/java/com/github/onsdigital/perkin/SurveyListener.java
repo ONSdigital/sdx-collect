@@ -10,10 +10,10 @@ import java.io.IOException;
 @Slf4j
 public class SurveyListener {
 
-    protected static final String QUEUE_HOST = "queue.host";
-    protected static final String QUEUE_NAME = "queue.name";
-    protected static final String QUEUE_USERNAME = "queue.username";
-    protected static final String QUEUE_PASSWORD = "queue.password";
+    protected static final String QUEUE_HOST = "RABBITMQ_HOST";
+    protected static final String QUEUE_NAME = "RABBITMQ_QUEUE";
+    protected static final String QUEUE_USERNAME = "RABBITMQ_DEFAULT_USER";
+    protected static final String QUEUE_PASSWORD = "RABBITMQ_DEFAULT_PASS";
 
     private String host = "rabbit";
     private String queue = "survey";
