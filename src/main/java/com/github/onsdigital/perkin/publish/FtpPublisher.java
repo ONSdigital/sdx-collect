@@ -1,9 +1,8 @@
 package com.github.onsdigital.perkin.publish;
 
 import com.github.onsdigital.Configuration;
-import com.github.onsdigital.perkin.json.IdbrReceipt;
+import com.github.onsdigital.perkin.transform.idbr.IdbrReceipt;
 import com.github.onsdigital.perkin.transform.DataFile;
-import com.github.onsdigital.perkin.transform.pck.Pck;
 import com.github.onsdigital.perkin.transform.jpg.Image;
 import org.apache.commons.fileupload.FileItem;
 

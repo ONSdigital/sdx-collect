@@ -34,14 +34,14 @@ public class PckTransformer implements Transformer {
 	private DerivatorFactory derivatorFactory = new DerivatorFactory();
 
     @Override
-    public List<DataFile> transform(final Survey survey, final long batchId) throws TransformException {
+    public List<DataFile> transform(final Survey survey, final SurveyTemplate template, final long batchId) throws TransformException {
         System.out.println("pck building from survey: " + survey);
 
         //we only have the MCI survey template for now
         Pck pck = new Pck();
         pck.setHeader(generateHeader(batchId));
         pck.setFormIdentifier(generateFormIdentifier());
-        pck.setQuestions(derivatorFactory.deriveAllAnswers(survey, getTemplate(survey)));
+        pck.setQuestions(derivatorFactory.deriveAllAnswers(survey, template));
         pck.setFormLead(FORM_LEAD);
 
         //TODO: made up a filename structure for now
@@ -50,18 +50,6 @@ public class PckTransformer implements Transformer {
         System.out.println("pck built: " + pck);
 
         return Arrays.asList(pck);
-    }
-
-    //TODO: the survey template will be needed by other transformers - move to transformer engine
-    private SurveyTemplate getTemplate(Survey survey) throws TemplateNotFoundException {
-
-        try {
-            //we only have the MCI survey template for now
-            String json = new String(FileHelper.loadFileAsBytes("surveys/template.023.json"));
-            return Serialiser.deserialise(json, SurveyTemplate.class);
-        } catch (IOException e) {
-            throw new TemplateNotFoundException("surveys/template.023.json", e);
-        }
     }
 
     private String generateHeader(long batchId) {

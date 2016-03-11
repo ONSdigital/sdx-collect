@@ -2,8 +2,8 @@ package com.github.onsdigital.perkin.transform.idbr;
 
 //import org.springframework.util.Assert;
 
-import com.github.onsdigital.perkin.json.IdbrReceipt;
 import com.github.onsdigital.perkin.json.Survey;
+import com.github.onsdigital.perkin.json.SurveyTemplate;
 import com.github.onsdigital.perkin.transform.DataFile;
 import com.github.onsdigital.perkin.transform.TransformException;
 import com.github.onsdigital.perkin.transform.Transformer;
@@ -34,7 +34,7 @@ public class IdbrTransformer implements Transformer {
     private DateTimeFormatter idbrFilenameFormatter = DateTimeFormatter.ofPattern("ddMM");
 
     @Override
-    public List<DataFile> transform(final Survey survey, final long batchId) throws TransformException {
+    public List<DataFile> transform(final Survey survey, final SurveyTemplate template, final long batchId) throws TransformException {
         //TODO: use a date from the survey - submitted date?
         return Arrays.asList(createIdbrReceipt(survey, LocalDate.now(), batchId));
     }

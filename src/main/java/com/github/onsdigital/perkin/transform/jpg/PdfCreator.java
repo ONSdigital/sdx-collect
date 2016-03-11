@@ -2,6 +2,7 @@ package com.github.onsdigital.perkin.transform.jpg;
 
 import com.github.onsdigital.perkin.helper.FileHelper;
 import com.github.onsdigital.perkin.json.Survey;
+import com.github.onsdigital.perkin.json.SurveyTemplate;
 import com.github.onsdigital.perkin.transform.TransformException;
 import org.apache.fop.apps.*;
 import org.xml.sax.SAXException;
@@ -21,6 +22,7 @@ public class PdfCreator {
     private boolean init = false;
     private String pdfTemplate;
 
+    //TODO: have a Template object that has the PdfTemplate?
     private void init() throws TransformException {
         if (!init) {
             try {
@@ -37,7 +39,7 @@ public class PdfCreator {
         }
     }
 
-    public byte[] createPdf(Survey survey) throws TransformException {
+    public byte[] createPdf(final Survey survey, final SurveyTemplate surveyTemplate) throws TransformException {
 
         init();
 
@@ -78,6 +80,7 @@ public class PdfCreator {
     }
 
     //TODO: we have only one pdf template for now for MCI survey
+    //TODO: make this part of the Template - SuveyTemplate, PdfTemplate
     private Source getPdfTemplate(Survey survey) {
 
         String template = pdfTemplate;
@@ -95,7 +98,7 @@ public class PdfCreator {
 
     private String populateAnswer(String template, String key, String answer) {
         if (answer == null) {
-            //TODO:
+            //TODO: add a test to see what happens
         }
 
         System.out.println("pdf populating question: " + key + " answer: " + answer);

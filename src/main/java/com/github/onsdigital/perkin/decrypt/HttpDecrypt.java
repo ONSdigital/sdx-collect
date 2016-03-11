@@ -10,7 +10,7 @@ import com.github.onsdigital.perkin.json.Survey;
 import java.io.IOException;
 
 /**
- * Decrypt via HTTP.
+ * Decrypt data via HTTP.
  */
 public class HttpDecrypt {
 

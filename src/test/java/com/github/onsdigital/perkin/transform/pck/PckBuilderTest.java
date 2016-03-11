@@ -2,7 +2,9 @@ package com.github.onsdigital.perkin.transform.pck;
 
 import com.github.onsdigital.Json;
 import com.github.onsdigital.perkin.json.Survey;
+import com.github.onsdigital.perkin.json.SurveyTemplate;
 import com.github.onsdigital.perkin.transform.DataFile;
+import com.github.onsdigital.perkin.transform.TransformEngine;
 import com.github.onsdigital.perkin.transform.TransformException;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,6 +29,7 @@ public class PckBuilderTest {
         //Given
         long batchId = 30001L;
         Survey survey = createSurvey();
+        SurveyTemplate template = TransformEngine.getInstance().getTemplate(survey);
         System.out.println(Json.prettyPrint(survey));
         String expectedDate = PckTransformer.getCurrentDateAsString();
         String expectedPck = "FBFV" + batchId + expectedDate + "\n" +
@@ -43,7 +46,7 @@ public class PckBuilderTest {
                 "0100 00000000001\n";
 
         //When
-        List<DataFile> files = classUnderTest.transform(survey, batchId);
+        List<DataFile> files = classUnderTest.transform(survey, template, batchId);
 
         //Then
         assertThat(files, hasSize(1));
@@ -56,6 +59,7 @@ public class PckBuilderTest {
         //Given
         long batchId = 30001L;
         Survey survey = createSurveyNoAnswers();
+        SurveyTemplate template = TransformEngine.getInstance().getTemplate(survey);
         String expectedDate = PckTransformer.getCurrentDateAsString();
         //TODO: as we provided no answers, we should get an error for each mandatory answer?
         //TODO: for answers that were optional, should we be adding them to the pck file?
@@ -73,7 +77,7 @@ public class PckBuilderTest {
                 "0100 00000000002\n";
 
         //When
-        List<DataFile> files = classUnderTest.transform(survey, batchId);
+        List<DataFile> files = classUnderTest.transform(survey, template, batchId);
 
         //Then
         assertThat(files, hasSize(1));
@@ -86,6 +90,7 @@ public class PckBuilderTest {
         //Given
         long batchId = 30001L;
         Survey survey = createSurveyWrongQuestions();
+        SurveyTemplate template = TransformEngine.getInstance().getTemplate(survey);
         String expectedDate = PckTransformer.getCurrentDateAsString();
         //TODO: as we provided no matching answers to the template should we get an error when a question can't be found?
         String expectedPck = "FBFV" + batchId + expectedDate + "\n" +
@@ -102,7 +107,7 @@ public class PckBuilderTest {
                 "0100 00000000002\n";
 
         //When
-        List<DataFile> files = classUnderTest.transform(survey, batchId);
+        List<DataFile> files = classUnderTest.transform(survey, template, batchId);
 
         //Then
         assertThat(files, hasSize(1));

@@ -5,7 +5,7 @@ import com.github.davidcarboni.httpino.Host;
 import com.github.davidcarboni.httpino.Http;
 import com.github.davidcarboni.httpino.Response;
 import com.github.onsdigital.Configuration;
-import com.github.onsdigital.perkin.json.IdbrReceipt;
+import com.github.onsdigital.perkin.transform.idbr.IdbrReceipt;
 import com.github.onsdigital.perkin.json.Result;
 
 import java.io.ByteArrayInputStream;

@@ -1,4 +1,4 @@
-package com.github.onsdigital.perkin.json;
+package com.github.onsdigital.perkin.transform.idbr;
 
 import com.github.onsdigital.perkin.transform.DataFile;
 import lombok.Builder;
