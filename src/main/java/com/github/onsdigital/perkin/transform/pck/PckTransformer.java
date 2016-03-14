@@ -39,7 +39,7 @@ public class PckTransformer implements Transformer {
 
     @Override
     public List<DataFile> transform(final Survey survey, final TransformContext context) throws TransformException {
-        System.out.println("pck building from survey: " + survey);
+        log.debug("TRANSFORM|PCK|transforming into pck from survey: {}", survey);
 
         //we only have the MCI survey template for now
         Pck pck = new Pck();
@@ -51,7 +51,7 @@ public class PckTransformer implements Transformer {
         //TODO: made up a filename structure for now
         pck.setFilename(context.getBatch() + "_" + survey.getRespondentId() + ".pck");
 
-        System.out.println("pck built: " + pck);
+        log.info("TRANSFORM|PCK|created pck: " + pck);
 
         return Arrays.asList(pck);
     }
@@ -113,9 +113,9 @@ public class PckTransformer implements Transformer {
 		try {
 			Date startDate = inputFormatter.parse(date);
 			period = outputFormatter.format(startDate);
-		} catch (ParseException pe) {
+		} catch (ParseException e) {
             //TODO: might need to throw exception here? otherwise this will be a silent failure - add a test
-			System.out.println("Date parser error :"+ pe.getMessage());
+			log.warn("TRANSFORM|PCK|error parsing date: " + date, e);
 		}
 		
 		return period;

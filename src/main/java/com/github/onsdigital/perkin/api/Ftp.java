@@ -7,6 +7,7 @@ import com.github.onsdigital.perkin.transform.DataFile;
 import com.github.onsdigital.perkin.transform.TransformContext;
 import com.github.onsdigital.perkin.transform.TransformEngine;
 import com.github.onsdigital.perkin.transform.jpg.*;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Api
+@Slf4j
 public class Ftp {
 
     private FtpPublisher ftp = new FtpPublisher();
@@ -31,7 +33,7 @@ public class Ftp {
         //create image
         List<DataFile> files = new ImageTransformer().transform(survey, context);
         com.github.onsdigital.perkin.transform.jpg.Image image = (Image) files.get(0);
-        System.out.println("image >>>>>>>> generated image: " + image.getFilename() + " size: " + image.getData().length);
+        log.info("image >>>>>>>> generated image: " + image.getFilename() + " size: " + image.getData().length);
 
         //save to ftp
         ftp.publish(image);
@@ -40,7 +42,7 @@ public class Ftp {
         byte[] imageFromFtp = ftp.get(image.getFilename());
 
         //stream image
-        System.out.println("image >>>>>>>> image retrieved from FTP: " + image.getFilename() + " size: " + imageFromFtp.length);
+        log.info("image >>>>>>>> image retrieved from FTP: " + image.getFilename() + " size: " + imageFromFtp.length);
         response.setContentType("image/jpeg");
         response.setContentLength(imageFromFtp.length);
 

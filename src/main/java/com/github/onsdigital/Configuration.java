@@ -1,10 +1,12 @@
 package com.github.onsdigital;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 /**
  * Convenience class to get configuration values from {@link System#getProperty(String)} or gracefully fall back to {@link System#getenv()}.
  */
+@Slf4j
 public abstract class Configuration {
 
     /**
@@ -16,7 +18,7 @@ public abstract class Configuration {
      */
     public static String get(String key) {
         String value = StringUtils.defaultIfBlank(System.getProperty(key), System.getenv(key));
-        System.out.println("configuration " + key + " value: " + value);
+        log.debug("CONFIGURATION|key: {} value: {}", key, value);
         return value;
     }
 
@@ -26,7 +28,7 @@ public abstract class Configuration {
         if (value != null) {
             i = Integer.parseInt(value);
         }
-        System.out.println("configuration " + key + " default: " + defaultValue + " value: " + i);
+        log.trace("CONFIGURATION|key: {} default: {} value: {}", key, defaultValue, i);
         return i;
     }
 
@@ -40,7 +42,7 @@ public abstract class Configuration {
      */
     public static String get(String key, String defaultValue) {
         String value = StringUtils.defaultIfBlank(get(key), defaultValue);
-        System.out.println("configuration " + key + " default: " + defaultValue + " value: " + value);
+        log.trace("CONFIGURATION|key: {} default: {} value: {}", key, defaultValue, value);
         return value;
     }
 

@@ -5,6 +5,7 @@ import com.github.onsdigital.perkin.transform.DataFile;
 import com.github.onsdigital.perkin.transform.TransformContext;
 import com.github.onsdigital.perkin.transform.TransformException;
 import com.github.onsdigital.perkin.transform.Transformer;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 
@@ -19,6 +20,7 @@ import java.util.List;
 /**
  * Create one or more images representing the survey questions and answers.
  */
+@Slf4j
 public class ImageTransformer implements Transformer {
 
     @Override
@@ -59,7 +61,7 @@ public class ImageTransformer implements Transformer {
                                 .build()
                 );
 
-                System.out.println("created image: " + "page" + i + ".jpg");
+                log.info("TRANSFORM|IMAGE|created image: " + "page" + i + ".jpg");
                 //TODO: create/append to image index csv
             }
 

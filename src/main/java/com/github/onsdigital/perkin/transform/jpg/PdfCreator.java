@@ -3,6 +3,7 @@ package com.github.onsdigital.perkin.transform.jpg;
 import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.transform.TransformContext;
 import com.github.onsdigital.perkin.transform.TransformException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.fop.apps.*;
 import org.xml.sax.SAXException;
 
@@ -15,6 +16,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+@Slf4j
 public class PdfCreator {
 
     private FopFactory fopFactory;
@@ -70,6 +72,7 @@ public class PdfCreator {
             }
         }
 
+        log.info("TRANSFORM|IMAGE|created pdf from survey");
         return out.toByteArray();
     }
 
@@ -93,7 +96,7 @@ public class PdfCreator {
             //TODO: add a test to see what happens
         }
 
-        System.out.println("pdf populating question: " + key + " answer: " + answer);
+        log.debug("TRANSFORM|IMAGE|pdf populating question: " + key + " answer: " + answer);
         return template.replace("$" + key + "$", answer);
     }
 }

@@ -48,7 +48,7 @@ public class SurveyListener {
                 //ignore
             }
 
-           // System.out.println("queue *** attempting to restart connection... ");
+           // log.info("QUEUE|CONNECTION|attempting to restart connection... ");
         //}
     }
 

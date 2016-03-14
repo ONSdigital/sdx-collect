@@ -3,6 +3,7 @@ package com.github.onsdigital.perkin.transform.pck;
 import com.github.onsdigital.Json;
 import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.transform.*;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,6 +13,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
+@Slf4j
 public class PckTransformerTest {
 
 	private PckTransformer classUnderTest;
@@ -28,7 +30,7 @@ public class PckTransformerTest {
         Survey survey = createSurvey();
         TransformContext context = createTransformContext(survey, batch);
 
-        System.out.println(Json.prettyPrint(survey));
+        log.debug("TEST|{}", Json.prettyPrint(survey));
         String expectedDate = PckTransformer.getCurrentDateAsString();
         String expectedPck = "FBFV0" + batch + expectedDate + "\n" +
                 "FV\n" +

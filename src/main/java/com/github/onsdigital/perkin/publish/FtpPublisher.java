@@ -4,6 +4,7 @@ import com.github.onsdigital.Configuration;
 import com.github.onsdigital.perkin.transform.idbr.IdbrReceipt;
 import com.github.onsdigital.perkin.transform.DataFile;
 import com.github.onsdigital.perkin.transform.jpg.Image;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
 
 import java.io.ByteArrayInputStream;
@@ -17,9 +18,7 @@ import org.apache.commons.net.ftp.FTPReply;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-/**
- * FTP the FileItem.
- */
+@Slf4j
 public class FtpPublisher {
 
     protected static final String FTP_HOST = "ftp.host";
@@ -45,39 +44,39 @@ public class FtpPublisher {
     public void publish(DataFile data) throws IOException {
         String filename = data.getFilename();
         InputStream inputStream = new ByteArrayInputStream(data.getBytes());
-        ftpFile(inputStream, path, filename);
+        put(inputStream, path, filename);
     }
 
     //TODO: remove
     public void publish(Image image) throws IOException {
         String filename = image.getFilename();
         InputStream inputStream = new ByteArrayInputStream(image.getData());
-        ftpFile(inputStream, path, filename);
+        put(inputStream, path, filename);
     }
 
     //TODO: remove
     public void publish(IdbrReceipt receipt) throws IOException {
         String filename = receipt.getFilename();
         InputStream inputStream = new ByteArrayInputStream(receipt.getReceipt().getBytes(StandardCharsets.UTF_8));
-        ftpFile(inputStream, path, filename);
+        put(inputStream, path, filename);
     }
 
     //TODO: remove?
     public void publish(final FileItem data, final String path) throws IOException {
         String filename = data.getName();
-        ftpFile(data.getInputStream(), path, filename);
+        put(data.getInputStream(), path, filename);
     }
 
-    private void ftpFile(InputStream inputStream, String path, String filename) throws IOException {
+    private void put(InputStream inputStream, String path, String filename) throws IOException {
 
         //new ftp client
         FTPClient ftp = new FTPClient();
         //try to connect
-        System.out.println("ftp connect to " + host + " " + port);
+        log.debug("FTP|connect to " + host + " " + port);
         ftp.connect(host, port);
 
         //login to server
-        System.out.println("ftp login user: " + user);
+        log.debug("FTP|login user: " + user);
         if (ftp.login(user, password)) {
 
             int reply = ftp.getReplyCode();
@@ -85,31 +84,31 @@ public class FtpPublisher {
             if (FTPReply.isPositiveCompletion(reply)) {
 
                 //get system name
-                System.out.println("ftp remote system is " + ftp.getSystemType());
+                log.debug("FTP|remote system is " + ftp.getSystemType());
                 //change current directory
                 ftp.changeWorkingDirectory(path);
-                System.out.println("ftp current directory is " + ftp.printWorkingDirectory());
+                log.debug("FTP|current directory is " + ftp.printWorkingDirectory());
 
                 //store the file in the remote server
-                System.out.println("ftp storing binary file: " + filename);
+                log.debug("FTP|storing binary file: " + filename);
                 ftp.setFileType(FTP.BINARY_FILE_TYPE);
                 ftp.storeFile(filename, inputStream);
                 //close the stream
-                System.out.println("ftp closing stream");
+                log.debug("FTP|closing stream");
                 inputStream.close();
-                System.out.println("ftp wrote file: " + filename);
-                System.out.println("ftp logout");
+                log.info("FTP|PUT|wrote file: " + filename);
+                log.debug("FTP|logout");
                 ftp.logout();
-                System.out.println("ftp disconnect");
+                log.debug("FTP|disconnect");
                 ftp.disconnect();
 
             } else {
-                System.out.println("ftp login to server was not positive completion. reply code: " + reply);
+                log.warn("FTP|login to server was not positive completion. reply code: " + reply);
                 ftp.disconnect();
             }
         } else {
-            String msg = "ftp login to " + host + ":" + port + " failed for user: " + user;
-            System.out.println(msg);
+            String msg = "FTP|login to " + host + ":" + port + " failed for user: " + user;
+            log.error(msg);
             ftp.logout();
             throw new IOException(msg);
         }
@@ -122,11 +121,11 @@ public class FtpPublisher {
         //new ftp client
         FTPClient ftp = new FTPClient();
         //try to connect
-        System.out.println("ftp connect to " + host + " " + port);
+        log.debug("FTP|connect to " + host + " " + port);
         ftp.connect(host, port);
 
         //login to server
-        System.out.println("ftp login user: " + user);
+        log.debug("FTP|login user: " + user);
         if (ftp.login(user, password)) {
 
             int reply = ftp.getReplyCode();
@@ -134,30 +133,30 @@ public class FtpPublisher {
             if (FTPReply.isPositiveCompletion(reply)) {
 
                 //get system name
-                System.out.println("ftp remote system is " + ftp.getSystemType());
+                log.debug("FTP|remote system is " + ftp.getSystemType());
                 //change current directory
                 ftp.changeWorkingDirectory(path);
-                System.out.println("ftp current directory is " + ftp.printWorkingDirectory());
+                log.debug("FTP|current directory is " + ftp.printWorkingDirectory());
 
-                System.out.println("ftp get binary file " + filename);
+                log.info("FTP|GET|get binary file " + filename);
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 ftp.setFileType(FTP.BINARY_FILE_TYPE);
                 ftp.retrieveFile(filename, out);
                 data = out.toByteArray();
-                System.out.println("ftp " + filename + " size: " + data.length);
+                log.info("FTP|GET|got file: " + filename + " size: " + data.length);
 
-                System.out.println("ftp logout");
+                log.debug("FTP|logout");
                 ftp.logout();
-                System.out.println("ftp disconnect");
+                log.debug("FTP|disconnect");
                 ftp.disconnect();
 
             } else {
-                System.out.println("ftp login to server was not positive completion. reply code: " + reply);
+                log.warn("FTP|login to server was not positive completion. reply code: " + reply);
                 ftp.disconnect();
             }
         } else {
-            String msg = "ftp login to " + host + ":" + port + " failed for user: " + user;
-            System.out.println(msg);
+            String msg = "FTP|login to " + host + ":" + port + " failed for user: " + user;
+            log.error(msg);
             ftp.logout();
             throw new IOException(msg);
         }

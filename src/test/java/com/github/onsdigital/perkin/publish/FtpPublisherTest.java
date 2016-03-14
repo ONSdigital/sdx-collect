@@ -3,6 +3,7 @@ package com.github.onsdigital.perkin.publish;
 import com.github.onsdigital.Configuration;
 import com.github.onsdigital.Json;
 import com.github.onsdigital.perkin.json.Survey;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -30,6 +31,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 @RunWith(MockitoJUnitRunner.class)
+@Slf4j
 public class FtpPublisherTest {
 
     @Mock
@@ -65,7 +67,7 @@ public class FtpPublisherTest {
         Configuration.set(FtpPublisher.FTP_PORT, port);
         classUnderTest = new FtpPublisher();
 
-        System.out.println("FakeFtpServer running on port " + port);
+        log.debug("TEST|FakeFtpServer running on port " + port);
     }
 
     @After
@@ -107,13 +109,13 @@ public class FtpPublisherTest {
         FTPFile[] files = ftpClient.listFiles();
 
         for (FTPFile file : files) {
-            System.out.println("FtpPublisherTest - ftp list. file: " + file.getName());
+            log.debug("TEST|FtpPublisherTest - ftp list. file: " + file.getName());
         }
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ftpClient.retrieveFile(files[0].getName(), out);
         String contents = out.toString("UTF-8");
-        System.out.println("test.json: " + contents);
+        log.debug("TEST|test.json: {}", contents);
         ftpClient.quit();
         ftpClient.disconnect();
 
