@@ -3,6 +3,7 @@ package com.github.onsdigital.perkin.publish;
 import com.github.onsdigital.Configuration;
 import com.github.onsdigital.Json;
 import com.github.onsdigital.perkin.json.Survey;
+import com.github.onsdigital.perkin.transform.DataFile;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.net.ftp.FTPClient;
@@ -22,8 +23,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.Mockito.when;
 
@@ -35,7 +37,8 @@ import static org.hamcrest.Matchers.is;
 public class FtpPublisherTest {
 
     @Mock
-    private FileItem data;
+    private DataFile file;
+    private List<DataFile> files;
 
     private FtpPublisher classUnderTest;
 
@@ -44,12 +47,6 @@ public class FtpPublisherTest {
 
     @Before
     public void setUp() throws IOException {
-        //example json file
-        String json = Json.prettyPrint(Survey.builder().id("id").respondentId("respondentId").build());
-        InputStream in = new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8));
-        when(data.getInputStream()).thenReturn(in);
-        when(data.getName()).thenReturn("test.json");
-
 
         fakeFtpServer = new FakeFtpServer();
         fakeFtpServer.setServerControlPort(0);  // use any free port
@@ -67,6 +64,12 @@ public class FtpPublisherTest {
         Configuration.set(FtpPublisher.FTP_PORT, port);
         classUnderTest = new FtpPublisher();
 
+        //mock files to publish
+        when(file.getFilename()).thenReturn("test.txt");
+        when(file.getBytes()).thenReturn("test.txt contents".getBytes(StandardCharsets.UTF_8));
+        files = new ArrayList<>();
+        files.add(file);
+
         log.debug("TEST|FakeFtpServer running on port " + port);
     }
 
@@ -82,7 +85,7 @@ public class FtpPublisherTest {
         classUnderTest = new FtpPublisher();
 
         //when
-        classUnderTest.publish(data, "");
+        classUnderTest.publish(files);
     }
 
     @Test(expected = IOException.class)
@@ -92,7 +95,7 @@ public class FtpPublisherTest {
         classUnderTest = new FtpPublisher();
 
         //when
-        classUnderTest.publish(data, "");
+        classUnderTest.publish(files);
     }
 
     @Test
@@ -100,7 +103,7 @@ public class FtpPublisherTest {
         //given
 
         //when
-        classUnderTest.publish(data, "");
+        classUnderTest.publish(files);
 
         //then
         FTPClient ftpClient = new FTPClient();
@@ -115,12 +118,12 @@ public class FtpPublisherTest {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ftpClient.retrieveFile(files[0].getName(), out);
         String contents = out.toString("UTF-8");
-        log.debug("TEST|test.json: {}", contents);
+        log.debug("TEST|test.txt: {}", contents);
         ftpClient.quit();
         ftpClient.disconnect();
 
         assertThat(files.length, is(1));
-        assertThat(files[0].getName(), is("test.json"));
+        assertThat(files[0].getName(), is("test.txt"));
     }
 
     //TODO: add test for file writing fails

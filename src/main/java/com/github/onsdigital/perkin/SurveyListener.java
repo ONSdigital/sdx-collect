@@ -77,16 +77,10 @@ public class SurveyListener {
                 log.info("QUEUE|MESSAGE|RECV|got message: {}", message);
 
                 try {
-                    if (transformer.transform(message)) {
-                        log.info("QUEUE|MESSAGE|ACK|transform success, remove msg from queue. message: {}", message);
-                        channel.basicAck(envelope.getDeliveryTag(), false);
-                        retry = 0;
-                    } else {
-                        log.info("QUEUE|MESSAGE|REJECT|transform fail, reject, don't requeue. message: {}", message);
-                        //TODO: place message on DLQ? if transform fails - should do this
-                        //TODO: place message on DLQ? if publish fails - should retry
-                        channel.basicReject(envelope.getDeliveryTag(), DONT_REQUEUE);
-                    }
+                    transformer.transform(message);
+                    log.info("QUEUE|MESSAGE|ACK|transform success, remove msg from queue. message: {}", message);
+                    channel.basicAck(envelope.getDeliveryTag(), false);
+                    retry = 0;
 
                 } catch (Throwable t) {
                     log.error("QUEUE|MESSAGE|error during message processing", t);

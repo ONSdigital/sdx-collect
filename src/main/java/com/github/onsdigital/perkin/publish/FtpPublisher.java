@@ -17,6 +17,7 @@ import org.apache.commons.net.ftp.FTPReply;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @Slf4j
 public class FtpPublisher {
@@ -41,30 +42,12 @@ public class FtpPublisher {
         path = Configuration.get(FTP_PATH, "/");
     }
 
-    public void publish(DataFile data) throws IOException {
-        String filename = data.getFilename();
-        InputStream inputStream = new ByteArrayInputStream(data.getBytes());
-        put(inputStream, path, filename);
-    }
-
-    //TODO: remove
-    public void publish(Image image) throws IOException {
-        String filename = image.getFilename();
-        InputStream inputStream = new ByteArrayInputStream(image.getData());
-        put(inputStream, path, filename);
-    }
-
-    //TODO: remove
-    public void publish(IdbrReceipt receipt) throws IOException {
-        String filename = receipt.getFilename();
-        InputStream inputStream = new ByteArrayInputStream(receipt.getReceipt().getBytes(StandardCharsets.UTF_8));
-        put(inputStream, path, filename);
-    }
-
-    //TODO: remove?
-    public void publish(final FileItem data, final String path) throws IOException {
-        String filename = data.getName();
-        put(data.getInputStream(), path, filename);
+    public void publish(List<DataFile> files) throws IOException {
+        for (DataFile data : files) {
+            String filename = data.getFilename();
+            InputStream inputStream = new ByteArrayInputStream(data.getBytes());
+            put(inputStream, path, filename);
+        }
     }
 
     private void put(InputStream inputStream, String path, String filename) throws IOException {

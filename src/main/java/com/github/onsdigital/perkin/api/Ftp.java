@@ -36,7 +36,7 @@ public class Ftp {
         log.info("image >>>>>>>> generated image: " + image.getFilename() + " size: " + image.getData().length);
 
         //save to ftp
-        ftp.publish(image);
+        ftp.publish(files);
 
         //get back from ftp
         byte[] imageFromFtp = ftp.get(image.getFilename());

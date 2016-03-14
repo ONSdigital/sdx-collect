@@ -48,7 +48,7 @@ public class TransformEngine {
         return INSTANCE;
     }
 
-    public boolean transform(final String data) throws TransformException {
+    public void transform(final String data) throws TransformException {
 
         try {
             Survey survey = decrypt(data);
@@ -61,13 +61,9 @@ public class TransformEngine {
                 files.addAll(transformer.transform(survey, context));
             }
 
-            //TODO: give list to publisher
-            for (DataFile file : files) {
-                publisher.publish(file);
-            }
+            publish(files);
 
             audit.increment("transform.200");
-            return true;
 
         } catch (TransformException e) {
             audit.increment("transform.500");
@@ -75,6 +71,17 @@ public class TransformEngine {
         } catch (IOException e) {
             audit.increment("transform.500");
             throw new TransformException("Problem transforming survey", e);
+        }
+    }
+
+    private void publish(List<DataFile> files) throws IOException {
+
+        try {
+            publisher.publish(files);
+            audit.increment("publish.200");
+        } catch (IOException e) {
+            audit.increment("publish.500");
+            throw e;
         }
     }
 
