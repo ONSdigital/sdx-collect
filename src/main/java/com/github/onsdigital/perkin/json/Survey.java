@@ -18,6 +18,7 @@ public class Survey {
 
     private String id;
     private String name;
+    private String formReference;
     private String date;
     private String respondentId;
     private String respondentCheckLetter;

@@ -44,7 +44,7 @@ public class PckTransformer implements Transformer {
         //we only have the MCI survey template for now
         Pck pck = new Pck();
         pck.setHeader(generateHeader(context.getBatch()));
-        pck.setFormIdentifier(generateFormIdentifier());
+        pck.setFormIdentifier(generateFormIdentifier(survey.getFormReference()));
         pck.setQuestions(derivatorFactory.deriveAllAnswers(survey, context.getSurveyTemplate()));
         pck.setFormLead(FORM_LEAD);
 
@@ -64,7 +64,7 @@ public class PckTransformer implements Transformer {
 		return "FBFV" + leftPadZeroes(String.valueOf(batch), LENGTH_BATCH) + getCurrentDateAsString();
 	}
 
-    private String generateFormIdentifier() {
+    private String generateFormIdentifier(String idbrFormReference) {
 		StringBuilder formIdentifer = new StringBuilder();
 
         //TODO: looks like this is hardcoded for now?
@@ -76,7 +76,6 @@ public class PckTransformer implements Transformer {
         //colon
         //period is 4 chars
         //TODO: get data from survey
-        String idbrFormReference = "0203";
         String commonSoftwareFormReference = lookupCommonSoftwareFormReference(idbrFormReference);
         //e.g. idbr form reference 0203, RSI7B for common software
         //0203 = RSI7B
