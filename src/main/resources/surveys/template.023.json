@@ -4,28 +4,43 @@
   "questionTemplates": [
     {
       "questionNumber": "1",
-      "derivator": "boolean",
+      "derivator": "contains",
       "optional": true
     },
     {
       "questionNumber": "11",
-      "derivator": "boolean",
+      "derivator": "default",
+      "optional": false
+    },
+    {
+      "questionNumber": "12",
+      "derivator": "default",
       "optional": false
     },
     {
       "questionNumber": "20",
-      "derivator": "boolean",
-      "optional": false
-    },
-    {
-      "questionNumber": "30",
-      "derivator": "boolean",
+      "derivator": "default",
       "optional": true
     },
     {
-      "questionNumber": "40",
+      "questionNumber": "51",
       "derivator": "default",
-      "optional": false
+      "optional": true
+    },
+    {
+      "questionNumber": "52",
+      "derivator": "default",
+      "optional": true
+    },
+    {
+      "questionNumber": "53",
+      "derivator": "default",
+      "optional": true
+    },
+    {
+      "questionNumber": "54",
+      "derivator": "default",
+      "optional": true
     },
     {
       "questionNumber": "50",
@@ -33,17 +48,42 @@
       "optional": true
     },
     {
-      "questionNumber": "70",
-      "derivator": "default",
-      "optional": false
-    },
-    {
-      "questionNumber": "90",
+      "questionNumber": "22",
       "derivator": "default",
       "optional": true
     },
     {
-      "questionNumber": "100",
+      "questionNumber": "23",
+      "derivator": "default",
+      "optional": false
+    },
+    {
+      "questionNumber": "24",
+      "derivator": "default",
+      "optional": true
+    },
+    {
+      "questionNumber": "25",
+      "derivator": "default",
+      "optional": false
+    },
+    {
+      "questionNumber": "26",
+      "derivator": "default",
+      "optional": true
+    },
+    {
+      "questionNumber": "21",
+      "derivator": "default",
+      "optional": true
+    },
+    {
+      "questionNumber": "27",
+      "derivator": "default",
+      "optional": true
+    },
+    {
+      "questionNumber": "146",
       "derivator": "contains",
       "optional": false
     }
