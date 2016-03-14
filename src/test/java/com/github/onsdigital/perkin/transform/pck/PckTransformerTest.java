@@ -2,8 +2,8 @@ package com.github.onsdigital.perkin.transform.pck;
 
 import com.github.onsdigital.Json;
 import com.github.onsdigital.perkin.json.Survey;
-import com.github.onsdigital.perkin.json.SurveyTemplate;
 import com.github.onsdigital.perkin.transform.*;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,7 +13,8 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-public class PckBuilderTest {
+@Slf4j
+public class PckTransformerTest {
 
 	private PckTransformer classUnderTest;
 
@@ -29,11 +30,11 @@ public class PckBuilderTest {
         Survey survey = createSurvey();
         TransformContext context = createTransformContext(survey, batch);
 
-        System.out.println(Json.prettyPrint(survey));
+        log.debug("TEST|{}", Json.prettyPrint(survey));
         String expectedDate = PckTransformer.getCurrentDateAsString();
-        String expectedPck = "FBFV" + batch + expectedDate + "\n" +
+        String expectedPck = "FBFV0" + batch + expectedDate + "\n" +
                 "FV\n" +
-                "0005:99999994188F:201410\n" +
+                "RSI7B:99999994188F:201410\n" +
                 "0001 00000000001\n" +
                 "0011 00000000001\n" +
                 "0020 00000000002\n" +
@@ -63,9 +64,9 @@ public class PckBuilderTest {
         String expectedDate = PckTransformer.getCurrentDateAsString();
         //TODO: as we provided no answers, we should get an error for each mandatory answer?
         //TODO: for answers that were optional, should we be adding them to the pck file?
-        String expectedPck = "FBFV" + batch + expectedDate + "\n" +
+        String expectedPck = "FBFV0" + batch + expectedDate + "\n" +
                 "FV\n" +
-                "0005:99999994188F:201410\n" +
+                "RSI7B:99999994188F:201410\n" +
                 "0001 00000000002\n" +
                 "0011 00000000002\n" +
                 "0020 00000000002\n" +
@@ -94,9 +95,9 @@ public class PckBuilderTest {
 
         String expectedDate = PckTransformer.getCurrentDateAsString();
         //TODO: as we provided no matching answers to the template should we get an error when a question can't be found?
-        String expectedPck = "FBFV" + batch + expectedDate + "\n" +
+        String expectedPck = "FBFV0" + batch + expectedDate + "\n" +
                 "FV\n" +
-                "0005:99999994188F:201410\n" +
+                "RSI7B:99999994188F:201410\n" +
                 "0001 00000000002\n" +
                 "0011 00000000002\n" +
                 "0020 00000000002\n" +
@@ -174,4 +175,7 @@ public class PckBuilderTest {
         context.setBatch(batch);
         return context;
     }
+
+    //TODO: tests for other form types (looked up by PckTransformer)
+    //TODO: test and what to do if form type mapping fails?
 }

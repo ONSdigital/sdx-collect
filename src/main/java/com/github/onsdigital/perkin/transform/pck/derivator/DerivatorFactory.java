@@ -4,6 +4,7 @@ import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.transform.pck.Question;
 import com.github.onsdigital.perkin.transform.pck.QuestionTemplate;
 import com.github.onsdigital.perkin.json.SurveyTemplate;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class DerivatorFactory {
 
 	private Map<String, Derivator> derivators;
@@ -23,7 +25,7 @@ public class DerivatorFactory {
 	public Derivator getDerivator(String name) throws DerivatorNotFoundException {
 
 		if (derivators.containsKey(name)) {
-            System.out.println("found derivator: " + name);
+            log.debug("TRANSFORM|PCK|found derivator: " + name);
 			return derivators.get(name);
 		} else {
 			Derivator derivator = loadDerivator(name);
@@ -45,7 +47,7 @@ public class DerivatorFactory {
 
             Question question = new Question(questionTemplate.getQuestionNumber(), derivedAnswer);
             result.add(question);
-            System.out.println("derived: " + question + " from question template: " + questionTemplate + " answer: " + answer);
+            log.debug("TRANSFORM|PCK|derived: " + question + " from question template: " + questionTemplate + " answer: " + answer);
         }
 
         return result;
@@ -58,10 +60,10 @@ public class DerivatorFactory {
 			}
 
 			String className = "com.github.onsdigital.perkin.transform.pck.derivator." + StringUtils.capitalize(name.trim().toLowerCase()) + "Derivator";
-			System.out.println("loading derivator: " + className);
+			log.trace("TRANSFORM|PCK|loading derivator: " + className);
 
 			Derivator derivator = (Derivator) Class.forName(className).newInstance();
-			System.out.println("loaded derivator: " + derivator);
+			log.debug("TRANSFORM|PCK|loaded derivator: " + derivator);
 			return derivator;
 
 		} catch (InstantiationException | IllegalAccessException| ClassNotFoundException e) {

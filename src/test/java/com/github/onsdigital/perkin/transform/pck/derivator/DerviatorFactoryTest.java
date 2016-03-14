@@ -4,6 +4,7 @@ import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.transform.pck.Question;
 import com.github.onsdigital.perkin.transform.pck.QuestionTemplate;
 import com.github.onsdigital.perkin.json.SurveyTemplate;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,10 +14,9 @@ import java.util.List;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.hamcrest.CoreMatchers.instanceOf;
 
+@Slf4j
 public class DerviatorFactoryTest {
 
 	private DerivatorFactory classUnderTest;
@@ -79,8 +79,8 @@ public class DerviatorFactoryTest {
         //when
         Derivator derivator1 = classUnderTest.getDerivator(name);
         Derivator derivator2 = classUnderTest.getDerivator(name);
-        System.out.println("derivator1: " + derivator1);
-        System.out.println("derivator1: " + derivator2);
+        log.debug("TEST|derivator1: " + derivator1);
+        log.debug("TEST|derivator2: " + derivator2);
 
         //then
         assertThat(derivator1, is(derivator2));

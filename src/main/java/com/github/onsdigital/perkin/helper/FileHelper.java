@@ -1,15 +1,16 @@
 package com.github.onsdigital.perkin.helper;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+@Slf4j
 public abstract class FileHelper {
 
     public static void saveFile(byte[] bytes, String filename) throws IOException {
@@ -18,13 +19,13 @@ public abstract class FileHelper {
 
         Files.write(path, bytes);
 
-        System.out.println("FileHelper saved file target/" + filename);
+        log.info("saved file target/" + filename);
     }
 
     public static byte[] loadFileAsBytes(String filename) throws IOException {
 
         InputStream in = FileHelper.class.getClassLoader().getResourceAsStream(filename);
-        System.out.println("loaded file:  " + filename + " as: " + in);
+        log.info("loaded file:  " + filename + " as: " + in);
         return IOUtils.toByteArray(in);
     }
 

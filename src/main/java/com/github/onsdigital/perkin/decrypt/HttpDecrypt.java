@@ -6,12 +6,14 @@ import com.github.davidcarboni.httpino.Http;
 import com.github.davidcarboni.httpino.Response;
 import com.github.onsdigital.Configuration;
 import com.github.onsdigital.perkin.json.Survey;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
 /**
  * Decrypt data via HTTP.
  */
+@Slf4j
 public class HttpDecrypt {
 
     protected static final String HOST = "decrypt.host";
@@ -28,7 +30,7 @@ public class HttpDecrypt {
     public Response<Survey> decrypt(final String data) throws IOException {
 
         Endpoint endpoint = new Endpoint(new Host(host), path);
-        System.out.println("decrypt endpoint " + endpoint);
+        log.debug("DECRYPT|decrypting data using endpoint: {}", endpoint);
         return new Http().postJson(endpoint, data, Survey.class);
     }
 }
