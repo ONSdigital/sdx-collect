@@ -21,6 +21,6 @@ public class AuditTest {
         String message = classUnderTest.getExceptionMessage(e);
 
         //then
-        assertThat(message, is("com.github.onsdigital.perkin.json.SurveyParserException message caused by com.google.gson.JsonParseException cause message"));
+        assertThat(message, is(" com.github.onsdigital.perkin.json.SurveyParserException message caused by com.google.gson.JsonParseException cause message"));
     }
 }
