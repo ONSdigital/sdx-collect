@@ -1,6 +1,6 @@
 package com.github.onsdigital.perkin.transform.jpg;
 
-import com.github.onsdigital.perkin.json.Survey2;
+import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.transform.TransformContext;
 import com.github.onsdigital.perkin.transform.TransformException;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +36,7 @@ public class PdfCreator {
         }
     }
 
-    public byte[] createPdf(final Survey2 survey, final TransformContext context) throws TransformException {
+    public byte[] createPdf(final Survey survey, final TransformContext context) throws TransformException {
 
         init();
 
@@ -75,7 +75,7 @@ public class PdfCreator {
         return out.toByteArray();
     }
 
-    private Source populateFopTemplate(final Survey2 survey, final TransformContext context) {
+    private Source populateFopTemplate(final Survey survey, final TransformContext context) {
 
         String template = context.getPdfTemplate();
 

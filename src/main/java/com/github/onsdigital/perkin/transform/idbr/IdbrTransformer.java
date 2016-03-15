@@ -2,7 +2,7 @@ package com.github.onsdigital.perkin.transform.idbr;
 
 //import org.springframework.util.Assert;
 
-import com.github.onsdigital.perkin.json.Survey2;
+import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.transform.DataFile;
 import com.github.onsdigital.perkin.transform.TransformContext;
 import com.github.onsdigital.perkin.transform.TransformException;
@@ -36,12 +36,12 @@ public class IdbrTransformer implements Transformer {
     private DateTimeFormatter idbrFilenameFormatter = DateTimeFormatter.ofPattern("ddMM");
 
     @Override
-    public List<DataFile> transform(final Survey2 survey, final TransformContext context) throws TransformException {
+    public List<DataFile> transform(final Survey survey, final TransformContext context) throws TransformException {
         //TODO: use a date from the survey - submitted date?
         return Arrays.asList(createIdbrReceipt(survey, survey.getDate(), context.getBatch()));
     }
 
-    public IdbrReceipt createIdbrReceipt(final Survey2 survey, final LocalDate date, final long batchId) {
+    public IdbrReceipt createIdbrReceipt(final Survey survey, final LocalDate date, final long batchId) {
         //TODO: import an assert library? this is spring below
 //        Assert.notNull(survey, "survey should not be null");
 //        Assert.notNull(survey.getDate(), "survey date should not be null");
@@ -53,7 +53,7 @@ public class IdbrTransformer implements Transformer {
                 .build();
     }
 
-    public IdbrReceipt createIdbrReceipt(final Survey2 survey, final Date date, final long batchId) {
+    public IdbrReceipt createIdbrReceipt(final Survey survey, final Date date, final long batchId) {
 
         return IdbrReceipt.builder()
                 .receipt(createReceipt(survey))
@@ -72,7 +72,7 @@ public class IdbrTransformer implements Transformer {
      * @return the IDBR receipt data
      * @throws java.text.ParseException if problem parsing the survey date e.g. 01 Oct 2014
      */
-    private String createReceipt(final Survey2 survey) {
+    private String createReceipt(final Survey survey) {
 
         final StringBuilder receipt = new StringBuilder()
             .append(survey.getRespondentId())

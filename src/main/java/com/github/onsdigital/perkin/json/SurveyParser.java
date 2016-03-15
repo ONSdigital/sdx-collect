@@ -12,20 +12,20 @@ import java.util.Date;
 @Slf4j
 public class SurveyParser {
 
-    public Survey2 parse(String json) throws SurveyParserException {
+    public Survey parse(String json) throws SurveyParserException {
         try {
-            Survey2 survey2 = deserialize(json);
+            Survey survey = deserialize(json);
 
-            if (!"0.0.1".equals(survey2.getVersion())) {
+            if (!"0.0.1".equals(survey.getVersion())) {
                 String message = "Unsupported version (0.0.1 supported), while parsing survey from json: " + json;
                 log.error("SURVEY|PARSE|" + message);
                 throw new SurveyParserException(message);
             }
 
             if (log.isDebugEnabled()) {
-                log.debug("SURVEY|PARSE|parsed json as {}", survey2);
+                log.debug("SURVEY|PARSE|parsed json as {}", survey);
             }
-            return survey2;
+            return survey;
 
         } catch(JsonParseException e) {
             String message = "Problem parsing survey from json: " + json;
@@ -34,26 +34,26 @@ public class SurveyParser {
         }
     }
 
-    public String prettyPrint(Survey2 survey2) {
-        return serialize(survey2);
+    public String prettyPrint(Survey survey) {
+        return serialize(survey);
     }
 
-    private String serialize(Survey2 survey2) {
+    private String serialize(Survey survey) {
         Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
                 .registerTypeAdapter(Collection.class, new CollectionSerializer())
                 .registerTypeAdapter(Date.class, new DateSerializer())
                 .create();
-        return gson.toJson(survey2);
+        return gson.toJson(survey);
     }
 
-    private Survey2 deserialize(String json) {
+    private Survey deserialize(String json) {
         Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
                 .registerTypeAdapter(Date.class, new DateDeserializer())
                 .create();
 
-        return gson.fromJson(json, Survey2.class);
+        return gson.fromJson(json, Survey.class);
     }
 
     private class CollectionSerializer implements JsonSerializer<Collection> {

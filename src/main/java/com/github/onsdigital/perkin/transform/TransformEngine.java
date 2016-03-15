@@ -52,7 +52,7 @@ public class TransformEngine {
 
         try {
             String json = decrypt(data);
-            Survey2 survey = parser.parse(json);
+            Survey survey = parser.parse(json);
 
             TransformContext context = createTransformContext(survey);
 
@@ -87,7 +87,7 @@ public class TransformEngine {
     }
 
     //TODO: make private
-    public TransformContext createTransformContext(Survey2 survey) throws TemplateNotFoundException {
+    public TransformContext createTransformContext(Survey survey) throws TemplateNotFoundException {
         return TransformContext.builder()
                 .batch(batchNumberService.getNext())
                 .surveyTemplate(getSurveyTemplate(survey))
@@ -95,7 +95,7 @@ public class TransformEngine {
                 .build();
     }
 
-    private String getPdfTemplate(Survey2 survey) throws TemplateNotFoundException {
+    private String getPdfTemplate(Survey survey) throws TemplateNotFoundException {
 
         String pdfTemplate = null;
 
@@ -109,7 +109,7 @@ public class TransformEngine {
         return pdfTemplate;
     }
 
-    private SurveyTemplate getSurveyTemplate(Survey2 survey) throws TemplateNotFoundException {
+    private SurveyTemplate getSurveyTemplate(Survey survey) throws TemplateNotFoundException {
 
         //TODO: only load a template once
         try {

@@ -1,6 +1,6 @@
 package com.github.onsdigital.perkin.transform.pck;
 
-import com.github.onsdigital.perkin.json.Survey2;
+import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.transform.*;
 import com.github.onsdigital.perkin.transform.pck.derivator.DerivatorFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +36,7 @@ public class PckTransformer implements Transformer {
     }
 
     @Override
-    public List<DataFile> transform(final Survey2 survey, final TransformContext context) throws TransformException {
+    public List<DataFile> transform(final Survey survey, final TransformContext context) throws TransformException {
         log.debug("TRANSFORM|PCK|transforming into pck from survey: {}", survey);
 
         //we only have the MCI survey template for now
@@ -58,7 +58,7 @@ public class PckTransformer implements Transformer {
 		return "FBFV" + leftPadZeroes(String.valueOf(batch), LENGTH_BATCH) + formatDate(date);
 	}
 
-    private String generateFormIdentifier(Survey2 survey) {
+    private String generateFormIdentifier(Survey survey) {
 		StringBuilder formIdentifer = new StringBuilder();
 
         String idbrFormReference = survey.getCollection().getInstrumentId();

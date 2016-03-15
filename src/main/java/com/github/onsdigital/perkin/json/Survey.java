@@ -15,7 +15,7 @@ import java.util.Set;
  */
 @Data
 @Builder
-public class Survey2 {
+public class Survey {
 
     private String type;
     private String version;

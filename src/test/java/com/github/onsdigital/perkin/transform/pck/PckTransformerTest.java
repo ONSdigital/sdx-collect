@@ -1,7 +1,7 @@
 package com.github.onsdigital.perkin.transform.pck;
 
 
-import com.github.onsdigital.perkin.json.Survey2;
+import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.json.SurveyParser;
 import com.github.onsdigital.perkin.test.FileHelper;
 import com.github.onsdigital.perkin.transform.*;
@@ -24,14 +24,14 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
 @Slf4j
-public class TransformerTest {
+public class PckTransformerTest {
 
     private PckTransformer classUnderTest;
 
     private String surveyFilename;
     private String pckFilename;
 
-    public TransformerTest(String surveyFilename , String pckFilename){
+    public PckTransformerTest(String surveyFilename, String pckFilename){
         this.surveyFilename = surveyFilename;
         this.pckFilename = pckFilename;
     }
@@ -69,8 +69,8 @@ public class TransformerTest {
     public void shouldBuildPck() throws IOException {
 
         //Given
-        Survey2 survey = loadSurvey();
-        log.debug("TEST|survey2: {}", survey);
+        Survey survey = loadSurvey();
+        log.debug("TEST|survey: {}", survey);
         long batch = 30001L;
         TransformContext context = createTransformContext(survey, batch);
 
@@ -86,7 +86,7 @@ public class TransformerTest {
         assertThat(files.get(0).getFilename(), is(expectedPckFilename));
     }
 
-    private Survey2 loadSurvey() throws IOException {
+    private Survey loadSurvey() throws IOException {
         String json = loadFile(surveyFilename);
         SurveyParser parser = new SurveyParser();
         return parser.parse(json);
@@ -101,7 +101,7 @@ public class TransformerTest {
         return FileHelper.loadFile("to-pck/" + filename);
     }
     
-    private TransformContext createTransformContext(Survey2 survey, long batch) throws TemplateNotFoundException {
+    private TransformContext createTransformContext(Survey survey, long batch) throws TemplateNotFoundException {
         TransformContext context = TransformEngine.getInstance().createTransformContext(survey);
         //override the batch number
         context.setBatch(batch);

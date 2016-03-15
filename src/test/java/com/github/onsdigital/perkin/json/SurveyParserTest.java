@@ -24,14 +24,14 @@ public class SurveyParserTest {
     @Test
     public void shouldParseValidSurveyVersion() throws IOException {
         //given
-        String json = getSurvey("survey2.json");
+        String json = getSurvey("survey.json");
 
         //when
-        Survey2 survey2 = classUnderTest.parse(json);
+        Survey survey = classUnderTest.parse(json);
 
         //then
-        log.debug("TEST|survey as json: {}", classUnderTest.prettyPrint(survey2));
-        assertThat(survey2, is(notNullValue()));
+        log.debug("TEST|survey as json: {}", classUnderTest.prettyPrint(survey));
+        assertThat(survey, is(notNullValue()));
     }
 
     @Test(expected = SurveyParserException.class)
@@ -46,7 +46,7 @@ public class SurveyParserTest {
     @Test(expected = SurveyParserException.class)
     public void shouldRejectUnsupportedSurveyVersion() throws IOException {
         //given
-        String json = getSurvey("survey2.invalid.version.json");
+        String json = getSurvey("survey.invalid.version.json");
 
         //when
         classUnderTest.parse(json);
@@ -55,7 +55,7 @@ public class SurveyParserTest {
     @Test(expected = SurveyParserException.class)
     public void shouldRejectInvalidSubmittedAtDate() throws IOException {
         //given
-        String json = getSurvey("survey2.invalid.submitted_at.json");
+        String json = getSurvey("survey.invalid.submitted_at.json");
 
         //when
         classUnderTest.parse(json);
@@ -65,7 +65,7 @@ public class SurveyParserTest {
 //    @Test(expected = SurveyParserException.class)
 //    public void shouldRejectNoSubmittedAtDate() throws IOException {
 //        //given
-//        String json = getSurvey("survey2.invalid.no.submitted_at.json");
+//        String json = getSurvey("survey.invalid.no.submitted_at.json");
 //
 //        //when
 //        classUnderTest.parse(json);
@@ -74,7 +74,7 @@ public class SurveyParserTest {
     @Test(expected = SurveyParserException.class)
     public void shouldRejectInvalidPeriodDate() throws IOException {
         //given
-        String json = getSurvey("survey2.invalid.period.json");
+        String json = getSurvey("survey.invalid.period.json");
 
         //when
         classUnderTest.parse(json);
@@ -84,7 +84,7 @@ public class SurveyParserTest {
 //    @Test(expected = SurveyParserException.class)
 //    public void shouldRejectNoPeriodDate() throws IOException {
 //        //given
-//        String json = getSurvey("survey2.invalid.no.period.json");
+//        String json = getSurvey("survey.invalid.no.period.json");
 //
 //        //when
 //        classUnderTest.parse(json);

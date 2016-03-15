@@ -12,7 +12,6 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -31,7 +30,7 @@ public class ImageTransformerTest {
     @Test
     public void shouldCreateImagesFromPdf() throws IOException {
         //given
-        Survey2 survey = new SurveyParser().parse(FileHelper.loadFile("survey2.json"));
+        Survey survey = new SurveyParser().parse(FileHelper.loadFile("survey.json"));
         TransformContext context = TransformEngine.getInstance().createTransformContext(survey);
 
         //when

@@ -1,7 +1,7 @@
 package com.github.onsdigital.perkin.tranform.jpg;
 
 import com.github.onsdigital.perkin.helper.FileHelper;
-import com.github.onsdigital.perkin.json.Survey2;
+import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.json.SurveyParser;
 import com.github.onsdigital.perkin.transform.TransformContext;
 import com.github.onsdigital.perkin.transform.TransformEngine;
@@ -32,7 +32,7 @@ public class PdfCreatorTest {
     @Test
     public void shouldCreatePdf() throws IOException {
         //given
-        Survey2 survey = new SurveyParser().parse(FileHelper.loadFile("survey2.json"));
+        Survey survey = new SurveyParser().parse(FileHelper.loadFile("survey.json"));
         TransformContext context = TransformEngine.getInstance().createTransformContext(survey);
 
         //when
