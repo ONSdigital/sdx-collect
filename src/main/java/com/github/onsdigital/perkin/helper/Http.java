@@ -4,6 +4,7 @@ import com.github.davidcarboni.httpino.Endpoint;
 import com.github.davidcarboni.httpino.Response;
 import com.github.davidcarboni.httpino.Serialiser;
 import com.google.gson.JsonSyntaxException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 /**
  * Simplified Http client, providing for common operations.
  */
+@Slf4j
 public class Http implements AutoCloseable {
 
     protected CloseableHttpClient httpClient;
@@ -516,12 +518,17 @@ public class Http implements AutoCloseable {
 
         HttpEntity entity = response.getEntity();
         if (entity != null) {
+            log.debug("HTTP|entity: {}", entity);
+            log.debug("HTTP|entity content type: {}", entity.getContentType());
+            log.debug("HTTP|entity length: {}", entity.getContentLength());
             try (InputStream inputStream = entity.getContent()) {
                 body = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
             }
         } else {
             EntityUtils.consume(entity);
         }
+
+        log.debug("HTTP|body: {}", body);
 
         return body;
     }
