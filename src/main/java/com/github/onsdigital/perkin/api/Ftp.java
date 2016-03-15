@@ -1,7 +1,10 @@
 package com.github.onsdigital.perkin.api;
 
 import com.github.davidcarboni.restolino.framework.Api;
+import com.github.onsdigital.perkin.helper.FileHelper;
 import com.github.onsdigital.perkin.json.Survey;
+import com.github.onsdigital.perkin.json.Survey2;
+import com.github.onsdigital.perkin.json.SurveyParser;
 import com.github.onsdigital.perkin.publish.FtpPublisher;
 import com.github.onsdigital.perkin.transform.DataFile;
 import com.github.onsdigital.perkin.transform.TransformContext;
@@ -27,7 +30,7 @@ public class Ftp {
     public String get(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         //spoof survey
-        Survey survey = createSurvey();
+        Survey2 survey = createSurvey2();
         TransformContext context = TransformEngine.getInstance().createTransformContext(survey);
 
         //create image
@@ -72,5 +75,9 @@ public class Ftp {
                 .answer("100", "some comment")
 
                 .build();
+    }
+
+    private com.github.onsdigital.perkin.json.Survey2 createSurvey2() throws IOException {
+        return new SurveyParser().parse(FileHelper.loadFile("survey2.json"));
     }
 }

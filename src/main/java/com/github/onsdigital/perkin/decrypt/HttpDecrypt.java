@@ -27,10 +27,10 @@ public class HttpDecrypt {
         path = Configuration.get(PATH, "/decrypt");
     }
 
-    public Response<Survey> decrypt(final String data) throws IOException {
+    public Response<String> decrypt(final String data) throws IOException {
 
         Endpoint endpoint = new Endpoint(new Host(host), path);
         log.debug("DECRYPT|decrypting data using endpoint: {}", endpoint);
-        return new Http().postJson(endpoint, data, Survey.class);
+        return new Http().postJson(endpoint, data, String.class);
     }
 }

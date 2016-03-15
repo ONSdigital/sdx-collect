@@ -1,7 +1,7 @@
 package com.github.onsdigital.perkin.tranform.jpg;
 
 import com.github.onsdigital.perkin.helper.FileHelper;
-import com.github.onsdigital.perkin.json.Survey;
+import com.github.onsdigital.perkin.json.*;
 import com.github.onsdigital.perkin.transform.DataFile;
 import com.github.onsdigital.perkin.transform.TransformContext;
 import com.github.onsdigital.perkin.transform.TransformEngine;
@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -30,7 +31,7 @@ public class ImageTransformerTest {
     @Test
     public void shouldCreateImagesFromPdf() throws IOException {
         //given
-        Survey survey = Survey.builder().build();
+        Survey2 survey = new SurveyParser().parse(FileHelper.loadFile("survey2.json"));
         TransformContext context = TransformEngine.getInstance().createTransformContext(survey);
 
         //when

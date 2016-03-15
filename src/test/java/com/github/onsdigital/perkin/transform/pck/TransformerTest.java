@@ -2,9 +2,13 @@ package com.github.onsdigital.perkin.transform.pck;
 
 
 import com.github.davidcarboni.httpino.Serialiser;
+import com.github.onsdigital.perkin.json.Survey2;
+import com.github.onsdigital.perkin.json.SurveyParser;
+import com.github.onsdigital.perkin.json.SurveyParserException;
 import com.github.onsdigital.perkin.test.FileHelper;
 import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.transform.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,12 +26,10 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
+@Slf4j
 public class TransformerTest {
 
-    private static final long BATCH_ID = 30001L;
-
-    private String name;
-    private Transformer classUnderTest;
+    private PckTransformer classUnderTest;
 
     private String surveyFilename;
     private String pckFilename;
@@ -70,33 +72,41 @@ public class TransformerTest {
     public void shouldBuildPck() throws IOException {
 
         //Given
-        Survey survey = loadSurvey();
-        TransformContext context = createTransformContext(survey, BATCH_ID);
+        Survey2 survey = loadSurvey();
+        log.debug("TEST|survey2: {}", survey);
+        long batch = 30001L;
+        TransformContext context = createTransformContext(survey, batch);
 
         //When
         List<DataFile> files = classUnderTest.transform(survey, context);
 
         //Then
         String expectedPck = loadPck();
+        String expectedPckFilename = batch + "_" + survey.getMetadata().getRuRef() + ".pck";
+
         assertThat(files, hasSize(1));
         assertThat(files.get(0).toString(), is(expectedPck));
-        assertThat(files.get(0).getFilename(), is(BATCH_ID+"_respondentId.pck"));
+        assertThat(files.get(0).getFilename(), is(expectedPckFilename));
     }
 
-    private Survey loadSurvey() throws IOException {
-        System.out.println("loading survey file: " + surveyFilename);
-        String json = new String(com.github.onsdigital.perkin.helper.FileHelper.loadFile("to-pck/" + surveyFilename));
-        return (Survey) Serialiser.deserialise(json, Survey.class);
-
+    private Survey2 loadSurvey() throws IOException {
+        String json = loadFile(surveyFilename);
+        SurveyParser parser = new SurveyParser();
+        return parser.parse(json);
     }
 
     private String loadPck() throws IOException {
-        System.out.println("loading survey file: to-pck/valid.pck");
-        return  com.github.onsdigital.perkin.helper.FileHelper.loadFile("to-pck/" + pckFilename);
+        return loadFile(pckFilename);
     }
 
-    private TransformContext createTransformContext(Survey survey, long batch) throws TemplateNotFoundException {
+    private String loadFile(String filename) throws IOException {
+        log.debug("TEST|loading file: to-pck/" + filename);
+        return FileHelper.loadFile("to-pck/" + filename);
+    }
+    
+    private TransformContext createTransformContext(Survey2 survey, long batch) throws TemplateNotFoundException {
         TransformContext context = TransformEngine.getInstance().createTransformContext(survey);
+        //override the batch number
         context.setBatch(batch);
         return context;
     }

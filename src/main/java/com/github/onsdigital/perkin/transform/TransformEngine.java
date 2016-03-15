@@ -5,8 +5,7 @@ import com.github.davidcarboni.httpino.Serialiser;
 import com.github.onsdigital.Json;
 import com.github.onsdigital.perkin.decrypt.HttpDecrypt;
 import com.github.onsdigital.perkin.helper.FileHelper;
-import com.github.onsdigital.perkin.json.Survey;
-import com.github.onsdigital.perkin.json.SurveyTemplate;
+import com.github.onsdigital.perkin.json.*;
 import com.github.onsdigital.perkin.transform.idbr.IdbrTransformer;
 import com.github.onsdigital.perkin.transform.jpg.ImageTransformer;
 import com.github.onsdigital.perkin.transform.pck.PckTransformer;
@@ -28,6 +27,7 @@ public class TransformEngine {
 
     private static TransformEngine INSTANCE = new TransformEngine();
 
+    private SurveyParser parser = new SurveyParser();
     private HttpDecrypt decrypt = new HttpDecrypt();
 
     private List<Transformer> transformers;
@@ -51,7 +51,8 @@ public class TransformEngine {
     public void transform(final String data) throws TransformException {
 
         try {
-            Survey survey = decrypt(data);
+            String json = decrypt(data);
+            Survey2 survey = parser.parse(json);
 
             TransformContext context = createTransformContext(survey);
 
@@ -86,7 +87,7 @@ public class TransformEngine {
     }
 
     //TODO: make private
-    public TransformContext createTransformContext(Survey survey) throws TemplateNotFoundException {
+    public TransformContext createTransformContext(Survey2 survey) throws TemplateNotFoundException {
         return TransformContext.builder()
                 .batch(batchNumberService.getNext())
                 .surveyTemplate(getSurveyTemplate(survey))
@@ -94,7 +95,7 @@ public class TransformEngine {
                 .build();
     }
 
-    private String getPdfTemplate(Survey survey) throws TemplateNotFoundException {
+    private String getPdfTemplate(Survey2 survey) throws TemplateNotFoundException {
 
         String pdfTemplate = null;
 
@@ -108,7 +109,7 @@ public class TransformEngine {
         return pdfTemplate;
     }
 
-    private SurveyTemplate getSurveyTemplate(Survey survey) throws TemplateNotFoundException {
+    private SurveyTemplate getSurveyTemplate(Survey2 survey) throws TemplateNotFoundException {
 
         //TODO: only load a template once
         try {
@@ -120,9 +121,9 @@ public class TransformEngine {
         }
     }
 
-    private Survey decrypt(String data) throws IOException {
+    private String decrypt(String data) throws IOException {
         log.debug("DECRYPT|REQUEST|decrypt: {}", data);
-        Response<Survey> decryptResponse = decrypt.decrypt(data);
+        Response<String> decryptResponse = decrypt.decrypt(data);
         log.debug("DECRYPT|RESPONSE|survey: {}", Json.prettyPrint(decryptResponse));
         audit.increment("decrypt." + decryptResponse.statusLine.getStatusCode());
 
@@ -132,7 +133,8 @@ public class TransformEngine {
 
         //TODO audit time taken
 
-        Survey survey = decryptResponse.body;
+        String survey = decryptResponse.body;
+        //TODO: move this bit to the Survey JSON parser?
         if (survey == null) {
             audit.increment("decrypt.400");
             throw new TransformException("transform decrypt did not parse to a Survey. JSON mismatch? data: " + data);

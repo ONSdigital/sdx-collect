@@ -1,6 +1,7 @@
 package com.github.onsdigital.perkin.transform.pck.derivator;
 
 import com.github.onsdigital.perkin.json.Survey;
+import com.github.onsdigital.perkin.json.Survey2;
 import com.github.onsdigital.perkin.transform.pck.Question;
 import com.github.onsdigital.perkin.transform.pck.QuestionTemplate;
 import com.github.onsdigital.perkin.json.SurveyTemplate;
@@ -34,7 +35,7 @@ public class DerivatorFactory {
 		}
 	}
 
-    public List<Question> deriveAllAnswers(Survey survey, SurveyTemplate surveyTemplate) throws DerivatorNotFoundException {
+    public List<Question> deriveAllAnswers(Survey2 survey, SurveyTemplate surveyTemplate) throws DerivatorNotFoundException {
 
         List<Question> result = new ArrayList<>();
 

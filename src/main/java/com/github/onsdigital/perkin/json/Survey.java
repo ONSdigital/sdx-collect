@@ -14,6 +14,7 @@ import java.util.Set;
  */
 @Data
 @Builder
+@Deprecated
 public class Survey {
 
     private String id;

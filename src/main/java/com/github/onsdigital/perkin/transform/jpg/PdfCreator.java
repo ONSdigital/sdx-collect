@@ -1,6 +1,7 @@
 package com.github.onsdigital.perkin.transform.jpg;
 
 import com.github.onsdigital.perkin.json.Survey;
+import com.github.onsdigital.perkin.json.Survey2;
 import com.github.onsdigital.perkin.transform.TransformContext;
 import com.github.onsdigital.perkin.transform.TransformException;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +38,7 @@ public class PdfCreator {
         }
     }
 
-    public byte[] createPdf(final Survey survey, final TransformContext context) throws TransformException {
+    public byte[] createPdf(final Survey2 survey, final TransformContext context) throws TransformException {
 
         init();
 
@@ -76,27 +77,32 @@ public class PdfCreator {
         return out.toByteArray();
     }
 
-    private Source populateFopTemplate(final Survey survey, final TransformContext context) {
+    private Source populateFopTemplate(final Survey2 survey, final TransformContext context) {
 
         String template = context.getPdfTemplate();
 
         //populate fop template
+        //TODO: populate survey information
+        template = populate(template, "formType", survey.getCollection().getInstrumentId());
+        template = populate(template, "ruRef", survey.getMetadata().getRuRef());
+        template = populate(template, "submittedAt", survey.getDate().toString());
+
         //TODO: add question text from the template
 
         //TODO: need to get the survey template to get the keys
         for (String key : survey.getKeys()) {
-            template = populateAnswer(template, key, survey.getAnswer(key));
+            template = populate(template, key, survey.getAnswer(key));
         }
 
         return new StreamSource(new ByteArrayInputStream(template.getBytes(StandardCharsets.UTF_8)));
     }
 
-    private String populateAnswer(String template, String key, String answer) {
-        if (answer == null) {
+    private String populate(String template, String key, String value) {
+        if (value == null) {
             //TODO: add a test to see what happens
         }
 
-        log.debug("TRANSFORM|IMAGE|pdf populating question: " + key + " answer: " + answer);
-        return template.replace("$" + key + "$", answer);
+        log.debug("TRANSFORM|IMAGE|pdf populating key: " + key + " value: " + value);
+        return template.replace("$" + key + "$", value);
     }
 }

@@ -1,6 +1,7 @@
 package com.github.onsdigital.perkin.transform.pck.derivator;
 
 import com.github.onsdigital.perkin.json.Survey;
+import com.github.onsdigital.perkin.json.Survey2;
 import com.github.onsdigital.perkin.transform.pck.Question;
 import com.github.onsdigital.perkin.transform.pck.QuestionTemplate;
 import com.github.onsdigital.perkin.json.SurveyTemplate;
@@ -94,7 +95,7 @@ public class DerviatorFactoryTest {
     @Test
     public void shouldDeriveBooleanTrue() throws DerivatorNotFoundException{
         //given
-        Survey survey = createSurvey("y");
+        Survey2 survey = createSurvey("y");
         SurveyTemplate surveyTemplate = createSurveyTemplate();
 
         //when
@@ -109,7 +110,7 @@ public class DerviatorFactoryTest {
     @Test
     public void shouldDeriveBooleanFalse() throws DerivatorNotFoundException{
         //given
-        Survey survey = createSurvey("n");
+        Survey2 survey = createSurvey("n");
         SurveyTemplate surveyTemplate = createSurveyTemplate();
 
         //when
@@ -128,9 +129,9 @@ public class DerviatorFactoryTest {
         return SurveyTemplate.builder().question(question).build();
     }
 
-    private Survey createSurvey(String answer) {
+    private Survey2 createSurvey(String answer) {
         String questionNumber = "1";
 
-        return Survey.builder().answer(questionNumber, answer).build();
+        return Survey2.builder().answer(questionNumber, answer).build();
     }
 }

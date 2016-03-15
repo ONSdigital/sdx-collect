@@ -1,6 +1,5 @@
 package com.github.onsdigital.perkin.json;
 
-import com.github.onsdigital.perkin.transform.pck.derivator.DerivatorNotFoundException;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -12,7 +11,7 @@ import static org.junit.Assert.assertThat;
 public class SurveyTest {
 
     @Test
-    public void shouldReturnNullAnswerIfNoAnswers() throws IOException, DerivatorNotFoundException {
+    public void shouldReturnNullAnswerIfNoAnswers() throws IOException {
         //Given
         Survey survey = Survey.builder().build();
 

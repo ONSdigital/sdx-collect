@@ -5,12 +5,16 @@
   "survey_id": "021",
   "collection": {
     "exercise_sid": "hfjdskf",
-    "instrument_id": "0203",
+    "instrument_id": "yui789",
     "period": "2016-02-01"
   },
-  "submitted_at": "2016-03-12T10:39:40Z",
+  "submitted_at": "not-a-valid-date",
   "metadata": {
     "user_id": "789473423",
-    "ru_ref": "12345678901A"
+    "ru_ref": "432423423423"
+  },
+  "data": {
+    "001": "2016-01-01",
+    "002": "2016-03-30"
   }
 }

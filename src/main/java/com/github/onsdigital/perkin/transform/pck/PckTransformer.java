@@ -1,6 +1,7 @@
 package com.github.onsdigital.perkin.transform.pck;
 
 import com.github.onsdigital.perkin.json.Survey;
+import com.github.onsdigital.perkin.json.Survey2;
 import com.github.onsdigital.perkin.transform.*;
 import com.github.onsdigital.perkin.transform.pck.derivator.DerivatorFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -34,38 +35,36 @@ public class PckTransformer implements Transformer {
         lookup.put("0203", "RSI7B");
         lookup.put("0205", "RSI9B");
         lookup.put("0213", "RSI8B");
-        lookup.put("0215", "RSI10B"); //TODO: question mark against this one
+        lookup.put("0215", "RSI10B");
     }
 
     @Override
-    public List<DataFile> transform(final Survey survey, final TransformContext context) throws TransformException {
+    public List<DataFile> transform(final Survey2 survey, final TransformContext context) throws TransformException {
         log.debug("TRANSFORM|PCK|transforming into pck from survey: {}", survey);
 
         //we only have the MCI survey template for now
         Pck pck = new Pck();
-        pck.setHeader(generateHeader(context.getBatch()));
-        pck.setFormIdentifier(generateFormIdentifier(survey.getFormReference()));
+        pck.setHeader(generateHeader(context.getBatch(), survey.getDate()));
+        pck.setFormIdentifier(generateFormIdentifier(survey));
         pck.setQuestions(derivatorFactory.deriveAllAnswers(survey, context.getSurveyTemplate()));
         pck.setFormLead(FORM_LEAD);
 
         //TODO: made up a filename structure for now
-        pck.setFilename(context.getBatch() + "_" + survey.getRespondentId() + ".pck");
+        pck.setFilename(context.getBatch() + "_" + survey.getMetadata().getRuRef() + ".pck");
 
         log.info("TRANSFORM|PCK|created pck: " + pck);
 
         return Arrays.asList(pck);
     }
 
-    private String generateHeader(long batch) {
-
-        //TODO: the date should be a date from the survey
-        //TODO: think the batchId should be 6 chars? (we have 5 - or less if the number is e.g. 100) - need to add tests
-	
-		return "FBFV" + leftPadZeroes(String.valueOf(batch), LENGTH_BATCH) + getCurrentDateAsString();
+    private String generateHeader(final long batch, final Date date) {
+		return "FBFV" + leftPadZeroes(String.valueOf(batch), LENGTH_BATCH) + formatDate(date);
 	}
 
-    private String generateFormIdentifier(String idbrFormReference) {
+    private String generateFormIdentifier(Survey2 survey) {
 		StringBuilder formIdentifer = new StringBuilder();
+
+        String idbrFormReference = survey.getCollection().getInstrumentId();
 
         //TODO: looks like this is hardcoded for now?
         //form:idbrrefcheckletter:periodfrom
@@ -82,13 +81,11 @@ public class PckTransformer implements Transformer {
         //0205 = RSI9B
         //0213 = RSI8B
         //0215 = RSI10B (?)
-        String idbrReference = "99999994188";
-        String checkLetter = "F";
+        String idbrReference = survey.getMetadata().getRuRef();
 
 		formIdentifer.append(commonSoftwareFormReference);
 		formIdentifer.append(HEADER_SEPARATOR);
 		formIdentifer.append(idbrReference);
-		formIdentifer.append(checkLetter);
 		formIdentifer.append(HEADER_SEPARATOR);
 
         //TODO get date from survey
@@ -120,10 +117,8 @@ public class PckTransformer implements Transformer {
 		return period;
 	}
 	
-	public static String getCurrentDateAsString(){
-		LocalDate date = LocalDate.now();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy");
-		return date.format(formatter);
+	public static String formatDate(Date date){
+		return new SimpleDateFormat("dd/MM/yy").format(date);
 	}
 
     private String leftPadZeroes(String str, int length) {

@@ -2,6 +2,8 @@ package com.github.onsdigital.perkin.tranform.jpg;
 
 import com.github.onsdigital.perkin.helper.FileHelper;
 import com.github.onsdigital.perkin.json.Survey;
+import com.github.onsdigital.perkin.json.Survey2;
+import com.github.onsdigital.perkin.json.SurveyParser;
 import com.github.onsdigital.perkin.transform.TransformContext;
 import com.github.onsdigital.perkin.transform.TransformEngine;
 import com.github.onsdigital.perkin.transform.jpg.PdfCreator;
@@ -28,9 +30,6 @@ public class PdfCreatorTest {
 
     private PdfCreator classUnderTest;
 
-    @Mock
-    private Survey survey;
-
     @Before
     public void setUp() throws IOException, URISyntaxException, SAXException {
         classUnderTest = new PdfCreator();
@@ -39,8 +38,7 @@ public class PdfCreatorTest {
     @Test
     public void shouldCreatePdf() throws IOException {
         //given
-        when(survey.getAnswer(anyString())).thenReturn("answer");
-        when(survey.getKeys()).thenReturn(new HashSet(Arrays.asList("1", "11")));
+        Survey2 survey = new SurveyParser().parse(FileHelper.loadFile("survey2.json"));
         TransformContext context = TransformEngine.getInstance().createTransformContext(survey);
 
         //when
