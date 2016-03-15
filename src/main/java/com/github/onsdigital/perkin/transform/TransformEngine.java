@@ -66,24 +66,21 @@ public class TransformEngine {
 
             audit.increment("transform.200");
 
+        } catch (SurveyParserException e) {
+            audit.increment("transform.400", e);
+            throw e;
         } catch (TransformException e) {
-            audit.increment("transform.500");
+            audit.increment("transform.500", e);
             throw e;
         } catch (IOException e) {
-            audit.increment("transform.500");
+            audit.increment("transform.500", e);
             throw new TransformException("Problem transforming survey", e);
         }
     }
 
     private void publish(List<DataFile> files) throws IOException {
-
-        try {
-            publisher.publish(files);
-            audit.increment("publish.200");
-        } catch (IOException e) {
-            audit.increment("publish.500");
-            throw e;
-        }
+        publisher.publish(files);
+        audit.increment("publish.200", files.size());
     }
 
     //TODO: make private
@@ -133,14 +130,7 @@ public class TransformEngine {
 
         //TODO audit time taken
 
-        String survey = decryptResponse.body;
-        //TODO: move this bit to the Survey JSON parser?
-        if (survey == null) {
-            audit.increment("decrypt.400");
-            throw new TransformException("transform decrypt did not parse to a Survey. JSON mismatch? data: " + data);
-        }
-
-        return survey;
+        return decryptResponse.body;
     }
 
     private boolean isError(StatusLine statusLine) {

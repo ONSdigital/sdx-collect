@@ -71,7 +71,7 @@ public class SurveyParser {
         }
     }
 
-    private static final String ISO8601 = "yyyy-MM-dd'T'HH:mm:ssX";
+    public static final String ISO8601 = "yyyy-MM-dd'T'HH:mm:ssX";
 
     private static final String[] DATE_FORMATS = new String[] {
             ISO8601,
