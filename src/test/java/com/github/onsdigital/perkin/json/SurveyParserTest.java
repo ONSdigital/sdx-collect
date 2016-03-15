@@ -80,6 +80,24 @@ public class SurveyParserTest {
         classUnderTest.parse(json);
     }
 
+    @Test(expected = SurveyParserException.class)
+    public void shouldRejectNoCollection() throws IOException {
+        //given
+        String json = getSurvey("survey.invalid.no.collection.json");
+
+        //when
+        classUnderTest.parse(json);
+    }
+
+    @Test(expected = SurveyParserException.class)
+    public void shouldRejectNoMetadata() throws IOException {
+        //given
+        String json = getSurvey("survey.invalid.no.metadata.json");
+
+        //when
+        classUnderTest.parse(json);
+    }
+
     //TODO: should we reject a survey with no period date?
 //    @Test(expected = SurveyParserException.class)
 //    public void shouldRejectNoPeriodDate() throws IOException {

@@ -23,6 +23,18 @@ public class SurveyParser {
                 throw new SurveyParserException(message);
             }
 
+            if (survey.getCollection() == null) {
+                String message = "'collection' missing while parsing survey from json: " + json;
+                log.error("SURVEY|PARSE|" + message);
+                throw new SurveyParserException(message);
+            }
+
+            if (survey.getMetadata() == null) {
+                String message = "'metadata' missing while parsing survey from json: " + json;
+                log.error("SURVEY|PARSE|" + message);
+                throw new SurveyParserException(message);
+            }
+
             if (log.isDebugEnabled()) {
                 log.debug("SURVEY|PARSE|parsed json as {}", survey);
             }
