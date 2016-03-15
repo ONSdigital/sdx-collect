@@ -29,8 +29,8 @@ public class SurveyParser {
             return survey;
 
         } catch(JsonParseException e) {
-            String message = "Problem parsing survey from json" + json;
-            log.error("SURVEY|PARSE|{} {}", message, json, e);
+            String message = "Problem parsing survey from json " + json;
+            log.error("SURVEY|PARSE|{}", message, e);
             throw new SurveyParserException(message, json, e);
         }
     }

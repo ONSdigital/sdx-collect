@@ -1,6 +1,7 @@
 package com.github.onsdigital.perkin.transform;
 
 import com.github.onsdigital.perkin.json.SurveyParser;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 
 import java.text.SimpleDateFormat;
@@ -33,7 +34,7 @@ public class Audit {
     }
 
     protected String getExceptionMessage(Exception e) {
-        return e.getClass().getName() + " " + e.getMessage() + getCause(e);
+        return " " + e.getClass().getName() + " " + e.getMessage() + getCause(e);
     }
 
     private String getCause(Exception e) {
@@ -63,5 +64,9 @@ public class Audit {
 
     private String createMessage(String key) {
         return new SimpleDateFormat(SurveyParser.ISO8601).format(new Date()) + " " + key;
+    }
+
+    public List<String> getMessages() {
+        return Lists.reverse(messages);
     }
 }
