@@ -7,14 +7,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
 import java.io.IOException;
-import java.util.Map;
+import java.util.List;
 
 @Api
-public class Info {
+public class Log {
 
     @GET
-    public Map<String, String> get(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public List<String> get(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        return TransformEngine.getInstance().getAudit().getCounters();
+        return TransformEngine.getInstance().getAudit().getMessages();
     }
 }

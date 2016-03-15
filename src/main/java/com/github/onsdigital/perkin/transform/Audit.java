@@ -69,4 +69,14 @@ public class Audit {
     public List<String> getMessages() {
         return Lists.reverse(messages);
     }
+
+    public Map<String, String> getCounters() {
+        Map<String, String> result = new HashMap<>();
+
+        for (String key : counters.keySet()) {
+            result.put(key, String.valueOf(counters.get(key).longValue()));
+        }
+
+        return result;
+    }
 }
