@@ -144,11 +144,13 @@ public class Http implements AutoCloseable {
         post.setHeaders(combineHeaders(headers));
 
         // Add the request message if there is one
+        log.debug("HTTP|request: {}", requestMessage);
         post.setEntity(serialiseRequestMessage(requestMessage));
 
         // Send the request and process the response
         try (CloseableHttpResponse response = httpClient().execute(post)) {
             String body = deserialiseResponseMessage(response);
+            log.debug("HTTP|response body: {}", body);
             return new Response<>(response.getStatusLine(), body);
         }
     }
