@@ -51,6 +51,8 @@ public class TransformEngine {
     public void transform(final String data) throws TransformException {
 
         try {
+            audit.increment("surveys");
+
             String json = decrypt(data);
             Survey survey = parser.parse(json);
 
