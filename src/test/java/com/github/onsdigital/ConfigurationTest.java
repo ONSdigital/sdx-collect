@@ -1,6 +1,5 @@
 package com.github.onsdigital;
 
-import com.github.onsdigital.Configuration;
 import org.junit.After;
 import org.junit.Test;
 

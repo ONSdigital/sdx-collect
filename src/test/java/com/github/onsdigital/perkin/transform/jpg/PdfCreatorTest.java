@@ -1,11 +1,10 @@
-package com.github.onsdigital.perkin.tranform.jpg;
+package com.github.onsdigital.perkin.transform.jpg;
 
 import com.github.onsdigital.perkin.helper.FileHelper;
 import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.json.SurveyParser;
 import com.github.onsdigital.perkin.transform.TransformContext;
 import com.github.onsdigital.perkin.transform.TransformEngine;
-import com.github.onsdigital.perkin.transform.jpg.PdfCreator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

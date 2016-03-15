@@ -28,8 +28,21 @@ public class Audit {
     }
 
     public void increment(String key, Exception e) {
-        String message = createMessage(key) + " " + e.getMessage();
+        String message = createMessage(key) + getExceptionMessage(e);
         increment(key, 1, message);
+    }
+
+    protected String getExceptionMessage(Exception e) {
+        return e.getClass().getName() + " " + e.getMessage() + getCause(e);
+    }
+
+    private String getCause(Exception e) {
+        String cause = "";
+        if (e.getCause() != null) {
+            cause = " caused by " + e.getCause().getClass().getName() + " " + e.getCause().getMessage();
+        }
+
+        return cause;
     }
 
     private void increment(String key, int size, String message) {
