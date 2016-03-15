@@ -16,6 +16,7 @@ public class SurveyParser {
         try {
             Survey survey = deserialize(json);
 
+            //TODO validation - type, origin, respondent should be 12 chars, 11 digits and a check letter
             if (!"0.0.1".equals(survey.getVersion())) {
                 String message = "Unsupported version (0.0.1 supported), while parsing survey from json: " + json;
                 log.error("SURVEY|PARSE|" + message);
