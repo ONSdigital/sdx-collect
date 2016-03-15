@@ -2,7 +2,6 @@ package com.github.onsdigital.perkin.api;
 
 import com.github.davidcarboni.restolino.framework.Api;
 import com.github.onsdigital.perkin.helper.FileHelper;
-import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.json.Survey2;
 import com.github.onsdigital.perkin.json.SurveyParser;
 import com.github.onsdigital.perkin.publish.FtpPublisher;
@@ -54,27 +53,6 @@ public class Ftp {
         out.flush();
 
         return null;
-    }
-
-    private com.github.onsdigital.perkin.json.Survey createSurvey() {
-        return com.github.onsdigital.perkin.json.Survey.builder()
-                .id("id")
-                .name("name")
-                .respondentId("respondentId")
-                .date("01 Oct 2014")
-                .respondentCheckLetter("A")
-
-                .answer("1", "y")
-                .answer("11", "y")
-                .answer("20", "n")
-                .answer("30", "y")
-                .answer("40", "700")
-                .answer("50", "311008")
-                .answer("70", "74")
-                .answer("90", "74")
-                .answer("100", "some comment")
-
-                .build();
     }
 
     private com.github.onsdigital.perkin.json.Survey2 createSurvey2() throws IOException {

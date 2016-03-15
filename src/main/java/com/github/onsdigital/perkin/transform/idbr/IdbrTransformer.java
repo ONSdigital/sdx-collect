@@ -2,7 +2,6 @@ package com.github.onsdigital.perkin.transform.idbr;
 
 //import org.springframework.util.Assert;
 
-import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.json.Survey2;
 import com.github.onsdigital.perkin.transform.DataFile;
 import com.github.onsdigital.perkin.transform.TransformContext;

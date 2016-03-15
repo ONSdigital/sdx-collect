@@ -1,6 +1,5 @@
 package com.github.onsdigital.perkin.transform.jpg;
 
-import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.json.Survey2;
 import com.github.onsdigital.perkin.transform.TransformContext;
 import com.github.onsdigital.perkin.transform.TransformException;
@@ -23,7 +22,6 @@ public class PdfCreator {
     private FopFactory fopFactory;
     private boolean init = false;
 
-    //TODO: have a Template object that has the PdfTemplate?
     private void init() throws TransformException {
         if (!init) {
             try {
@@ -82,14 +80,14 @@ public class PdfCreator {
         String template = context.getPdfTemplate();
 
         //populate fop template
-        //TODO: populate survey information
+        //populate survey information
         template = populate(template, "formType", survey.getCollection().getInstrumentId());
         template = populate(template, "ruRef", survey.getMetadata().getRuRef());
         template = populate(template, "submittedAt", survey.getDate().toString());
 
         //TODO: add question text from the template
 
-        //TODO: need to get the survey template to get the keys
+        //TODO: need to get the survey template to get the keys we expect - not just the keys in the answers
         for (String key : survey.getKeys()) {
             template = populate(template, key, survey.getAnswer(key));
         }

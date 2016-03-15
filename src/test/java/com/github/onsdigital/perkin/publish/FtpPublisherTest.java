@@ -1,11 +1,8 @@
 package com.github.onsdigital.perkin.publish;
 
 import com.github.onsdigital.Configuration;
-import com.github.onsdigital.Json;
-import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.transform.DataFile;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.junit.After;
@@ -20,7 +17,6 @@ import org.mockftpserver.fake.filesystem.UnixFakeFileSystem;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

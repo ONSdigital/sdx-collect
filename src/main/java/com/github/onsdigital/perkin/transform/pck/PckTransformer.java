@@ -1,6 +1,5 @@
 package com.github.onsdigital.perkin.transform.pck;
 
-import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.json.Survey2;
 import com.github.onsdigital.perkin.transform.*;
 import com.github.onsdigital.perkin.transform.pck.derivator.DerivatorFactory;
@@ -10,8 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -66,7 +63,6 @@ public class PckTransformer implements Transformer {
 
         String idbrFormReference = survey.getCollection().getInstrumentId();
 
-        //TODO: looks like this is hardcoded for now?
         //form:idbrrefcheckletter:periodfrom
 
         //form type is 5 chars
@@ -74,13 +70,12 @@ public class PckTransformer implements Transformer {
         //idbr reference is 11 digits, 1 char check letter
         //colon
         //period is 4 chars
-        //TODO: get data from survey
         String commonSoftwareFormReference = lookupCommonSoftwareFormReference(idbrFormReference);
         //e.g. idbr form reference 0203, RSI7B for common software
         //0203 = RSI7B
         //0205 = RSI9B
         //0213 = RSI8B
-        //0215 = RSI10B (?)
+        //0215 = RSI10B
         String idbrReference = survey.getMetadata().getRuRef();
 
 		formIdentifer.append(commonSoftwareFormReference);
@@ -88,7 +83,7 @@ public class PckTransformer implements Transformer {
 		formIdentifer.append(idbrReference);
 		formIdentifer.append(HEADER_SEPARATOR);
 
-        //TODO get date from survey
+        //TODO get period date from survey
 		String refpStartDate ="01 Oct 2014";
 		formIdentifer.append(getFormattedPeriod(refpStartDate));
 

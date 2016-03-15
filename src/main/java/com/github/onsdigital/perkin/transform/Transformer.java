@@ -1,6 +1,5 @@
 package com.github.onsdigital.perkin.transform;
 
-import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.json.Survey2;
 
 import java.util.List;
