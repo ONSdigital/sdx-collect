@@ -3,87 +3,87 @@
   "name": "MCI",
   "questionTemplates": [
     {
-      "questionNumber": "1",
+      "questionNumber": "0001",
       "derivator": "contains",
       "optional": true
     },
     {
-      "questionNumber": "11",
+      "questionNumber": "0011",
       "derivator": "default",
       "optional": false
     },
     {
-      "questionNumber": "12",
+      "questionNumber": "0012",
       "derivator": "default",
       "optional": false
     },
     {
-      "questionNumber": "20",
+      "questionNumber": "0020",
       "derivator": "default",
       "optional": true
     },
     {
-      "questionNumber": "51",
+      "questionNumber": "0051",
       "derivator": "default",
       "optional": true
     },
     {
-      "questionNumber": "52",
+      "questionNumber": "0052",
       "derivator": "default",
       "optional": true
     },
     {
-      "questionNumber": "53",
+      "questionNumber": "0053",
       "derivator": "default",
       "optional": true
     },
     {
-      "questionNumber": "54",
+      "questionNumber": "0054",
       "derivator": "default",
       "optional": true
     },
     {
-      "questionNumber": "50",
+      "questionNumber": "0050",
       "derivator": "default",
       "optional": true
     },
     {
-      "questionNumber": "22",
+      "questionNumber": "0022",
       "derivator": "default",
       "optional": true
     },
     {
-      "questionNumber": "23",
+      "questionNumber": "0023",
       "derivator": "default",
       "optional": false
     },
     {
-      "questionNumber": "24",
+      "questionNumber": "0024",
       "derivator": "default",
       "optional": true
     },
     {
-      "questionNumber": "25",
+      "questionNumber": "0025",
       "derivator": "default",
       "optional": false
     },
     {
-      "questionNumber": "26",
+      "questionNumber": "0026",
       "derivator": "default",
       "optional": true
     },
     {
-      "questionNumber": "21",
+      "questionNumber": "0021",
       "derivator": "default",
       "optional": true
     },
     {
-      "questionNumber": "27",
+      "questionNumber": "0027",
       "derivator": "default",
       "optional": true
     },
     {
-      "questionNumber": "146",
+      "questionNumber": "0146",
       "derivator": "contains",
       "optional": false
     }
