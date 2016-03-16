@@ -8,7 +8,7 @@ public class Initialise implements Startup {
 
     @Override
     public void init() {
-        log.info(">>>>>>>>>>> init >>>>>>>>>>>>> start listening for surveys...");
+        log.info(">>>>>>>>>>> init >>>>>>>>>>>>>");
 
         new SurveyListener().start();
     }

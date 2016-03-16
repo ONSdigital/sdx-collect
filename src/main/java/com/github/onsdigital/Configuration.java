@@ -18,7 +18,7 @@ public abstract class Configuration {
      */
     public static String get(String key) {
         String value = StringUtils.defaultIfBlank(System.getProperty(key), System.getenv(key));
-        log.debug("CONFIGURATION|key: {} value: {}", key, value);
+        log.trace("CONFIGURATION|key: {} value: {}", key, ConfigurationManager.createSafeValue(key, value));
         return value;
     }
 
@@ -28,7 +28,7 @@ public abstract class Configuration {
         if (value != null) {
             i = Integer.parseInt(value);
         }
-        log.trace("CONFIGURATION|key: {} default: {} value: {}", key, defaultValue, i);
+        log.info("CONFIGURATION|key: {} value: {}", key, i);
         return i;
     }
 
@@ -42,7 +42,7 @@ public abstract class Configuration {
      */
     public static String get(String key, String defaultValue) {
         String value = StringUtils.defaultIfBlank(get(key), defaultValue);
-        log.trace("CONFIGURATION|key: {} default: {} value: {}", key, defaultValue, value);
+        log.info("CONFIGURATION|key: {} value: {}", key, ConfigurationManager.createSafeValue(key, value));
         return value;
     }
 

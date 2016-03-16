@@ -4,7 +4,7 @@ import com.github.davidcarboni.httpino.Endpoint;
 import com.github.davidcarboni.httpino.Host;
 import com.github.davidcarboni.httpino.Http;
 import com.github.davidcarboni.httpino.Response;
-import com.github.onsdigital.Configuration;
+import com.github.onsdigital.ConfigurationManager;
 import com.github.onsdigital.perkin.transform.idbr.IdbrReceipt;
 import com.github.onsdigital.perkin.json.Result;
 import lombok.extern.slf4j.Slf4j;
@@ -20,15 +20,12 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 public class HttpPublisher {
 
-    protected static final String HOST = "publish.host";
-    protected static final String PATH = "publish.path";
-
     private String host;
     private String path;
 
     public HttpPublisher() {
-        host = Configuration.get(HOST, "http://pootle:8080/");
-        path = Configuration.get(PATH, "/publish");
+        host = ConfigurationManager.get("publish.host");
+        path = ConfigurationManager.get("publish.path");
     }
 
     public Response<Result> publish(final IdbrReceipt receipt) throws IOException {

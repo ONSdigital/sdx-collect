@@ -1,6 +1,7 @@
 package com.github.onsdigital.perkin.publish;
 
 import com.github.onsdigital.Configuration;
+import com.github.onsdigital.ConfigurationManager;
 import com.github.onsdigital.perkin.transform.DataFile;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.FTPClient;
@@ -56,8 +57,9 @@ public class FtpPublisherTest {
         port = fakeFtpServer.getServerControlPort();
 
         //create publisher
-        Configuration.set(FtpPublisher.FTP_HOST, "localhost");
-        Configuration.set(FtpPublisher.FTP_PORT, port);
+        Configuration.set("ftp.host", "localhost");
+        Configuration.set("ftp.port", port);
+        ConfigurationManager.getInstance().loadConfiguration();
         classUnderTest = new FtpPublisher();
 
         //mock files to publish
@@ -77,7 +79,8 @@ public class FtpPublisherTest {
     @Test(expected = IOException.class)
     public void shouldErrorConnectionRefused() throws IOException {
         //given
-        Configuration.set(FtpPublisher.FTP_PORT, 8888);
+        Configuration.set("ftp.port", 8888);
+        ConfigurationManager.getInstance().loadConfiguration();
         classUnderTest = new FtpPublisher();
 
         //when
@@ -87,7 +90,8 @@ public class FtpPublisherTest {
     @Test(expected = IOException.class)
     public void shouldErrorInvalidCredentials() throws IOException {
         //given
-        Configuration.set(FtpPublisher.FTP_USER, "invalid");
+        Configuration.set("ftp.user", "invalid");
+        ConfigurationManager.getInstance().loadConfiguration();
         classUnderTest = new FtpPublisher();
 
         //when

@@ -18,7 +18,7 @@ public class SurveyTemplateTest {
     @Test
     public void shouldBuildTemplateFromJson() throws IOException {
         //Given
-        String json = FileHelper.loadFile("surveys/template.023.json");
+        String json = FileHelper.loadFile("templates/023.survey.json");
 
         //When
         SurveyTemplate template = Serialiser.deserialise(json, SurveyTemplate.class);

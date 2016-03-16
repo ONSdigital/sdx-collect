@@ -1,11 +1,8 @@
 package com.github.onsdigital.perkin.publish;
 
-import com.github.onsdigital.Configuration;
-import com.github.onsdigital.perkin.transform.idbr.IdbrReceipt;
+import com.github.onsdigital.ConfigurationManager;
 import com.github.onsdigital.perkin.transform.DataFile;
-import com.github.onsdigital.perkin.transform.jpg.Image;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.fileupload.FileItem;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -16,17 +13,10 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Slf4j
 public class FtpPublisher {
-
-    protected static final String FTP_HOST = "ftp.host";
-    protected static final String FTP_PORT = "ftp.port";
-    protected static final String FTP_USER = "ftp.user";
-    protected static final String FTP_PASSWORD = "ftp.password";
-    protected static final String FTP_PATH = "ftp.path";
 
     private String host;
     private int port;
@@ -35,11 +25,11 @@ public class FtpPublisher {
     private String path;
 
     public FtpPublisher() {
-        host = Configuration.get(FTP_HOST, "pure-ftpd");
-        port = Configuration.getInt(FTP_PORT, 21);
-        user = Configuration.get(FTP_USER, "ons");
-        password = Configuration.get(FTP_PASSWORD, "ons");
-        path = Configuration.get(FTP_PATH, "/");
+        host = ConfigurationManager.get("ftp.host");
+        port = ConfigurationManager.getInt("ftp.port");
+        user = ConfigurationManager.get("ftp.user");
+        password = ConfigurationManager.get("ftp.password");
+        path = ConfigurationManager.get("ftp.path");
     }
 
     public void publish(List<DataFile> files) throws IOException {

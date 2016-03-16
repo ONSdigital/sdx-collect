@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.Map;
 
 @Api
-public class Info {
+public class Metrics {
 
     @GET
     public Map<String, String> get(HttpServletRequest request, HttpServletResponse response) throws IOException {

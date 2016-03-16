@@ -2,11 +2,10 @@ package com.github.onsdigital.perkin.decrypt;
 
 import com.github.davidcarboni.httpino.Endpoint;
 import com.github.davidcarboni.httpino.Host;
+import com.github.onsdigital.ConfigurationManager;
 import com.github.onsdigital.perkin.helper.Http;
 import com.github.davidcarboni.httpino.Response;
-import com.github.onsdigital.Configuration;
 import lombok.extern.slf4j.Slf4j;
-
 
 import java.io.IOException;
 
@@ -16,15 +15,12 @@ import java.io.IOException;
 @Slf4j
 public class HttpDecrypt {
 
-    protected static final String HOST = "decrypt.host";
-    protected static final String PATH = "decrypt.path";
-
     private String host;
     private String path;
 
     public HttpDecrypt() {
-        host = Configuration.get(HOST, "http://posie:5000/");
-        path = Configuration.get(PATH, "/decrypt");
+        host = ConfigurationManager.get("decrypt.host");
+        path = ConfigurationManager.get("decrypt.path");
     }
 
     public Response<String> decrypt(final String data) throws IOException {
