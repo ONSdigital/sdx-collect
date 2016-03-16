@@ -84,7 +84,7 @@ public class FtpPublisherTest {
         classUnderTest = new FtpPublisher();
 
         //when
-        classUnderTest.publish(files);
+        classUnderTest.publish(files, null);
     }
 
     @Test(expected = IOException.class)
@@ -95,7 +95,7 @@ public class FtpPublisherTest {
         classUnderTest = new FtpPublisher();
 
         //when
-        classUnderTest.publish(files);
+        classUnderTest.publish(files, null);
     }
 
     @Test
@@ -103,7 +103,7 @@ public class FtpPublisherTest {
         //given
 
         //when
-        classUnderTest.publish(files);
+        classUnderTest.publish(files, null);
 
         //then
         FTPClient ftpClient = new FTPClient();

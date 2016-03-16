@@ -4,6 +4,7 @@ public interface DataFile {
 
     byte[] getBytes();
     String getFilename();
+    long getSize();
 
     //TODO: getMimeType()?
 }

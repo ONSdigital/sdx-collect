@@ -17,6 +17,11 @@ public class Image implements DataFile {
     }
 
     @Override
+    public long getSize() {
+        return data == null ? 0 : data.length;
+    }
+
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Image(filename=").append(filename).append(" size=");
 

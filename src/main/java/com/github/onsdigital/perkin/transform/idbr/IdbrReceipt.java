@@ -19,4 +19,9 @@ public class IdbrReceipt implements DataFile {
     public byte[] getBytes() {
         return receipt.getBytes();
     }
+
+    @Override
+    public long getSize() {
+        return receipt.length();
+    }
 }

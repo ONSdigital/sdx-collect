@@ -53,7 +53,8 @@ public class TransformEngine {
         try {
             audit.increment("surveys");
 
-            String json = "";
+            //TODO: move into decrypt and make configurable
+            String json;
             if (data != null && data.trim().startsWith("{")) {
                 audit.increment("surveys.plaintext");
                 log.info("DECRYPT|SKIPPING|json is plain text, not encrypted: {}", data);
@@ -88,8 +89,7 @@ public class TransformEngine {
     }
 
     private void publish(List<DataFile> files) throws IOException {
-        publisher.publish(files);
-        audit.increment("publish.200", files.size());
+        publisher.publish(files, audit);
     }
 
     //TODO: make private

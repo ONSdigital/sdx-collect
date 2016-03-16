@@ -1,6 +1,7 @@
 package com.github.onsdigital.perkin.publish;
 
 import com.github.onsdigital.ConfigurationManager;
+import com.github.onsdigital.perkin.transform.Audit;
 import com.github.onsdigital.perkin.transform.DataFile;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,11 +33,14 @@ public class FtpPublisher {
         path = ConfigurationManager.get("ftp.path");
     }
 
-    public void publish(List<DataFile> files) throws IOException {
-        for (DataFile data : files) {
-            String filename = data.getFilename();
-            InputStream inputStream = new ByteArrayInputStream(data.getBytes());
+    public void publish(List<DataFile> files, Audit audit) throws IOException {
+        for (DataFile file : files) {
+            String filename = file.getFilename();
+            InputStream inputStream = new ByteArrayInputStream(file.getBytes());
             put(inputStream, path, filename);
+            if (audit != null) {
+                audit.increment("publish.200", file);
+            }
         }
     }
 

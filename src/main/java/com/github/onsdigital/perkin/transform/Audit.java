@@ -33,6 +33,11 @@ public class Audit {
         increment(key, 1, message);
     }
 
+    public void increment(String key, DataFile file) {
+        String message = createMessage(key) + getDataFileMessage(file);
+        increment(key, 1, message);
+    }
+
     protected String getExceptionMessage(Exception e) {
         return " " + e.getClass().getName() + " " + e.getMessage() + getCause(e);
     }
@@ -44,6 +49,10 @@ public class Audit {
         }
 
         return cause;
+    }
+
+    private String getDataFileMessage(DataFile file) {
+        return " " + file.getFilename() + " (" + file.getSize() + " bytes)";
     }
 
     private void increment(String key, int size, String message) {

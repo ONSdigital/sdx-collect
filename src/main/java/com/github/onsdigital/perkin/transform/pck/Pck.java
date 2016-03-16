@@ -71,6 +71,11 @@ public class Pck implements DataFile {
         return sb.toString().getBytes(StandardCharsets.UTF_8);
     }
 
+    @Override
+    public long getSize() {
+        return getBytes().length;
+    }
+
     //TODO: remove?
     @Override
 	public String toString(){
