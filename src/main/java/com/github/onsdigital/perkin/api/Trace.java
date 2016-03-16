@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Api
-public class Log {
+public class Trace {
 
     @GET
     public List<String> get(HttpServletRequest request, HttpServletResponse response) throws IOException {

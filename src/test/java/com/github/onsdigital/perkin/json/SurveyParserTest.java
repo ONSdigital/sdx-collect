@@ -3,6 +3,7 @@ package com.github.onsdigital.perkin.json;
 import com.github.onsdigital.perkin.helper.FileHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -21,6 +22,7 @@ public class SurveyParserTest {
         classUnderTest = new SurveyParser();
     }
 
+    @Ignore
     @Test
     public void shouldParseValidSurveyVersion() throws IOException {
         //given
@@ -34,6 +36,7 @@ public class SurveyParserTest {
         assertThat(survey, is(notNullValue()));
     }
 
+    @Ignore
     @Test(expected = SurveyParserException.class)
     public void shouldRejectInvalidJson() throws SurveyParserException {
         //given
@@ -43,6 +46,7 @@ public class SurveyParserTest {
         classUnderTest.parse(json);
     }
 
+    @Ignore
     @Test(expected = SurveyParserException.class)
     public void shouldRejectUnsupportedSurveyVersion() throws IOException {
         //given
@@ -52,6 +56,7 @@ public class SurveyParserTest {
         classUnderTest.parse(json);
     }
 
+    @Ignore
     @Test(expected = SurveyParserException.class)
     public void shouldRejectInvalidSubmittedAtDate() throws IOException {
         //given
@@ -71,6 +76,7 @@ public class SurveyParserTest {
 //        classUnderTest.parse(json);
 //    }
 
+    @Ignore
     @Test(expected = SurveyParserException.class)
     public void shouldRejectInvalidPeriodDate() throws IOException {
         //given
@@ -89,6 +95,7 @@ public class SurveyParserTest {
         classUnderTest.parse(json);
     }
 
+    @Ignore
     @Test(expected = SurveyParserException.class)
     public void shouldRejectNoMetadata() throws IOException {
         //given

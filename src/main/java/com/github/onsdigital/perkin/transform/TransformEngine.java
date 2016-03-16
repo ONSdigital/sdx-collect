@@ -53,7 +53,14 @@ public class TransformEngine {
         try {
             audit.increment("surveys");
 
-            String json = decrypt(data);
+            String json = "";
+            if (data != null && data.trim().startsWith("{")) {
+                audit.increment("surveys.plaintext");
+                log.info("DECRYPT|SKIPPING|json is plain text, not encrypted: {}", data);
+                json = data;
+            } else {
+                json = decrypt(data);
+            }
             Survey survey = parser.parse(json);
 
             TransformContext context = createTransformContext(survey);
@@ -100,9 +107,9 @@ public class TransformEngine {
 
         try {
             //TODO: only load a template once
-            pdfTemplate = FileHelper.loadFile("to-jpg/mci.fo");
+            pdfTemplate = FileHelper.loadFile("templates/023.pdf.fo");
         } catch (IOException e) {
-            throw new TemplateNotFoundException("problem loading pdf template: to-jpg/mci.fo");
+            throw new TemplateNotFoundException("problem loading pdf template: templates/023.pdf.fo");
         }
 
         return pdfTemplate;
@@ -113,10 +120,10 @@ public class TransformEngine {
         //TODO: only load a template once
         try {
             //we only have the MCI survey template for now
-            String json = new String(FileHelper.loadFileAsBytes("surveys/template.023.json"));
+            String json = FileHelper.loadFile("templates/023.survey.json");
             return Serialiser.deserialise(json, SurveyTemplate.class);
         } catch (IOException e) {
-            throw new TemplateNotFoundException("surveys/template.023.json", e);
+            throw new TemplateNotFoundException("templates/023.survey.json", e);
         }
     }
 

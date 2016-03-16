@@ -25,7 +25,7 @@ public class PdfCreator {
     private void init() throws TransformException {
         if (!init) {
             try {
-                InputStream in = getClass().getClassLoader().getResourceAsStream("to-jpg/fop-config.xml");
+                InputStream in = getClass().getClassLoader().getResourceAsStream("fop-config.xml");
                 URI baseUri = new URL("http://survey.ons.gov.uk/whatever").toURI();
                 fopFactory = FopFactory.newInstance(baseUri, in);
 

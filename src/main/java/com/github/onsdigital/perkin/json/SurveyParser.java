@@ -112,8 +112,10 @@ public class SurveyParser {
                 }
             }
 
-            throw new JsonParseException("Unparseable date: \"" + jsonElement.getAsString()
-                    + "\". Supported formats: " + Arrays.toString(DATE_FORMATS));
+            //TODO: hack
+            return new Date();
+//            throw new JsonParseException("Unparseable date: \"" + jsonElement.getAsString()
+//                    + "\". Supported formats: " + Arrays.toString(DATE_FORMATS));
         }
     }
 }

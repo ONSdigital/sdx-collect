@@ -1,35 +1,28 @@
 package com.github.onsdigital.perkin;
 
-import com.github.onsdigital.Configuration;
+import com.github.onsdigital.ConfigurationManager;
 import com.github.onsdigital.perkin.transform.TransformEngine;
 import com.rabbitmq.client.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 
 @Slf4j
 public class SurveyListener {
 
-    protected static final String QUEUE_HOST = "RABBITMQ_HOST";
-    protected static final String QUEUE_NAME = "RABBITMQ_QUEUE";
-    protected static final String QUEUE_USERNAME = "RABBITMQ_DEFAULT_USER";
-    protected static final String QUEUE_PASSWORD = "RABBITMQ_DEFAULT_PASS";
-
-    private String host = "rabbit";
-    private String queue = "survey";
-    private String username = null;
-    private String password = null;
+    private String host;
+    private String queue;
+    private String username;
+    private String password;
 
     private TransformEngine transformer = TransformEngine.getInstance();
 
-    /**
-     * Updates configured values if environment variables have been set.
-     */
     public SurveyListener() {
-        host = Configuration.get(QUEUE_HOST, host);
-        queue = Configuration.get(QUEUE_NAME, queue);
-        username = Configuration.get(QUEUE_USERNAME, username);
-        password = Configuration.get(QUEUE_PASSWORD, password);
+        host = ConfigurationManager.get("RABBITMQ_HOST");
+        queue = ConfigurationManager.get("RABBITMQ_QUEUE");
+        username = ConfigurationManager.get("RABBITMQ_DEFAULT_USER");
+        password = ConfigurationManager.get("RABBITMQ_DEFAULT_PASS");
     }
 
     public void start() {
@@ -56,13 +49,13 @@ public class SurveyListener {
 
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(host);
-        if (username!=null) factory.setUsername(username);
-        if (password!=null) factory.setPassword(password);
+        if (StringUtils.isNotBlank(username)) factory.setUsername(username);
+        if (StringUtils.isNotBlank(password)) factory.setPassword(password);
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
 
         channel.queueDeclare(queue, false, false, false, null);
-        log.info("QUEUE|CONNECTION|START|listening to queue: {} on host: {} username: {}", queue, host, username);
+        log.info("QUEUE|CONNECTION|START|listening to queue: {} on host: {} username: {} password: {}", queue, host, username, ConfigurationManager.getSafe("RABBITMQ_DEFAULT_PASS"));
 
         Consumer consumer = new DefaultConsumer(channel) {
             public static final boolean REQUEUE = true;
