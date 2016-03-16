@@ -66,7 +66,7 @@ public class PckTransformerTest {
     }
 
     @Test
-    public void shouldBuildPck() throws IOException {
+    public void shouldTransformSurveyToPck() throws IOException {
 
         //Given
         Survey survey = loadSurvey();

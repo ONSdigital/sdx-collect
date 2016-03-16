@@ -32,26 +32,26 @@
             color="white"
             text-align="center"
             padding-top="3pt">
-      MCI Survey
+      Monthly Business Survey - Retail Sales Index
       </fo:block>
 
 
     <!-- survey info -->
     <fo:table table-layout="fixed" width="100%" border-collapse="separate">
       <fo:table-column column-width="50mm"/>
-      <fo:table-column column-width="50mm"/>
+      <fo:table-column column-width="75mm"/>
       <fo:table-body>
         <fo:table-row>
-          <fo:table-cell ><fo:block>form type</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>$formType$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>Form type</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block color="blue">$formType$</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>respondent</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>$ruRef$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>Respondent</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block color="blue">$ruRef$</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>submitted date</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>$submittedAt$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>Submitted date</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block color="blue">$submittedAt$</fo:block></fo:table-cell>
         </fo:table-row>
       </fo:table-body>
     </fo:table>
@@ -69,8 +69,8 @@
           Comments
           </fo:block>
 
-    <fo:block text-align="start">$0146$
-    </fo:block>
+    <fo:block text-align="start">$q.0146$</fo:block>
+    <fo:block text-align="start" color="green">$0146$</fo:block>
 
     <!-- answers -->
           <!-- this defines a title level 1-->
@@ -86,72 +86,99 @@
           </fo:block>
 
     <fo:table table-layout="fixed" width="100%" border-collapse="separate">
-      <fo:table-column column-width="50mm"/>
-      <fo:table-column column-width="50mm"/>
+      <fo:table-column column-width="120mm"/>
+      <fo:table-column column-width="40mm"/>
       <fo:table-body>
+
         <fo:table-row>
-          <fo:table-cell ><fo:block>question 1</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>$0001$</fo:block></fo:table-cell>
+            <fo:table-cell ><fo:block>1. Employees</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>question 11</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>$0011$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>$q.0051$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block color="green">$0051$</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>question 12</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>$0012$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>$q.0052$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block color="green">$0052$</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>question 20</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>$0020$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>$q.0053$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block color="green">$0053$</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>question 50</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>$0050$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>$q.0054$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block color="green">$0054$</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>question 51</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>$0051$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>$q.0050$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block color="green">$0050$</fo:block></fo:table-cell>
+        </fo:table-row>
+
+<fo:table-row>
+<fo:table-cell ><fo:block>.</fo:block></fo:table-cell>
+</fo:table-row>
+
+        <fo:table-row>
+            <fo:table-cell ><fo:block>2. Period</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>question 52</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>$0052$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>$q.0011$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block color="green">$0011$</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>question 53</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>$0053$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>$q.0012$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block color="green">$0012$</fo:block></fo:table-cell>
+        </fo:table-row>
+
+<fo:table-row>
+<fo:table-cell ><fo:block>.</fo:block></fo:table-cell>
+</fo:table-row>
+
+        <fo:table-row>
+            <fo:table-cell ><fo:block>3. Commodities - retail turnover</fo:block></fo:table-cell>
+            <fo:table-cell ><fo:block>£ (omit pence)</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>question 54</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>$0054$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>$q.0022$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block color="green">$0022$</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>question 22</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>$0022$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>$q.0023$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block color="green">$0023$</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>question 23</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>$0023$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>$q.0024$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block color="green">$0024$</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>question 24</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>$0024$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>$q.0025$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block color="green">$0025$</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>question 25</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>$0025$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>$q.0026$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block color="green">$0026$</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>question 26</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>$0026$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>$q.0020$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block color="green">$0020$</fo:block></fo:table-cell>
         </fo:table-row>
+
+<fo:table-row>
+<fo:table-cell ><fo:block>.</fo:block></fo:table-cell>
+</fo:table-row>
+
         <fo:table-row>
-          <fo:table-cell ><fo:block>question 21</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>$0021$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>4. $q.0021$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block color="green">$0021$</fo:block></fo:table-cell>
         </fo:table-row>
+
+<fo:table-row>
+<fo:table-cell ><fo:block>.</fo:block></fo:table-cell>
+</fo:table-row>
+
         <fo:table-row>
-          <fo:table-cell ><fo:block>question 27</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>$0027$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>5. $q.0027$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block color="green">$0027$</fo:block></fo:table-cell>
         </fo:table-row>
       </fo:table-body>
     </fo:table>

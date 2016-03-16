@@ -15,6 +15,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 public class PdfCreator {
@@ -86,6 +88,26 @@ public class PdfCreator {
         template = populate(template, "submittedAt", survey.getDate().toString());
 
         //TODO: add question text from the template
+        Map<String, String> questions = new HashMap<>();
+        questions.put("q.0051", "Male employees working more than 30 hours per week?");
+        questions.put("q.0052", "Male employees working less than 30 hours per week?");
+        questions.put("q.0053", "Female employees working more than 30 hours per week?");
+        questions.put("q.0054", "Female employees working less than 30 hours per week?");
+        questions.put("q.0050", "Total employees");
+        questions.put("q.0011", "From");
+        questions.put("q.0012", "To");
+        questions.put("q.0022", "Food");
+        questions.put("q.0026", "Other Goods");
+        questions.put("q.0023", "Alcohol, Confectionary and Tobacco");
+        questions.put("q.0027", "Automotive Fuel");
+        questions.put("q.0024", "Clothing and Footware");
+        questions.put("q.0020", "Total Retail Sales");
+        questions.put("q.0025", "Household goods");
+        questions.put("q.0021", "Of these figures, how much were from internet sales?");
+        questions.put("q.0146", "Please explain any movements in your data e.g. sale held, branches opened or sold, extreme weather, or temporary closure of shop");
+        for (String key : questions.keySet()) {
+            template = populate(template, key, questions.get(key));
+        }
 
         //TODO: need to get the survey template to get the keys we expect - not just the keys in the answers
         for (String key : survey.getKeys()) {
