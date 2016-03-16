@@ -55,6 +55,7 @@ public class TransformEngine {
 
             String json = "";
             if (data != null && data.trim().startsWith("{")) {
+                audit.increment("surveys.plaintext");
                 log.info("DECRYPT|SKIPPING|json is plain text, not encrypted: {}", data);
                 json = data;
             } else {
