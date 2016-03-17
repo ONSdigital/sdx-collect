@@ -3,6 +3,7 @@ package com.github.onsdigital.perkin.helper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -31,5 +32,15 @@ public abstract class FileHelper {
 
     public static String loadFile(String filename) throws IOException {
         return new String(loadFileAsBytes(filename), StandardCharsets.UTF_8);
+    }
+
+    public static String loadFile(File file) throws IOException {
+        return new String(loadFileAsBytes(file), StandardCharsets.UTF_8);
+    }
+
+    public static byte[] loadFileAsBytes(File file) throws IOException {
+
+        log.info("loading file:  " + file.getAbsolutePath());
+        return IOUtils.toByteArray(file.toURI());
     }
 }

@@ -1,11 +1,15 @@
-package com.github.onsdigital.perkin.transform.pck;
+package com.github.onsdigital.perkin.transform.idbr;
 
 
 import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.json.SurveyParser;
 import com.github.onsdigital.perkin.test.FileHelper;
 import com.github.onsdigital.perkin.test.ParameterizedTestHelper;
-import com.github.onsdigital.perkin.transform.*;
+import com.github.onsdigital.perkin.transform.DataFile;
+import com.github.onsdigital.perkin.transform.TemplateNotFoundException;
+import com.github.onsdigital.perkin.transform.TransformContext;
+import com.github.onsdigital.perkin.transform.TransformEngine;
+import com.github.onsdigital.perkin.transform.pck.PckTransformer;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,50 +27,49 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
 @Slf4j
-public class PckTransformerTest {
+public class IdbrTransformerTest {
 
-    private PckTransformer classUnderTest;
+    private IdbrTransformer classUnderTest;
 
     private File survey;
-    private File pck;
+    private File idbr;
 
-    public PckTransformerTest(File survey, File pck){
+    public IdbrTransformerTest(File survey, File idbr){
         this.survey = survey;
-        this.pck = pck;
+        this.idbr = idbr;
     }
 
     @Before
     public void setUp(){
-        classUnderTest = new PckTransformer();
+        classUnderTest = new IdbrTransformer();
     }
 
     @Parameterized.Parameters(name = "{index}: {0} should produce {1}")
     public static Collection<Object[]> data() throws IOException {
 
-        return ParameterizedTestHelper.getFiles("to-pck", "json", "pck");
+        return ParameterizedTestHelper.getFiles("to-idbr", "json", "idbr");
     }
 
     @Test
-    public void shouldTransformSurveyToPck() throws IOException {
+    public void shouldTransformSurveyToIdbr() throws IOException {
 
-        log.debug("TEST|json: " + survey.getName() + " pck: " + pck.getName());
+        log.debug("TEST|json: " + survey.getName() + " pck: " + idbr.getName());
 
         //Given
         Survey survey = ParameterizedTestHelper.loadSurvey(this.survey);
         log.debug("TEST|survey: {}", survey);
-        long batch = 30001L;
+        long batch = 30005L;
         TransformContext context = ParameterizedTestHelper.createTransformContext(survey, batch);
 
         //When
         List<DataFile> files = classUnderTest.transform(survey, context);
 
         //Then
-        //TODO: cope with expected Exceptions
-        String expected = FileHelper.loadFile(pck);
-        String expectedFilename = batch + "_" + survey.getMetadata().getRuRef() + ".pck";
+        String expected = FileHelper.loadFile(idbr);
+        String expectedFilename = "REC1203_" + batch + ".DAT";
 
         assertThat(files, hasSize(1));
-        assertThat(files.get(0).toString(), is(expected));
+        assertThat(new String(files.get(0).getBytes()), is(expected));
         assertThat(files.get(0).getFilename(), is(expectedFilename));
     }
 }

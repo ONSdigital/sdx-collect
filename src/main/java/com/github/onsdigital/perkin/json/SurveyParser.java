@@ -74,6 +74,7 @@ public class SurveyParser {
         @Override
         public JsonElement serialize(Collection collection, Type type, JsonSerializationContext jsonSerializationContext) {
             JsonObject object = new JsonObject();
+            //TODO: period - need to bottom out what it will look like - EQ say it's NOT A DATE, just a String
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             object.add("exercise_sid", new JsonPrimitive(collection.getExerciseSid()));
             object.add("instrument_id", new JsonPrimitive(collection.getInstrumentId()));
@@ -112,10 +113,8 @@ public class SurveyParser {
                 }
             }
 
-            //TODO: hack
-            return new Date();
-//            throw new JsonParseException("Unparseable date: \"" + jsonElement.getAsString()
-//                    + "\". Supported formats: " + Arrays.toString(DATE_FORMATS));
+            throw new JsonParseException("Unparseable date: \"" + jsonElement.getAsString()
+                    + "\". Supported formats: " + Arrays.toString(DATE_FORMATS));
         }
     }
 }

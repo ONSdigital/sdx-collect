@@ -4,7 +4,6 @@ import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.transform.*;
 import com.github.onsdigital.perkin.transform.pck.derivator.DerivatorFactory;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -55,7 +54,7 @@ public class PckTransformer implements Transformer {
     }
 
     private String generateHeader(final long batch, final Date date) {
-		return "FBFV" + leftPadZeroes(String.valueOf(batch), LENGTH_BATCH) + formatDate(date);
+		return "FBFV" + TransformerHelper.leftPadZeroes(String.valueOf(batch), LENGTH_BATCH) + formatDate(date);
 	}
 
     private String generateFormIdentifier(Survey survey) {
@@ -115,8 +114,4 @@ public class PckTransformer implements Transformer {
 	public static String formatDate(Date date){
 		return new SimpleDateFormat("dd/MM/yy").format(date);
 	}
-
-    private String leftPadZeroes(String str, int length) {
-        return StringUtils.leftPad(str, length, "0");
-    }
 }
