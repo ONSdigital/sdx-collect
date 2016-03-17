@@ -27,6 +27,6 @@ public class HttpDecrypt {
 
         Endpoint endpoint = new Endpoint(new Host(host), path);
         log.debug("DECRYPT|decrypting data using endpoint: {}", endpoint);
-        return new Http().postJson(endpoint, data);
+        return new Http().postString(endpoint, data);
     }
 }

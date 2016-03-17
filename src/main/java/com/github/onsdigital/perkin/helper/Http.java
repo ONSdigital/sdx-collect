@@ -155,6 +155,27 @@ public class Http implements AutoCloseable {
         }
     }
 
+    public Response<String> postString(Endpoint endpoint, String requestMessage, NameValuePair... headers) throws IOException {
+        if (requestMessage == null) {
+            return post(endpoint, headers);
+        } // deal with null case
+
+        // Create the request
+        HttpPost post = new HttpPost(endpoint.url());
+        post.setHeaders(combineHeaders(headers));
+
+        // Add the request message if there is one
+        log.debug("HTTP|request: {}", requestMessage);
+        post.setEntity(new StringEntity(requestMessage));
+
+        // Send the request and process the response
+        try (CloseableHttpResponse response = httpClient().execute(post)) {
+            String body = deserialiseResponseMessage(response);
+            log.debug("HTTP|response body: {}", body);
+            return new Response<>(response.getStatusLine(), body);
+        }
+    }
+
     /**
      * Sends a POST request and returns the response.
      *
