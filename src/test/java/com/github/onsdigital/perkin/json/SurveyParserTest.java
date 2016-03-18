@@ -21,12 +21,12 @@ public class SurveyParserTest {
         classUnderTest = new SurveyParser();
     }
 
-    //TODO: make this a file based test
+    //TODO: make this a parameterized file based test, cope with expected exceptions
 
     @Test
     public void shouldParseValidSurveyVersion() throws IOException {
         //given
-        String json = getSurvey("survey.json");
+        String json = getSurvey("survey.valid.json");
 
         //when
         Survey survey = classUnderTest.parse(json);
@@ -34,6 +34,19 @@ public class SurveyParserTest {
         //then
         log.debug("TEST|survey as json: {}", classUnderTest.prettyPrint(survey));
         assertThat(survey, is(notNullValue()));
+    }
+
+    @Test
+    public void shouldPassLongPeriodDownstream() throws IOException {
+        //given
+        String json = getSurvey("survey.valid.period.long.json");
+
+        //when
+        Survey survey = classUnderTest.parse(json);
+
+        //then
+        log.debug("TEST|survey as json: {}", classUnderTest.prettyPrint(survey));
+        assertThat(survey.getCollection().getPeriod(), is("longValueButPassDownstream"));
     }
 
     @Test(expected = SurveyParserException.class)
@@ -72,15 +85,6 @@ public class SurveyParserTest {
 //        //when
 //        classUnderTest.parse(json);
 //    }
-
-    @Test(expected = SurveyParserException.class)
-    public void shouldRejectInvalidPeriodDate() throws IOException {
-        //given
-        String json = getSurvey("survey.invalid.period.json");
-
-        //when
-        classUnderTest.parse(json);
-    }
 
     @Test(expected = SurveyParserException.class)
     public void shouldRejectNoCollection() throws IOException {
