@@ -1,5 +1,6 @@
 package com.github.onsdigital.perkin.json;
 
+import com.github.onsdigital.perkin.transform.Audit;
 import com.google.gson.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -31,6 +32,7 @@ public class SurveyParser {
                 } else {
                     if (period.length() != 4) {
                         //TODO: throw error? or pass to downstream as is
+                        Audit.getInstance().increment("survey.period.length.not.4.WARNING");
                         log.warn("SURVEY|PARSE|PERIOD|expected 4 character period, got period: {} length: {}", period, period.length());
                     }
                 }

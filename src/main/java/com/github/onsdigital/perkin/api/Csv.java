@@ -8,7 +8,6 @@ import com.github.onsdigital.perkin.publish.FtpPublisher;
 import com.github.onsdigital.perkin.transform.DataFile;
 import com.github.onsdigital.perkin.transform.TransformContext;
 import com.github.onsdigital.perkin.transform.TransformEngine;
-import com.github.onsdigital.perkin.transform.jpg.Image;
 import com.github.onsdigital.perkin.transform.jpg.ImageIndexCsv;
 import com.github.onsdigital.perkin.transform.jpg.ImageTransformer;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +39,7 @@ public class Csv {
         log.info("csv >>>>>>>> generated csv: " + csv.getFilename() + " size: " + csv.getBytes().length);
 
         //save to ftp
-        ftp.publish(files, null);
+        ftp.publish(files);
 
         //get back from ftp
         byte[] csvFromFtp = ftp.get(csv.getFilename());

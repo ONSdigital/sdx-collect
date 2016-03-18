@@ -1,7 +1,7 @@
 package com.github.onsdigital.perkin.api;
 
 import com.github.davidcarboni.restolino.framework.Api;
-import com.github.onsdigital.perkin.transform.TransformEngine;
+import com.github.onsdigital.perkin.transform.Audit;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,6 +15,6 @@ public class Trace {
     @GET
     public List<String> get(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        return TransformEngine.getInstance().getAudit().getMessages();
+        return Audit.getInstance().getMessages();
     }
 }
