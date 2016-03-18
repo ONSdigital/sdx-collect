@@ -33,14 +33,12 @@ public class FtpPublisher {
         path = ConfigurationManager.get("ftp.path");
     }
 
-    public void publish(List<DataFile> files, Audit audit) throws IOException {
+    public void publish(List<DataFile> files) throws IOException {
         for (DataFile file : files) {
             String filename = file.getFilename();
             InputStream inputStream = new ByteArrayInputStream(file.getBytes());
             put(inputStream, path, filename);
-            if (audit != null) {
-                audit.increment("publish.200", file);
-            }
+            Audit.getInstance().increment("publish.200", file);
         }
     }
 

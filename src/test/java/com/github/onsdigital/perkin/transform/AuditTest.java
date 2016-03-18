@@ -18,7 +18,7 @@ public class AuditTest {
 
     @Before
     public void setUp() {
-        classUnderTest = new Audit();
+        classUnderTest = Audit.getInstance();
     }
 
     @Test

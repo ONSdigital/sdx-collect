@@ -5,7 +5,6 @@ import com.github.onsdigital.perkin.helper.FileHelper;
 import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.json.SurveyParser;
 import com.github.onsdigital.perkin.publish.FtpPublisher;
-import com.github.onsdigital.perkin.transform.Audit;
 import com.github.onsdigital.perkin.transform.DataFile;
 import com.github.onsdigital.perkin.transform.TransformContext;
 import com.github.onsdigital.perkin.transform.TransformEngine;
@@ -39,7 +38,7 @@ public class Ftp {
         log.info("image >>>>>>>> generated image: " + image.getFilename() + " size: " + image.getData().length);
 
         //save to ftp
-        ftp.publish(files, null);
+        ftp.publish(files);
 
         //get back from ftp
         byte[] imageFromFtp = ftp.get(image.getFilename());
