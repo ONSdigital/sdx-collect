@@ -34,7 +34,7 @@ public class TransformEngine {
 
     private FtpPublisher publisher = new FtpPublisher();
 
-    private Audit audit = new Audit();
+    private Audit audit = Audit.getInstance();
     private BatchNumberService batchNumberService = new BatchNumberService();
 
     private TransformEngine() {
@@ -72,7 +72,7 @@ public class TransformEngine {
                 files.addAll(transformer.transform(survey, context));
             }
 
-            publish(files);
+            publisher.publish(files);
 
             audit.increment("transform.200");
 
@@ -86,10 +86,6 @@ public class TransformEngine {
             audit.increment("transform.500", e);
             throw new TransformException("Problem transforming survey", e);
         }
-    }
-
-    private void publish(List<DataFile> files) throws IOException {
-        publisher.publish(files, audit);
     }
 
     //TODO: make private
@@ -144,9 +140,5 @@ public class TransformEngine {
 
     private boolean isError(StatusLine statusLine) {
         return statusLine.getStatusCode() != HttpStatus.OK_200;
-    }
-
-    public Audit getAudit() {
-        return audit;
     }
 }

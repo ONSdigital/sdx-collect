@@ -6,17 +6,24 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Slf4j
 public class Audit {
 
+    private static final Audit INSTANCE = new Audit();
+
     private Map<String, AtomicLong> counters;
     private List<String> messages;
 
-    public Audit() {
+    private Audit() {
         counters = new HashMap<>();
-        messages = new ArrayList<>();
+        messages = new CopyOnWriteArrayList<>();
+    }
+
+    public static Audit getInstance() {
+        return INSTANCE;
     }
 
     public void increment(String key) {
