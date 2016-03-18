@@ -4,3 +4,6 @@
 
 # Perkin
 Questionnaire data transformer
+
+Listens to a queue for encrypted surveys, decrypts, transforms to downstream data formats (e.g. pck, idbr, images) and publishes via ftp
+
