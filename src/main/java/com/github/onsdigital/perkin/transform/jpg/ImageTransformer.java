@@ -32,9 +32,10 @@ public class ImageTransformer implements Transformer {
         return createImages(pdf, survey, context.getBatch());
     }
 
-    private List<DataFile> createImages(final byte[] pdf, final Survey survey, final long batchId) throws TransformException {
+    private List<DataFile> createImages(final byte[] pdf, final Survey survey, final long batch) throws TransformException {
 
         List<DataFile> files = new ArrayList<>();
+        ImageIndexCsvCreator csvCreator = new ImageIndexCsvCreator();
 
         try {
             ByteArrayInputStream is = new ByteArrayInputStream(pdf);
@@ -48,24 +49,25 @@ public class ImageTransformer implements Transformer {
                 //convert pdf page to image
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 int dpiImageResolution = 300;
-                BufferedImage image = page.convertToImage(BufferedImage.TYPE_INT_RGB, dpiImageResolution);
-                ImageIO.write(image, "JPG", baos);
+                BufferedImage bufferedImage = page.convertToImage(BufferedImage.TYPE_INT_RGB, dpiImageResolution);
+                ImageIO.write(bufferedImage, "JPG", baos);
                 baos.flush();
                 baos.close();
 
-                files.add(
-                        Image.builder()
-                                //TODO: generate proper image filename (info from Rachel)
-                                .filename(batchId + "_page" + i + ".jpg")
-                                .data(baos.toByteArray())
-                                .build()
-                );
+                Image image = Image.builder()
+                        //TODO: generate proper image filename (info from Rachel)
+                        .filename(batch + "_page" + i + ".jpg")
+                        .data(baos.toByteArray())
+                        .build();
+                files.add(image);
 
                 log.info("TRANSFORM|IMAGE|created image: " + "page" + i + ".jpg");
-                //TODO: create/append to image index csv
+                csvCreator.add(image.getFilename());
             }
 
             document.close();
+
+            files.add(csvCreator.getFile(batch + ".csv"));
         } catch (IOException e) {
             throw new TransformException("error creating images from pdf", e);
         }

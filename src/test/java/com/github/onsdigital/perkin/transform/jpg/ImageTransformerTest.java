@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.is;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -37,7 +38,9 @@ public class ImageTransformerTest {
         save(files);
 
         //then
-        assertThat(files.size(), is(1));
+        assertThat(files.size(), is(2));
+        assertThat(files.get(0).getFilename(), endsWith(".jpg"));
+        assertThat(files.get(1).getFilename(), endsWith(".csv"));
     }
 
     private void save(List<DataFile> files) throws IOException {
