@@ -81,10 +81,7 @@ public class PckTransformer implements Transformer {
 		formIdentifer.append(HEADER_SEPARATOR);
 		formIdentifer.append(idbrReference);
 		formIdentifer.append(HEADER_SEPARATOR);
-
-        //TODO get period date from survey
-		String refpStartDate ="01 Oct 2014";
-		formIdentifer.append(getFormattedPeriod(refpStartDate));
+		formIdentifer.append(survey.getCollection().getPeriod());
 
 		return formIdentifer.toString();
 	}

@@ -2,6 +2,7 @@ package com.github.onsdigital.perkin.json;
 
 import com.google.gson.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Type;
 import java.text.ParseException;
@@ -18,33 +19,40 @@ public class SurveyParser {
 
             //TODO validation - type, origin, respondent should be 12 chars, 11 digits and a check letter
             if (!"0.0.1".equals(survey.getVersion())) {
-                String message = "Unsupported version (0.0.1 supported), while parsing survey from json: " + json;
-                log.error("SURVEY|PARSE|" + message);
-                throw new SurveyParserException(message);
+                logAndThrowError("unsupported version: " + survey.getVersion(), json);
             }
 
             if (survey.getCollection() == null) {
-                String message = "'collection' missing while parsing survey from json: " + json;
-                log.error("SURVEY|PARSE|" + message);
-                throw new SurveyParserException(message);
+                logAndThrowError("'collection' section is mandatory", json);
+            } else {
+                String period = survey.getCollection().getPeriod();
+                if (StringUtils.isBlank(period)) {
+                    logAndThrowError("collection 'period' is mandatory", json);
+                } else {
+                    if (period.length() != 4) {
+                        //TODO: throw error? or pass to downstream as is
+                        log.warn("SURVEY|PARSE|PERIOD|expected 4 character period, got period: {} length: {}", period, period.length());
+                    }
+                }
             }
 
             if (survey.getMetadata() == null) {
-                String message = "'metadata' missing while parsing survey from json: " + json;
-                log.error("SURVEY|PARSE|" + message);
-                throw new SurveyParserException(message);
+                logAndThrowError("'metadata' section is mandatory", json);
             }
 
-            if (log.isDebugEnabled()) {
-                log.debug("SURVEY|PARSE|parsed json as {}", survey);
-            }
+            log.debug("SURVEY|PARSE|parsed json as {}", survey);
             return survey;
 
         } catch(JsonParseException e) {
-            String message = "Problem parsing survey from json " + json;
-            log.error("SURVEY|PARSE|{}", message, e);
+            String message = "Problem parsing survey from json";
+            log.error("SURVEY|PARSE|{} json: {}", message, json, e);
             throw new SurveyParserException(message, json, e);
         }
+    }
+
+    private void logAndThrowError(String message, String json) throws SurveyParserException {
+        log.error("SURVEY|PARSE|{} json: {}", message, json);
+        throw new SurveyParserException(message + " " + json);
     }
 
     public String prettyPrint(Survey survey) {
@@ -54,7 +62,6 @@ public class SurveyParser {
     private String serialize(Survey survey) {
         Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
-                .registerTypeAdapter(Collection.class, new CollectionSerializer())
                 .registerTypeAdapter(Date.class, new DateSerializer())
                 .create();
         return gson.toJson(survey);
@@ -67,21 +74,6 @@ public class SurveyParser {
                 .create();
 
         return gson.fromJson(json, Survey.class);
-    }
-
-    private class CollectionSerializer implements JsonSerializer<Collection> {
-
-        @Override
-        public JsonElement serialize(Collection collection, Type type, JsonSerializationContext jsonSerializationContext) {
-            JsonObject object = new JsonObject();
-            //TODO: period - need to bottom out what it will look like - EQ say it's NOT A DATE, just a String
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            object.add("exercise_sid", new JsonPrimitive(collection.getExerciseSid()));
-            object.add("instrument_id", new JsonPrimitive(collection.getInstrumentId()));
-            object.add("period", new JsonPrimitive(sdf.format(collection.getPeriod())));
-
-            return object;
-        }
     }
 
     public static final String ISO8601 = "yyyy-MM-dd'T'HH:mm:ssX";
