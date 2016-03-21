@@ -2,10 +2,10 @@
   "type": "uk.gov.ons.edc.eq:surveyresponse",
   "version": "0.0.1",
   "origin": "uk.gov.ons.edc.eq",
-  "survey_id": "021",
+  "survey_id": "023",
   "collection": {
     "exercise_sid": "hfjdskf",
-    "instrument_id": "0215",
+    "instrument_id": "0213",
     "period": "1234"
   },
   "submitted_at": "2016-03-12T10:39:40Z",
@@ -28,7 +28,6 @@
     "25": "50",
     "26": "100",
     "21": "60000",
-    "27": "7400",
     "146": "some comment"
   }
 }

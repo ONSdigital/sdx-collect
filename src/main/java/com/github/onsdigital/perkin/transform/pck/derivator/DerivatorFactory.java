@@ -2,7 +2,7 @@ package com.github.onsdigital.perkin.transform.pck.derivator;
 
 import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.transform.pck.Question;
-import com.github.onsdigital.perkin.transform.pck.QuestionTemplate;
+import com.github.onsdigital.perkin.json.QuestionTemplate;
 import com.github.onsdigital.perkin.json.SurveyTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -24,6 +24,8 @@ public class DerivatorFactory {
     //TODO make private? i.e. just use deriveAnswer(...)
 	public Derivator getDerivator(String name) throws DerivatorNotFoundException {
 
+        if (name == null) name = "default";
+
 		if (derivators.containsKey(name)) {
             log.debug("TRANSFORM|PCK|found derivator: " + name);
 			return derivators.get(name);
@@ -38,11 +40,11 @@ public class DerivatorFactory {
 
         List<Question> result = new ArrayList<>();
 
-        for (QuestionTemplate questionTemplate : surveyTemplate.getQuestionTemplates()) {
+        for (QuestionTemplate questionTemplate : surveyTemplate.getQuestions()) {
 
             String answer = survey.getAnswer(questionTemplate.getQuestionNumber());
 
-            Derivator derivator = getDerivator(questionTemplate.getDerivator());
+            Derivator derivator = getDerivator(questionTemplate.getType());
             String derivedAnswer = derivator.deriveValue(answer);
 
             Question question = new Question(questionTemplate.getQuestionNumber(), derivedAnswer);

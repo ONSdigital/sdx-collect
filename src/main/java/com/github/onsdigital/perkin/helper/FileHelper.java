@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -25,8 +26,12 @@ public abstract class FileHelper {
 
     public static byte[] loadFileAsBytes(String filename) throws IOException {
 
+        log.debug("loading file: " + filename);
         InputStream in = FileHelper.class.getClassLoader().getResourceAsStream(filename);
-        log.info("loaded file:  " + filename + " as: " + in);
+        log.info("loaded file: " + filename + " as: " + in);
+        if (in == null) {
+            throw new FileNotFoundException(filename);
+        }
         return IOUtils.toByteArray(in);
     }
 

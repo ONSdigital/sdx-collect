@@ -31,7 +31,7 @@ public class PdfCreatorTest {
     @Test
     public void shouldCreatePdf() throws IOException {
         //given
-        Survey survey = new SurveyParser().parse(FileHelper.loadFile("survey.json"));
+        Survey survey = new SurveyParser().parse(FileHelper.loadFile("survey.ftp.json"));
         TransformContext context = TransformEngine.getInstance().createTransformContext(survey);
 
         //when

@@ -30,7 +30,7 @@ public class ImageTransformerTest {
     @Test
     public void shouldCreateImagesFromPdf() throws IOException {
         //given
-        Survey survey = new SurveyParser().parse(FileHelper.loadFile("survey.json"));
+        Survey survey = new SurveyParser().parse(FileHelper.loadFile("survey.ftp.json"));
         TransformContext context = TransformEngine.getInstance().createTransformContext(survey);
 
         //when

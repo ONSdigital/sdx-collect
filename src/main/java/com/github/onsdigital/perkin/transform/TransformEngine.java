@@ -48,7 +48,7 @@ public class TransformEngine {
         return INSTANCE;
     }
 
-    public void transform(final String data) throws TransformException {
+    public List<DataFile> transform(final String data) throws TransformException {
 
         try {
             audit.increment("surveys");
@@ -76,6 +76,7 @@ public class TransformEngine {
 
             audit.increment("transform.200");
 
+            return files;
         } catch (SurveyParserException e) {
             audit.increment("transform.400", e);
             throw e;
@@ -100,12 +101,13 @@ public class TransformEngine {
     private String getPdfTemplate(Survey survey) throws TemplateNotFoundException {
 
         String pdfTemplate = null;
+        String templateFilename = "templates/" + survey.getId() + "." + survey.getCollection().getInstrumentId() + ".pdf.fo";
 
         try {
             //TODO: only load a template once
-            pdfTemplate = FileHelper.loadFile("templates/023.pdf.fo");
+            pdfTemplate = FileHelper.loadFile(templateFilename);
         } catch (IOException e) {
-            throw new TemplateNotFoundException("problem loading pdf template: templates/023.pdf.fo");
+            throw new TemplateNotFoundException("problem loading pdf template: " + templateFilename);
         }
 
         return pdfTemplate;
@@ -114,12 +116,13 @@ public class TransformEngine {
     private SurveyTemplate getSurveyTemplate(Survey survey) throws TemplateNotFoundException {
 
         //TODO: only load a template once
+        String templateFilename = "templates/" + survey.getId() + "." + survey.getCollection().getInstrumentId() + ".survey.json";
         try {
-            //we only have the MCI survey template for now
-            String json = FileHelper.loadFile("templates/023.survey.json");
+
+            String json = FileHelper.loadFile(templateFilename);
             return Serialiser.deserialise(json, SurveyTemplate.class);
         } catch (IOException e) {
-            throw new TemplateNotFoundException("templates/023.survey.json", e);
+            throw new TemplateNotFoundException(templateFilename, e);
         }
     }
 

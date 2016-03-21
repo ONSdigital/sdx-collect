@@ -18,7 +18,7 @@ public class SurveyTemplateTest {
     @Test
     public void shouldBuildTemplateFromJson() throws IOException {
         //Given
-        String json = FileHelper.loadFile("templates/023.survey.json");
+        String json = FileHelper.loadFile("templates/023.0203.survey.json");
 
         //When
         SurveyTemplate template = Serialiser.deserialise(json, SurveyTemplate.class);
@@ -41,6 +41,6 @@ public class SurveyTemplateTest {
         //TODO Should this be allowed to happen... Should a template be created with no questions?
         assertThat(template, instanceOf(SurveyTemplate.class));
         //TODO should this return null?
-        assertThat(template.getQuestionTemplates(), is(nullValue()));
+        assertThat(template.getQuestions(), is(nullValue()));
     }
 }

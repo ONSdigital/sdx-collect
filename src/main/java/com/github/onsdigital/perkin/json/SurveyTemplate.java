@@ -1,6 +1,6 @@
 package com.github.onsdigital.perkin.json;
 
-import com.github.onsdigital.perkin.transform.pck.QuestionTemplate;
+import com.google.gson.annotations.SerializedName;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Singular;
@@ -11,8 +11,10 @@ import java.util.List;
 @Builder
 public class SurveyTemplate {
 
-	private String id;
-	private String name;
+    @SerializedName("survey_id")
+    private String id;
+    @SerializedName("form_type")
+    private String formType;
     @Singular("question")
-	private List<QuestionTemplate> questionTemplates;
+	private List<QuestionTemplate> questions;
 }
