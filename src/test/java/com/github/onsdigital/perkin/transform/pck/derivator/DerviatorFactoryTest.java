@@ -2,7 +2,7 @@ package com.github.onsdigital.perkin.transform.pck.derivator;
 
 import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.transform.pck.Question;
-import com.github.onsdigital.perkin.transform.pck.QuestionTemplate;
+import com.github.onsdigital.perkin.json.QuestionTemplate;
 import com.github.onsdigital.perkin.json.SurveyTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.After;
@@ -123,7 +123,7 @@ public class DerviatorFactoryTest {
 
     private SurveyTemplate createSurveyTemplate() {
         String questionNumber = "1";
-        QuestionTemplate question = new QuestionTemplate(questionNumber, "boolean", true);
+        QuestionTemplate question = new QuestionTemplate(questionNumber, "boolean");
 
         return SurveyTemplate.builder().question(question).build();
     }
