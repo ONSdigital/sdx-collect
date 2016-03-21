@@ -15,9 +15,7 @@ import org.apache.http.StatusLine;
 import org.eclipse.jetty.http.HttpStatus;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Transform a Survey into a format for downstream systems.
@@ -30,6 +28,7 @@ public class TransformEngine {
     private SurveyParser parser = new SurveyParser();
     private HttpDecrypt decrypt = new HttpDecrypt();
 
+    private Map<String, String> templates;
     private List<Transformer> transformers;
 
     private FtpPublisher publisher = new FtpPublisher();
@@ -42,6 +41,7 @@ public class TransformEngine {
         //TODO: make configurable
         //TODO: also, transformers on a per survey id basis?
         transformers = Arrays.asList(new IdbrTransformer(), new PckTransformer(), new ImageTransformer());
+        templates = new HashMap<>();
     }
 
     public static TransformEngine getInstance() {
@@ -104,8 +104,13 @@ public class TransformEngine {
         String templateFilename = "templates/" + survey.getId() + "." + survey.getCollection().getInstrumentId() + ".pdf.fo";
 
         try {
-            //TODO: only load a template once
-            pdfTemplate = FileHelper.loadFile(templateFilename);
+            //only load a template once
+            pdfTemplate = templates.get(templateFilename);
+            if (pdfTemplate == null) {
+                pdfTemplate = FileHelper.loadFile(templateFilename);
+                log.debug("TEMPLATE|storing template: " + templateFilename);
+                templates.put(templateFilename, pdfTemplate);
+            }
         } catch (IOException e) {
             throw new TemplateNotFoundException("problem loading pdf template: " + templateFilename);
         }
@@ -115,11 +120,15 @@ public class TransformEngine {
 
     private SurveyTemplate getSurveyTemplate(Survey survey) throws TemplateNotFoundException {
 
-        //TODO: only load a template once
+        //only load a template once
         String templateFilename = "templates/" + survey.getId() + "." + survey.getCollection().getInstrumentId() + ".survey.json";
         try {
-
-            String json = FileHelper.loadFile(templateFilename);
+            String json = templates.get(templateFilename);
+            if (json == null) {
+                json = FileHelper.loadFile(templateFilename);
+                log.debug("TEMPLATE|storing template: " + templateFilename);
+                templates.put(templateFilename, json);
+            }
             return Serialiser.deserialise(json, SurveyTemplate.class);
         } catch (IOException e) {
             throw new TemplateNotFoundException(templateFilename, e);
