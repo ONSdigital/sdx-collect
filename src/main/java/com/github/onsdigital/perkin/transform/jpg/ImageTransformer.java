@@ -1,10 +1,8 @@
 package com.github.onsdigital.perkin.transform.jpg;
 
+import com.github.onsdigital.perkin.helper.Timer;
 import com.github.onsdigital.perkin.json.Survey;
-import com.github.onsdigital.perkin.transform.DataFile;
-import com.github.onsdigital.perkin.transform.TransformContext;
-import com.github.onsdigital.perkin.transform.TransformException;
-import com.github.onsdigital.perkin.transform.Transformer;
+import com.github.onsdigital.perkin.transform.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -25,11 +23,19 @@ public class ImageTransformer implements Transformer {
 
     @Override
     public List<DataFile> transform(final Survey survey, final TransformContext context) throws TransformException {
+
+        Timer timer = new Timer("transform.images.");
+
         PdfCreator pdfCreator = new PdfCreator();
 
         byte[] pdf = pdfCreator.createPdf(survey, context);
 
-        return createImages(pdf, survey, context.getBatch());
+        List<DataFile> images = createImages(pdf, survey, context.getBatch());
+
+        timer.stopStatus(200);
+        Audit.getInstance().increment(timer);
+
+        return images;
     }
 
     private List<DataFile> createImages(final byte[] pdf, final Survey survey, final long batch) throws TransformException {
@@ -38,6 +44,7 @@ public class ImageTransformer implements Transformer {
         ImageIndexCsvCreator csvCreator = new ImageIndexCsvCreator();
 
         try {
+            //TODO can this be re-used?
             ByteArrayInputStream is = new ByteArrayInputStream(pdf);
             PDDocument document = PDDocument.load(is);
 
@@ -48,7 +55,7 @@ public class ImageTransformer implements Transformer {
 
                 //convert pdf page to image
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                int dpiImageResolution = 300;
+                int dpiImageResolution = 72; //TODO: was 300
                 BufferedImage bufferedImage = page.convertToImage(BufferedImage.TYPE_INT_RGB, dpiImageResolution);
                 ImageIO.write(bufferedImage, "JPG", baos);
                 baos.flush();
