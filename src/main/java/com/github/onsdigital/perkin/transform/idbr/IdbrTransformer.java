@@ -1,10 +1,8 @@
 package com.github.onsdigital.perkin.transform.idbr;
 
+import com.github.onsdigital.perkin.helper.Timer;
 import com.github.onsdigital.perkin.json.Survey;
-import com.github.onsdigital.perkin.transform.DataFile;
-import com.github.onsdigital.perkin.transform.TransformContext;
-import com.github.onsdigital.perkin.transform.TransformException;
-import com.github.onsdigital.perkin.transform.Transformer;
+import com.github.onsdigital.perkin.transform.*;
 import com.github.onsdigital.perkin.transform.pck.TransformerHelper;
 
 import java.text.SimpleDateFormat;
@@ -33,7 +31,15 @@ public class IdbrTransformer implements Transformer {
 
     @Override
     public List<DataFile> transform(final Survey survey, final TransformContext context) throws TransformException {
-        return Arrays.asList(createIdbrReceipt(survey, survey.getDate(), context.getBatch()));
+
+        Timer timer = new Timer("transform.idbr.");
+
+        List<DataFile> idbr = Arrays.asList(createIdbrReceipt(survey, survey.getDate(), context.getBatch()));
+
+        timer.stopStatus(200);
+        Audit.getInstance().increment(timer);
+
+        return idbr;
     }
 
     public IdbrReceipt createIdbrReceipt(final Survey survey, final Date date, final long batchId) {

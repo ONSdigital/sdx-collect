@@ -1,5 +1,6 @@
 package com.github.onsdigital.perkin.json;
 
+import com.github.onsdigital.perkin.helper.Timer;
 import com.github.onsdigital.perkin.transform.Audit;
 import com.google.gson.*;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ import java.util.Date;
 public class SurveyParser {
 
     public Survey parse(String json) throws SurveyParserException {
+        Timer timer = new Timer("survey.parse.");
         try {
             Survey survey = deserialize(json);
 
@@ -42,13 +44,17 @@ public class SurveyParser {
                 logAndThrowError("'metadata' section is mandatory", json);
             }
 
+            timer.stopStatus(200);
             log.debug("SURVEY|PARSE|parsed json as {}", survey);
             return survey;
 
         } catch(JsonParseException e) {
+            timer.stopStatus(500);
             String message = "Problem parsing survey from json";
             log.error("SURVEY|PARSE|{} json: {}", message, json, e);
             throw new SurveyParserException(message, json, e);
+        } finally {
+            Audit.getInstance().increment(timer);
         }
     }
 
