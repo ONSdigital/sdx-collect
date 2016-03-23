@@ -2,6 +2,7 @@ package com.github.onsdigital.perkin.transform.jpg;
 
 import com.github.onsdigital.perkin.helper.FileHelper;
 import com.github.onsdigital.perkin.json.*;
+import com.github.onsdigital.perkin.test.ParameterizedTestHelper;
 import com.github.onsdigital.perkin.transform.DataFile;
 import com.github.onsdigital.perkin.transform.TransformContext;
 import com.github.onsdigital.perkin.transform.TransformEngine;
@@ -33,8 +34,10 @@ public class ImageTransformerTest {
     public void shouldCreateImagesAndIndexFromSurvey() throws IOException {
         //given
         Survey survey = new SurveyParser().parse(FileHelper.loadFile("survey.ftp.json"));
-        TransformContext context = TransformEngine.getInstance().createTransformContext(survey);
-        //TODO: override batch number / sequence number
+        long batch = 30001L;
+        TransformContext context = ParameterizedTestHelper.createTransformContext(survey, batch);
+
+        //TODO: override sequence number (once implemented)
 
         //when
         List<DataFile> files = classUnderTest.transform(survey, context);
