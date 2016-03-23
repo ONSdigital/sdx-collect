@@ -64,7 +64,7 @@ public class PckTransformerTest {
         //Then
         //TODO: cope with expected Exceptions
         String expected = FileHelper.loadFile(pck);
-        String expectedFilename = survey.getId() + "_" + batch;
+        String expectedFilename = survey.getId() + "_" + batch + ".pck";
 
         assertThat(files, hasSize(1));
         assertThat(files.get(0).toString(), is(expected));
