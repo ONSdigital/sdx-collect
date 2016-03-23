@@ -46,7 +46,8 @@ public class PckTransformer implements Transformer {
         pck.setFormLead(FORM_LEAD);
 
         //TODO: need to use sequence number
-        pck.setFilename(survey.getId() + "_" + context.getBatch());
+        //TODO: remove .pck extension (in tandem with Ian)
+        pck.setFilename(survey.getId() + "_" + context.getBatch() + ".pck");
 
         timer.stopStatus(200);
         Audit.getInstance().increment(timer);
