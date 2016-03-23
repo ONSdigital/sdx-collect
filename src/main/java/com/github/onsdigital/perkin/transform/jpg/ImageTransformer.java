@@ -31,7 +31,7 @@ public class ImageTransformer implements Transformer {
 
         byte[] pdf = pdfCreator.createPdf(survey, context);
 
-        List<DataFile> images = createImages(pdf, survey, context.getBatch());
+        List<DataFile> images = createImages(pdf, survey, context.getSequence());
 
         timer.stopStatus(200);
         Audit.getInstance().increment(timer);
@@ -39,7 +39,7 @@ public class ImageTransformer implements Transformer {
         return images;
     }
 
-    private List<DataFile> createImages(final byte[] pdf, final Survey survey, final long batch) throws TransformException {
+    private List<DataFile> createImages(final byte[] pdf, final Survey survey, final long sequence) throws TransformException {
 
         List<DataFile> files = new ArrayList<>();
         ImageIndexCsvCreator csvCreator = new ImageIndexCsvCreator();
@@ -72,9 +72,8 @@ public class ImageTransformer implements Transformer {
                         .build();
                 files.add(image);
 
-                log.info("TRANSFORM|IMAGE|created image: " + "page" + pageNumber + ".JPG");
-                //TODO: think we need a sequenceNumber rather than a batch number - using batch number for now
-                csvCreator.addImage((int) batch, survey, image.getFilename(), scanId, pageNumber);
+                log.info("TRANSFORM|IMAGE|created image: " + image.getFilename());
+                csvCreator.addImage(sequence, survey, image.getFilename(), scanId, pageNumber);
             }
 
             document.close();

@@ -22,7 +22,7 @@ public class ImageIndexCsvCreator {
     date+time, full path to image, batch number - a date, scan number (image name without suffix), survey_id, form_type
     e.g. 0203, idbr ru_ref without check letter, period, page number, optional front page marker 03/03/2016 10:05:03,\\NP3RVWAPXX370\EDC_PROD\EDC_QImages\Images\E100080458.JPG,20160303,E100080458,244,0005,49902138794,201602,001,0
     */
-    public void addImage(int sequenceNumber, Survey survey, String filename, String scanId, int pageNumber) {
+    public void addImage(long sequence, Survey survey, String filename, String scanId, int pageNumber) {
 
         //TODO: hardcoded path for now
         //TODO: note that the EDC_PROD could be other environments
@@ -51,7 +51,7 @@ public class ImageIndexCsvCreator {
             //indicate this is the first page
             csv.append(",0");
             //set the filename
-            this.filename = "EDC_" + survey.getId() + "_" + surveyDate + "_" + sequenceNumber + ".csv";
+            this.filename = "EDC_" + survey.getId() + "_" + surveyDate + "_" + sequence + ".csv";
         }
     }
 

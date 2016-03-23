@@ -36,6 +36,7 @@ public class TransformEngine {
 
     private Audit audit = Audit.getInstance();
     private BatchNumberService batchNumberService = new BatchNumberService();
+    private SequenceNumberService sequenceNumberService = new SequenceNumberService();
 
     private TransformEngine() {
         //use getInstance()
@@ -95,6 +96,7 @@ public class TransformEngine {
     public TransformContext createTransformContext(Survey survey) throws TemplateNotFoundException {
         return TransformContext.builder()
                 .batch(batchNumberService.getNext())
+                .sequence(sequenceNumberService.getNext())
                 .surveyTemplate(getSurveyTemplate(survey))
                 .pdfTemplate(getPdfTemplate(survey))
                 .build();
@@ -178,8 +180,6 @@ public class TransformEngine {
         if (isError(decryptResponse.statusLine)) {
             throw new TransformException("decrypt response indicated an error: " + decryptResponse);
         }
-
-        //TODO audit time taken
 
         return decryptResponse.body;
     }

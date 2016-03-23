@@ -9,6 +9,7 @@ import lombok.Data;
 public class TransformContext {
 
     private long batch;
+    private long sequence;
     private SurveyTemplate surveyTemplate;
     private String pdfTemplate;
 }

@@ -55,7 +55,8 @@ public class PckTransformerTest {
         Survey survey = ParameterizedTestHelper.loadSurvey(this.survey);
         log.debug("TEST|survey: {}", survey);
         long batch = 30001L;
-        TransformContext context = ParameterizedTestHelper.createTransformContext(survey, batch);
+        long sequence = 1000;
+        TransformContext context = ParameterizedTestHelper.createTransformContext(survey, batch, sequence);
 
         //When
         List<DataFile> files = classUnderTest.transform(survey, context);
@@ -64,7 +65,7 @@ public class PckTransformerTest {
         //Then
         //TODO: cope with expected Exceptions
         String expected = FileHelper.loadFile(pck);
-        String expectedFilename = survey.getId() + "_" + batch + ".pck";
+        String expectedFilename = survey.getId() + "_" + sequence + ".pck";
 
         assertThat(files, hasSize(1));
         assertThat(files.get(0).toString(), is(expected));
