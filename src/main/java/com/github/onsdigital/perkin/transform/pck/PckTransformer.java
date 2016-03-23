@@ -45,8 +45,8 @@ public class PckTransformer implements Transformer {
         pck.setQuestions(derivatorFactory.deriveAllAnswers(survey, context.getSurveyTemplate()));
         pck.setFormLead(FORM_LEAD);
 
-        //TODO: made up a filename structure for now
-        pck.setFilename(context.getBatch() + "_" + survey.getMetadata().getRuRef() + ".pck");
+        //TODO: need to use sequence number
+        pck.setFilename(survey.getId() + "_" + context.getBatch());
 
         timer.stopStatus(200);
         Audit.getInstance().increment(timer);

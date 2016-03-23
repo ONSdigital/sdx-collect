@@ -1,5 +1,6 @@
 package com.github.onsdigital.perkin.helper;
 
+import com.github.onsdigital.perkin.transform.DataFile;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 
@@ -11,17 +12,36 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 @Slf4j
 public abstract class FileHelper {
 
+    public static void saveFiles(List<DataFile> files) throws IOException {
+
+        for (DataFile file : files) {
+            saveFile(file);
+        }
+    }
+
+    public static void saveFile(DataFile file) throws IOException {
+
+        new File("target/example").mkdir();
+        Path path = Paths.get("target/example/" + file.getFilename());
+
+        Files.write(path, file.getBytes());
+
+        log.info("saved file target/example/" + file.getFilename());
+    }
+
     public static void saveFile(byte[] bytes, String filename) throws IOException {
 
-        Path path = Paths.get("target/" + filename);
+        new File("target/example").mkdir();
+        Path path = Paths.get("target/example/" + filename);
 
         Files.write(path, bytes);
 
-        log.info("saved file target/" + filename);
+        log.info("saved file target/example/" + filename);
     }
 
     public static byte[] loadFileAsBytes(String filename) throws IOException {

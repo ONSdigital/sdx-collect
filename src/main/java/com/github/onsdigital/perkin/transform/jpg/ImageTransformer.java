@@ -4,6 +4,7 @@ import com.github.onsdigital.perkin.helper.Timer;
 import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.transform.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 
@@ -43,15 +44,19 @@ public class ImageTransformer implements Transformer {
         List<DataFile> files = new ArrayList<>();
         ImageIndexCsvCreator csvCreator = new ImageIndexCsvCreator();
 
+        //TODO: persist the scan number, increment it each time
+        int scanNumber = 1;
+        String scanId = "S" + StringUtils.leftPad("" + scanNumber, 9, '0');
+
         try {
             //TODO can this be re-used?
             ByteArrayInputStream is = new ByteArrayInputStream(pdf);
             PDDocument document = PDDocument.load(is);
 
             List<PDPage> pages = document.getDocumentCatalog().getAllPages();
-            int i = 0;
+            int pageNumber = 0;
             for (PDPage page : pages) {
-                i++;
+                pageNumber++;
 
                 //convert pdf page to image
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -62,19 +67,19 @@ public class ImageTransformer implements Transformer {
                 baos.close();
 
                 Image image = Image.builder()
-                        //TODO: generate proper image filename (info from Rachel)
-                        .filename(batch + "_page" + i + ".jpg")
+                        .filename(scanId + ".JPG")
                         .data(baos.toByteArray())
                         .build();
                 files.add(image);
 
-                log.info("TRANSFORM|IMAGE|created image: " + "page" + i + ".jpg");
-                csvCreator.add(image.getFilename());
+                log.info("TRANSFORM|IMAGE|created image: " + "page" + pageNumber + ".JPG");
+                //TODO: think we need a sequenceNumber rather than a batch number - using batch number for now
+                csvCreator.addImage((int) batch, survey, image.getFilename(), scanId, pageNumber);
             }
 
             document.close();
 
-            files.add(csvCreator.getFile(batch + ".csv"));
+            files.add(csvCreator.getFile());
         } catch (IOException e) {
             throw new TransformException("error creating images from pdf", e);
         }

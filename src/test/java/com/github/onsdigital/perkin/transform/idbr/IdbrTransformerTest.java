@@ -1,6 +1,7 @@
 package com.github.onsdigital.perkin.transform.idbr;
 
 
+import com.github.onsdigital.Json;
 import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.json.SurveyParser;
 import com.github.onsdigital.perkin.test.FileHelper;
@@ -18,6 +19,7 @@ import org.junit.runners.Parameterized;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 
@@ -57,12 +59,15 @@ public class IdbrTransformerTest {
 
         //Given
         Survey survey = ParameterizedTestHelper.loadSurvey(this.survey);
+        String json = Json.prettyPrint(survey);
+        FileHelper.saveFile(json.getBytes(StandardCharsets.UTF_8), "survey.json");
         log.debug("TEST|survey: {}", survey);
-        long batch = 30005L;
+        long batch = 30001L;
         TransformContext context = ParameterizedTestHelper.createTransformContext(survey, batch);
 
         //When
         List<DataFile> files = classUnderTest.transform(survey, context);
+        FileHelper.saveFiles(files);
 
         //Then
         String expected = FileHelper.loadFile(idbr);
