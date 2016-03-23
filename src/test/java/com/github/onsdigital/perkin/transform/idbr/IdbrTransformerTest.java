@@ -1,16 +1,12 @@
 package com.github.onsdigital.perkin.transform.idbr;
 
-
 import com.github.onsdigital.Json;
 import com.github.onsdigital.perkin.json.Survey;
-import com.github.onsdigital.perkin.json.SurveyParser;
 import com.github.onsdigital.perkin.test.FileHelper;
 import com.github.onsdigital.perkin.test.ParameterizedTestHelper;
 import com.github.onsdigital.perkin.transform.DataFile;
-import com.github.onsdigital.perkin.transform.TemplateNotFoundException;
 import com.github.onsdigital.perkin.transform.TransformContext;
-import com.github.onsdigital.perkin.transform.TransformEngine;
-import com.github.onsdigital.perkin.transform.pck.PckTransformer;
+
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,7 +59,8 @@ public class IdbrTransformerTest {
         FileHelper.saveFile(json.getBytes(StandardCharsets.UTF_8), "survey.json");
         log.debug("TEST|survey: {}", survey);
         long batch = 30001L;
-        TransformContext context = ParameterizedTestHelper.createTransformContext(survey, batch);
+        long sequence = 2000;
+        TransformContext context = ParameterizedTestHelper.createTransformContext(survey, batch, sequence);
 
         //When
         List<DataFile> files = classUnderTest.transform(survey, context);
@@ -71,7 +68,7 @@ public class IdbrTransformerTest {
 
         //Then
         String expected = FileHelper.loadFile(idbr);
-        String expectedFilename = "REC1203_" + batch + ".DAT";
+        String expectedFilename = "REC1203_" + sequence + ".DAT";
 
         assertThat(files, hasSize(1));
         assertThat(new String(files.get(0).getBytes()), is(expected));

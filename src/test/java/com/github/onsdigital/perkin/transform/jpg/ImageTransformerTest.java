@@ -5,7 +5,6 @@ import com.github.onsdigital.perkin.json.*;
 import com.github.onsdigital.perkin.test.ParameterizedTestHelper;
 import com.github.onsdigital.perkin.transform.DataFile;
 import com.github.onsdigital.perkin.transform.TransformContext;
-import com.github.onsdigital.perkin.transform.TransformEngine;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,9 +34,8 @@ public class ImageTransformerTest {
         //given
         Survey survey = new SurveyParser().parse(FileHelper.loadFile("survey.ftp.json"));
         long batch = 30001L;
-        TransformContext context = ParameterizedTestHelper.createTransformContext(survey, batch);
-
-        //TODO: override sequence number (once implemented)
+        long sequence = 400;
+        TransformContext context = ParameterizedTestHelper.createTransformContext(survey, batch, sequence);
 
         //when
         List<DataFile> files = classUnderTest.transform(survey, context);
@@ -54,7 +52,7 @@ public class ImageTransformerTest {
         //15/03/2016 10:05:03,\\NP3RVWAPXX370\EDC_PROD\EDC_QImages\Images\S000000001.JPG,20160315,S000000001,023,0203,12345678901A,1234,001,0
         assertThat(index.getCsv(), is("15/03/2016 10:05:03,\\\\NP3RVWAPXX370\\EDC_PROD\\EDC_QImages\\Images\\S000000001.JPG,20160315,S000000001,023,0203,12345678901A,1234,001,0"));
 
-        assertThat(index.getFilename(), is("EDC_023_20160315_30001.csv"));
+        assertThat(index.getFilename(), is("EDC_023_20160315_" + sequence + ".csv"));
     }
 
     private void save(List<DataFile> files) throws IOException {

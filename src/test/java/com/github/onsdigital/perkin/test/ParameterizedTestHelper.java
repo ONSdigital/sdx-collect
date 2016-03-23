@@ -26,10 +26,11 @@ public abstract class ParameterizedTestHelper {
         return objects;
     }
 
-    public static TransformContext createTransformContext(Survey survey, long batch) throws TemplateNotFoundException {
+    public static TransformContext createTransformContext(Survey survey, long batch, long sequence) throws TemplateNotFoundException {
         TransformContext context = TransformEngine.getInstance().createTransformContext(survey);
-        //override the batch number
+        //override
         context.setBatch(batch);
+        context.setSequence(sequence);
         return context;
     }
 

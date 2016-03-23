@@ -34,7 +34,7 @@ public class IdbrTransformer implements Transformer {
 
         Timer timer = new Timer("transform.idbr.");
 
-        List<DataFile> idbr = Arrays.asList(createIdbrReceipt(survey, survey.getDate(), context.getBatch()));
+        List<DataFile> idbr = Arrays.asList(createIdbrReceipt(survey, survey.getDate(), context.getSequence()));
 
         timer.stopStatus(200);
         Audit.getInstance().increment(timer);
@@ -42,11 +42,11 @@ public class IdbrTransformer implements Transformer {
         return idbr;
     }
 
-    public IdbrReceipt createIdbrReceipt(final Survey survey, final Date date, final long batchId) {
+    public IdbrReceipt createIdbrReceipt(final Survey survey, final Date date, final long sequence) {
 
         return IdbrReceipt.builder()
                 .receipt(createReceipt(survey))
-                .filename(createFilename(date, batchId))
+                .filename(createFilename(date, sequence))
                 .build();
     }
 
