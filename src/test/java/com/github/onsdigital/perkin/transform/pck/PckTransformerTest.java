@@ -59,11 +59,12 @@ public class PckTransformerTest {
 
         //When
         List<DataFile> files = classUnderTest.transform(survey, context);
+        FileHelper.saveFiles(files);
 
         //Then
         //TODO: cope with expected Exceptions
         String expected = FileHelper.loadFile(pck);
-        String expectedFilename = batch + "_" + survey.getMetadata().getRuRef() + ".pck";
+        String expectedFilename = survey.getId() + "_" + batch;
 
         assertThat(files, hasSize(1));
         assertThat(files.get(0).toString(), is(expected));

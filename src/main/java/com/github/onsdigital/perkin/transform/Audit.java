@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class Audit {
 
     private static final Audit INSTANCE = new Audit();
+    private static final int MAX_SIZE = 500;
 
     private Map<String, AtomicLong> counters;
     private List<String> messages;
@@ -108,6 +109,9 @@ public class Audit {
 
     private void addMessage(String message) {
         log.info("AUDIT|" + message);
+        if (messages.size() >= MAX_SIZE) {
+            messages.remove(0);
+        }
         messages.add(message);
     }
 
