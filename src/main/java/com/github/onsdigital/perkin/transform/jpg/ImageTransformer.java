@@ -71,7 +71,7 @@ public class ImageTransformer implements Transformer {
                 files.add(image);
 
                 log.info("TRANSFORM|IMAGE|created image: " + image.getFilename());
-                csvCreator.addImage(context.getSequence(), survey, image.getFilename(), scanId, pageNumber);
+                csvCreator.addImage(context.getDate(), context.getSequence(), survey, image.getFilename(), scanId, pageNumber);
             }
 
             document.close();

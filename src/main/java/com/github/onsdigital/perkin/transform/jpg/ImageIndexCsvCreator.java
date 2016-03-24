@@ -3,6 +3,7 @@ package com.github.onsdigital.perkin.transform.jpg;
 import com.github.onsdigital.perkin.json.Survey;
 import org.apache.commons.lang3.StringUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ImageIndexCsvCreator {
@@ -22,23 +23,20 @@ public class ImageIndexCsvCreator {
     date+time, full path to image, batch number - a date, scan number (image name without suffix), survey_id, form_type
     e.g. 0203, idbr ru_ref without check letter, period, page number, optional front page marker 03/03/2016 10:05:03,\\NP3RVWAPXX370\EDC_PROD\EDC_QImages\Images\E100080458.JPG,20160303,E100080458,244,0005,49902138794,201602,001,0
     */
-    public void addImage(long sequence, Survey survey, String filename, String scanId, int pageNumber) {
+    public void addImage(Date now, long sequence, Survey survey, String filename, String scanId, int pageNumber) {
 
         //TODO: hardcoded path for now
         //TODO: note that the EDC_PROD could be other environments
         String fullPath = "\\\\NP3RVWAPXX370\\EDC_PROD\\EDC_QImages\\Images\\" + filename;
-        //TODO: hardcoded survey date for now - set to be today
-        String surveyDate = "20160315";
 
         if (pageNumber > 1) {
             //start a new line if it's not the first entry
             csv.append(NEW_LINE);
         }
 
-        //TODO: is this date now or the date the survey was completed?
-        csv.append(formatDate(new Date())).append(COMMA)
+        csv.append(formatDateTime(now)).append(COMMA)
                 .append(fullPath).append(COMMA)
-                .append(surveyDate).append(COMMA) // this is their 'batch number' but it's a different batch number to what we know
+                .append(formatDate(now)).append(COMMA) // this is their 'batch number' but it's a different batch number to what we know - we set to a date
                 .append(scanId).append(COMMA)
                 .append(survey.getId()).append(COMMA)
                 .append(survey.getCollection().getInstrumentId()).append(COMMA)
@@ -50,7 +48,7 @@ public class ImageIndexCsvCreator {
             //indicate this is the first page
             csv.append(",0");
             //set the filename
-            this.filename = "EDC_" + survey.getId() + "_" + surveyDate + "_" + sequence + ".csv";
+            this.filename = "EDC_" + survey.getId() + "_" + formatDate(survey.getDate()) + "_" + sequence + ".csv";
         }
     }
 
@@ -62,9 +60,12 @@ public class ImageIndexCsvCreator {
        return StringUtils.leftPad("" + pageNumber, 3, '0');
     }
 
-    private String formatDate(Date date) {
-        //TODO hardcoded date for now
-        return "15/03/2016 10:05:03";
+    protected static String formatDateTime(Date date) {
+        return new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(date);
+    }
+
+    protected static String formatDate(Date date) {
+        return new SimpleDateFormat("yyyyMMdd").format(date);
     }
 
     public ImageIndexCsv getFile() {

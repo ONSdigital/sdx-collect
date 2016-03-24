@@ -104,6 +104,7 @@ public class TransformEngine {
 
     public TransformContext createTransformContext(Survey survey) throws TemplateNotFoundException {
         return TransformContext.builder()
+                .date(new Date())
                 .batch(batchNumberService.getNext())
                 .sequence(sequenceNumberService.getNext())
                 .scanNumberService(scanNumberService)

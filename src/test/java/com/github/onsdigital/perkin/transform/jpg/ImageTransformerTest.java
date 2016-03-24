@@ -16,6 +16,8 @@ import org.junit.runners.Parameterized;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.List;
 
@@ -49,7 +51,7 @@ public class ImageTransformerTest {
     }
 
     @Test
-    public void shouldTransformSurveyToCsv() throws IOException {
+    public void shouldTransformSurveyToCsv() throws IOException, ParseException {
 
         log.debug("TEST|json: " + survey.getName() + " csv: " + csv.getName());
 
@@ -61,6 +63,7 @@ public class ImageTransformerTest {
         long sequence = 2000;
         long scan = 7;
         TransformContext context = ParameterizedTestHelper.createTransformContext(survey, batch, sequence, scan);
+        context.setDate(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse("15/03/2016 10:05:03"));
 
         //When
         List<DataFile> files = classUnderTest.transform(survey, context);
@@ -68,7 +71,7 @@ public class ImageTransformerTest {
 
         //Then
         String expected = FileHelper.loadFile(csv);
-        String expectedFilename = "EDC_023_20160315_" + sequence + ".csv";
+        String expectedFilename = "EDC_023_" + ImageIndexCsvCreator.formatDate(survey.getDate()) + "_" + sequence + ".csv";
 
         assertThat(files, hasSize(2));
         MatcherAssert.assertThat(files.get(0).getFilename(), Matchers.is("S000000007.JPG"));
