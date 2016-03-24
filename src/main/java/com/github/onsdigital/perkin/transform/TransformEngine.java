@@ -8,18 +8,14 @@ import com.github.onsdigital.ConfigurationManager;
 import com.github.onsdigital.Json;
 import com.github.onsdigital.perkin.decrypt.HttpDecrypt;
 import com.github.onsdigital.perkin.helper.FileHelper;
-<<<<<<< HEAD
 import com.github.onsdigital.perkin.helper.Http;
-=======
 import com.github.onsdigital.perkin.helper.Timer;
->>>>>>> master
 import com.github.onsdigital.perkin.json.*;
 import com.github.onsdigital.perkin.transform.idbr.IdbrTransformer;
 import com.github.onsdigital.perkin.transform.jpg.ImageTransformer;
 import com.github.onsdigital.perkin.transform.pck.PckTransformer;
 import com.github.onsdigital.perkin.publish.FtpPublisher;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.message.BasicNameValuePair;
 import org.eclipse.jetty.http.HttpStatus;
@@ -90,7 +86,7 @@ public class TransformEngine {
             audit.increment("transform.200");
 
             timer.stopStatus(200);
-            
+
             return files;
         } catch (SurveyParserException e) {
             timer.stopStatus(400, e);
