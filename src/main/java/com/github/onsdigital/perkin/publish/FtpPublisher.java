@@ -1,6 +1,7 @@
 package com.github.onsdigital.perkin.publish;
 
 import com.github.onsdigital.ConfigurationManager;
+import com.github.onsdigital.perkin.helper.Timer;
 import com.github.onsdigital.perkin.transform.Audit;
 import com.github.onsdigital.perkin.transform.DataFile;
 import lombok.extern.slf4j.Slf4j;
@@ -35,10 +36,16 @@ public class FtpPublisher {
 
     public void publish(List<DataFile> files) throws IOException {
         for (DataFile file : files) {
+            Timer timer = new Timer("publish.");
+
             String filename = file.getFilename();
+
+
             InputStream inputStream = new ByteArrayInputStream(file.getBytes());
             put(inputStream, path, filename);
-            Audit.getInstance().increment("publish.200", file);
+
+            timer.stopStatus(200);
+            Audit.getInstance().increment(timer, file);
         }
     }
 

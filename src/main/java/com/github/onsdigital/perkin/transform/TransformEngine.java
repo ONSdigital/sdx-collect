@@ -8,7 +8,11 @@ import com.github.onsdigital.ConfigurationManager;
 import com.github.onsdigital.Json;
 import com.github.onsdigital.perkin.decrypt.HttpDecrypt;
 import com.github.onsdigital.perkin.helper.FileHelper;
+<<<<<<< HEAD
 import com.github.onsdigital.perkin.helper.Http;
+=======
+import com.github.onsdigital.perkin.helper.Timer;
+>>>>>>> master
 import com.github.onsdigital.perkin.json.*;
 import com.github.onsdigital.perkin.transform.idbr.IdbrTransformer;
 import com.github.onsdigital.perkin.transform.jpg.ImageTransformer;
@@ -41,6 +45,7 @@ public class TransformEngine {
 
     private Audit audit = Audit.getInstance();
     private BatchNumberService batchNumberService = new BatchNumberService();
+    private SequenceNumberService sequenceNumberService = new SequenceNumberService();
 
     private TransformEngine() {
         //use getInstance()
@@ -56,9 +61,9 @@ public class TransformEngine {
 
     public List<DataFile> transform(final String data) throws TransformException {
 
-        try {
-            audit.increment("surveys");
+        Timer timer = new Timer("survey.process.");
 
+        try {
             //TODO: move into decrypt and make configurable
             String json;
             if (data != null && data.trim().startsWith("{")) {
@@ -84,16 +89,20 @@ public class TransformEngine {
 
             audit.increment("transform.200");
 
+            timer.stopStatus(200);
+            
             return files;
         } catch (SurveyParserException e) {
-            audit.increment("transform.400", e);
+            timer.stopStatus(400, e);
             throw e;
         } catch (TransformException e) {
-            audit.increment("transform.500", e);
+            timer.stopStatus(500, e);
             throw e;
         } catch (IOException e) {
-            audit.increment("transform.500", e);
+            timer.stopStatus(500, e);
             throw new TransformException("Problem transforming survey", e);
+        } finally {
+            audit.increment(timer);
         }
     }
 
@@ -101,12 +110,16 @@ public class TransformEngine {
     public TransformContext createTransformContext(Survey survey) throws TemplateNotFoundException {
         return TransformContext.builder()
                 .batch(batchNumberService.getNext())
+                .sequence(sequenceNumberService.getNext())
                 .surveyTemplate(getSurveyTemplate(survey))
                 .pdfTemplate(getPdfTemplate(survey))
                 .build();
     }
 
     private String getPdfTemplate(Survey survey) throws TemplateNotFoundException {
+
+        //only time if we load the template
+        Timer timer = null;
 
         String pdfTemplate = null;
         String templateFilename = "templates/" + survey.getId() + "." + survey.getCollection().getInstrumentId() + ".pdf.fo";
@@ -115,12 +128,23 @@ public class TransformEngine {
             //only load a template once
             pdfTemplate = templates.get(templateFilename);
             if (pdfTemplate == null) {
+
+                timer = new Timer("template.pdf.load.");
+                timer.addInfo(templateFilename);
+
                 pdfTemplate = FileHelper.loadFile(templateFilename);
-                log.debug("TEMPLATE|storing template: " + templateFilename);
                 templates.put(templateFilename, pdfTemplate);
+
+                timer.stopStatus(200);
+                log.debug("TEMPLATE|storing template: " + templateFilename);
             }
         } catch (IOException e) {
+            if (timer != null) {
+                timer.stopStatus(500, e);
+            }
             throw new TemplateNotFoundException("problem loading pdf template: " + templateFilename);
+        } finally {
+            audit.increment(timer);
         }
 
         return pdfTemplate;
@@ -128,32 +152,48 @@ public class TransformEngine {
 
     private SurveyTemplate getSurveyTemplate(Survey survey) throws TemplateNotFoundException {
 
+        //only time if we load the template
+        Timer timer = null;
+
         //only load a template once
         String templateFilename = "templates/" + survey.getId() + "." + survey.getCollection().getInstrumentId() + ".survey.json";
+
         try {
             String json = templates.get(templateFilename);
             if (json == null) {
+                timer = new Timer("template.survey.load.");
+                timer.addInfo(templateFilename);
+
                 json = FileHelper.loadFile(templateFilename);
-                log.debug("TEMPLATE|storing template: " + templateFilename);
                 templates.put(templateFilename, json);
+
+                timer.stopStatus(200);
+                log.debug("TEMPLATE|storing template: " + templateFilename);
             }
             return Serialiser.deserialise(json, SurveyTemplate.class);
         } catch (IOException e) {
+            if (timer != null ) {
+                timer.stopStatus(500, e);
+            }
             throw new TemplateNotFoundException(templateFilename, e);
+        } finally {
+            audit.increment(timer);
         }
     }
 
     private String decrypt(String data) throws IOException {
         log.debug("DECRYPT|REQUEST|decrypt: {}", data);
+
+        Timer timer = new Timer("decrypt.");
         Response<String> decryptResponse = decrypt.decrypt(data);
+        timer.stopStatus(decryptResponse.statusLine.getStatusCode());
+        audit.increment(timer);
+
         log.debug("DECRYPT|RESPONSE|survey: {}", Json.prettyPrint(decryptResponse));
-        audit.increment("decrypt." + decryptResponse.statusLine.getStatusCode());
 
         if (isError(decryptResponse.statusLine)) {
             throw new TransformException("decrypt response indicated an error: " + decryptResponse);
         }
-
-        //TODO audit time taken
 
         return decryptResponse.body;
     }

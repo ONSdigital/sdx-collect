@@ -1,12 +1,11 @@
 package com.github.onsdigital.perkin.transform.pck;
 
 import com.github.onsdigital.perkin.json.Survey;
+import com.github.onsdigital.perkin.helper.Timer;
 import com.github.onsdigital.perkin.transform.*;
 import com.github.onsdigital.perkin.transform.pck.derivator.DerivatorFactory;
 import lombok.extern.slf4j.Slf4j;
 
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -20,7 +19,6 @@ public class PckTransformer implements Transformer {
 	private static final String FORM_LEAD = "FV";
 
 	private static final int LENGTH_BATCH = 6;
-    private static final int LENGTH_QUESTION = 4;
 
 	private DerivatorFactory derivatorFactory = new DerivatorFactory();
 
@@ -36,6 +34,8 @@ public class PckTransformer implements Transformer {
 
     @Override
     public List<DataFile> transform(final Survey survey, final TransformContext context) throws TransformException {
+        Timer timer = new Timer("transform.pck.");
+
         log.debug("TRANSFORM|PCK|transforming into pck from survey: {}", survey);
 
         //we only have the MCI survey template for now
@@ -45,10 +45,13 @@ public class PckTransformer implements Transformer {
         pck.setQuestions(derivatorFactory.deriveAllAnswers(survey, context.getSurveyTemplate()));
         pck.setFormLead(FORM_LEAD);
 
-        //TODO: made up a filename structure for now
-        pck.setFilename(context.getBatch() + "_" + survey.getMetadata().getRuRef() + ".pck");
+        //TODO: remove .pck extension (in tandem with Ian)
+        pck.setFilename(survey.getId() + "_" + context.getSequence() + ".pck");
 
-        log.info("TRANSFORM|PCK|created pck: " + pck);
+        timer.stopStatus(200);
+        Audit.getInstance().increment(timer);
+
+        log.info("TRANSFORM|PCK|created pck: ", pck);
 
         return Arrays.asList(pck);
     }
@@ -92,21 +95,6 @@ public class PckTransformer implements Transformer {
 
         return ref;
     }
-
-    private String getFormattedPeriod(String date) {
-		DateFormat inputFormatter = new SimpleDateFormat("dd MMMM yyyy");
-		DateFormat outputFormatter = new SimpleDateFormat("yyyyMM");
-		String period = null;
-		try {
-			Date startDate = inputFormatter.parse(date);
-			period = outputFormatter.format(startDate);
-		} catch (ParseException e) {
-            //TODO: might need to throw exception here? otherwise this will be a silent failure - add a test
-			log.warn("TRANSFORM|PCK|error parsing date: " + date, e);
-		}
-		
-		return period;
-	}
 	
 	public static String formatDate(Date date){
 		return new SimpleDateFormat("dd/MM/yy").format(date);
