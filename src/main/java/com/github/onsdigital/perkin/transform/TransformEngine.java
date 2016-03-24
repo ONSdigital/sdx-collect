@@ -191,20 +191,24 @@ public class TransformEngine {
 
         Endpoint receiptEndpoint = new Endpoint(new Host(receiptHost), receiptURI);
 
-        String receiptData = FileHelper.loadFile("receipt.xml");
-        receiptData = receiptData.replace("{respondent_id}", survey.getMetadata().getUserId());
+        String receiptData = getTemplate("templates/receipt.xml");
+        String respondentId = survey.getMetadata().getUserId();
+
+        receiptData = receiptData.replace("{respondent_id}", respondentId);
 
         BasicNameValuePair applicationType = new BasicNameValuePair("Content-Type", "application/vnd.ons.receipt+xml");
 
         Response<String> receiptResponse = new Http().postString(receiptEndpoint, receiptData, applicationType);
 
-        boolean success = receiptResponse.statusLine.getStatusCode() == HttpStatus.CREATED_201;
+        int status = receiptResponse.statusLine.getStatusCode();
 
-        if (!success) {
+        if (status == HttpStatus.BAD_REQUEST_400) {
+            log.error("RECEIPT|RESPONSE|Failed for respondent: {}", respondentId);
+        } else if (status != HttpStatus.CREATED_201) {
             throw new TransformException("receipt response indicated an error: " + receiptResponse);
         }
 
-        return success;
+        return status == HttpStatus.CREATED_201;
     }
 
     private boolean isError(StatusLine statusLine) {
