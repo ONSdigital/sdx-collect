@@ -78,7 +78,7 @@ public class TransformEngine {
                 files.addAll(transformer.transform(survey, context));
             }
 
-            //publisher.publish(files);
+            publisher.publish(files);
 
             sendReceipt(survey);
 
