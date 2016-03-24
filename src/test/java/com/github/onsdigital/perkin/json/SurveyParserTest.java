@@ -1,123 +1,77 @@
 package com.github.onsdigital.perkin.json;
 
-import com.github.onsdigital.perkin.helper.FileHelper;
+import com.github.onsdigital.perkin.test.FileHelper;
+import com.github.onsdigital.perkin.test.ParameterizedTestHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static junit.framework.TestCase.fail;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
+@RunWith(Parameterized.class)
 @Slf4j
 public class SurveyParserTest {
 
     private SurveyParser classUnderTest;
 
+    private File survey;
+    private File error;
+
+    public SurveyParserTest(File survey, File error){
+        this.survey = survey;
+        this.error = error;
+    }
+
     @Before
-    public void setUp() {
+    public void setUp(){
         classUnderTest = new SurveyParser();
     }
 
-    //TODO: make this a parameterized file based test, cope with expected exceptions
+    @Parameterized.Parameters(name = "{index}: {0} should produce {1}")
+    public static Collection<Object[]> data() throws IOException {
+
+        return ParameterizedTestHelper.getFiles("survey-parser", "json", "error");
+    }
 
     @Test
-    public void shouldParseValidSurveyVersion() throws IOException {
-        //given
-        String json = getSurvey("survey.valid.json");
+    public void shouldParseSurveyJson() throws IOException {
 
-        //when
-        Survey survey = classUnderTest.parse(json);
+        log.debug("TEST|survey-parser: " + survey.getName() + " error: " + error);
 
-        //then
-        log.debug("TEST|survey as json: {}", classUnderTest.prettyPrint(survey));
+        //Given
+        String json = FileHelper.loadFile(survey);
+
+        //When
+        Survey survey = null;
+        try {
+            survey = classUnderTest.parse(json);
+        } catch (SurveyParserException e) {
+            //Then - if error
+            if (error.exists()) {
+                String expectedErrorMessage = FileHelper.loadFile(error);
+                assertThat(e.getMessage(), is(expectedErrorMessage));
+                return;
+            } else {
+                //fail test
+                throw e;
+            }
+        }
+
+        if (error.exists()) {
+            String expectedErrorMessage = FileHelper.loadFile(error);
+            fail("expected error: " + expectedErrorMessage);
+        }
+
+        //Then - if valid
         assertThat(survey, is(notNullValue()));
-    }
-
-    @Test
-    public void shouldPassLongPeriodDownstream() throws IOException {
-        //given
-        String json = getSurvey("survey.valid.period.long.json");
-
-        //when
-        Survey survey = classUnderTest.parse(json);
-
-        //then
-        log.debug("TEST|survey as json: {}", classUnderTest.prettyPrint(survey));
-        assertThat(survey.getCollection().getPeriod(), is("longValueButPassDownstream"));
-    }
-
-    @Test(expected = SurveyParserException.class)
-    public void shouldRejectInvalidJson() throws SurveyParserException {
-        //given
-        String json = "invalid-json";
-
-        //when
-        classUnderTest.parse(json);
-    }
-
-    @Test(expected = SurveyParserException.class)
-    public void shouldRejectUnsupportedSurveyVersion() throws IOException {
-        //given
-        String json = getSurvey("survey.invalid.version.json");
-
-        //when
-        classUnderTest.parse(json);
-    }
-
-    @Test(expected = SurveyParserException.class)
-    public void shouldRejectInvalidSubmittedAtDate() throws IOException {
-        //given
-        String json = getSurvey("survey.invalid.submitted_at.json");
-
-        //when
-        classUnderTest.parse(json);
-    }
-
-    //TODO: should we reject a survey with no submitted_at date?
-//    @Test(expected = SurveyParserException.class)
-//    public void shouldRejectNoSubmittedAtDate() throws IOException {
-//        //given
-//        String json = getSurvey("survey.invalid.no.submitted_at.json");
-//
-//        //when
-//        classUnderTest.parse(json);
-//    }
-
-    @Test(expected = SurveyParserException.class)
-    public void shouldRejectNoCollection() throws IOException {
-        //given
-        String json = getSurvey("survey.invalid.no.collection.json");
-
-        //when
-        classUnderTest.parse(json);
-    }
-
-    @Test(expected = SurveyParserException.class)
-    public void shouldRejectNoMetadata() throws IOException {
-        //given
-        String json = getSurvey("survey.invalid.no.metadata.json");
-
-        //when
-        classUnderTest.parse(json);
-    }
-
-    //TODO: should we reject a survey with no period date?
-//    @Test(expected = SurveyParserException.class)
-//    public void shouldRejectNoPeriodDate() throws IOException {
-//        //given
-//        String json = getSurvey("survey.invalid.no.period.json");
-//
-//        //when
-//        classUnderTest.parse(json);
-//    }
-
-    //TODO: origin - multiple messages in exception?
-    //TODO: type - multiple messages in exception?
-
-    private String getSurvey(String filename) throws IOException {
-        return FileHelper.loadFile(filename);
     }
 }

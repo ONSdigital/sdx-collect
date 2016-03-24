@@ -20,9 +20,26 @@ public class SurveyParser {
         try {
             Survey survey = deserialize(json);
 
-            //TODO validation - type, origin, respondent should be 12 chars, 11 digits and a check letter
-            if (!"0.0.1".equals(survey.getVersion())) {
-                logAndThrowError("unsupported version: " + survey.getVersion(), json);
+            //TODO validation - type, origin, respondent should be 12 chars, 11 digits and a check letter - can be longer - log a warning?
+
+            if (survey == null) {
+                logAndThrowError("Problem parsing survey from json", json);
+            }
+
+            if (StringUtils.isBlank(survey.getVersion())) {
+                logAndThrowError("'version' is mandatory", json);
+            } else {
+                if (! survey.getVersion().equals("0.0.1")) {
+                    logAndThrowError("unsupported version: " + survey.getVersion(), json);
+                }
+            }
+
+            if (StringUtils.isBlank(survey.getId())) {
+                logAndThrowError("'survey_id' is mandatory", json);
+            }
+
+            if (survey.getDate() == null) {
+                logAndThrowError("'submitted_at' is mandatory", json);
             }
 
             if (survey.getCollection() == null) {
@@ -33,7 +50,6 @@ public class SurveyParser {
                     logAndThrowError("collection 'period' is mandatory", json);
                 } else {
                     if (period.length() != 4) {
-                        //TODO: throw error? or pass to downstream as is
                         Audit.getInstance().increment("survey.period.length.not.4.WARNING");
                         log.warn("SURVEY|PARSE|PERIOD|expected 4 character period, got period: {} length: {}", period, period.length());
                     }
@@ -60,7 +76,7 @@ public class SurveyParser {
 
     private void logAndThrowError(String message, String json) throws SurveyParserException {
         log.error("SURVEY|PARSE|{} json: {}", message, json);
-        throw new SurveyParserException(message + " " + json);
+        throw new SurveyParserException(message, json);
     }
 
     public String prettyPrint(Survey survey) {

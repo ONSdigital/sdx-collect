@@ -12,6 +12,11 @@ public class SurveyParserException extends TransformException {
         super(message);
     }
 
+    public SurveyParserException(final String message, final String json) {
+        super(message);
+        this.json = json;
+    }
+
 	public SurveyParserException(final String message, final String json, final Throwable cause) {
 		super(message, cause);
         this.json = json;
