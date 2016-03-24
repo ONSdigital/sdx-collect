@@ -27,7 +27,7 @@ public class ImageIndexCsvCreator {
         //TODO: hardcoded path for now
         //TODO: note that the EDC_PROD could be other environments
         String fullPath = "\\\\NP3RVWAPXX370\\EDC_PROD\\EDC_QImages\\Images\\" + filename;
-        //TODO: hardcoded survey date for now
+        //TODO: hardcoded survey date for now - set to be today
         String surveyDate = "20160315";
 
         if (pageNumber > 1) {
@@ -36,16 +36,15 @@ public class ImageIndexCsvCreator {
         }
 
         //TODO: is this date now or the date the survey was completed?
-        csv.append(formatDate(survey.getDate())).append(COMMA)
+        csv.append(formatDate(new Date())).append(COMMA)
                 .append(fullPath).append(COMMA)
                 .append(surveyDate).append(COMMA) // this is their 'batch number' but it's a different batch number to what we know
                 .append(scanId).append(COMMA)
                 .append(survey.getId()).append(COMMA)
                 .append(survey.getCollection().getInstrumentId()).append(COMMA)
-                //TODO: need to drop the check letter
-                .append(survey.getMetadata().getRuRef()).append(COMMA)
+                .append(survey.getMetadata().getRespondentId()).append(COMMA)
                 .append(survey.getCollection().getPeriod()).append(COMMA)
-                .append(StringUtils.leftPad("" + pageNumber, 3, '0'));
+                .append(format(pageNumber));
 
         if (pageNumber == 1) {
             //indicate this is the first page
@@ -53,6 +52,14 @@ public class ImageIndexCsvCreator {
             //set the filename
             this.filename = "EDC_" + survey.getId() + "_" + surveyDate + "_" + sequence + ".csv";
         }
+    }
+
+    /**
+     * @param pageNumber the page number
+     * @return left padded with zeros e.g. 001
+     */
+    private String format(int pageNumber) {
+       return StringUtils.leftPad("" + pageNumber, 3, '0');
     }
 
     private String formatDate(Date date) {

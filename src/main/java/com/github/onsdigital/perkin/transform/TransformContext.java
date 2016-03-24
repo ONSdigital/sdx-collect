@@ -10,6 +10,8 @@ public class TransformContext {
 
     private long batch;
     private long sequence;
+    private NumberService scanNumberService;
+
     private SurveyTemplate surveyTemplate;
     private String pdfTemplate;
 }
