@@ -83,8 +83,6 @@ public class TransformEngine {
 
             sendReceipt(survey);
 
-            audit.increment("transform.200");
-
             timer.stopStatus(200);
 
             return files;
