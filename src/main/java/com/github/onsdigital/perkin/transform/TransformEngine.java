@@ -1,10 +1,14 @@
 package com.github.onsdigital.perkin.transform;
 
+import com.github.davidcarboni.httpino.Endpoint;
+import com.github.davidcarboni.httpino.Host;
 import com.github.davidcarboni.httpino.Response;
 import com.github.davidcarboni.httpino.Serialiser;
+import com.github.onsdigital.ConfigurationManager;
 import com.github.onsdigital.Json;
 import com.github.onsdigital.perkin.decrypt.HttpDecrypt;
 import com.github.onsdigital.perkin.helper.FileHelper;
+import com.github.onsdigital.perkin.helper.Http;
 import com.github.onsdigital.perkin.helper.Timer;
 import com.github.onsdigital.perkin.json.*;
 import com.github.onsdigital.perkin.transform.idbr.IdbrTransformer;
@@ -13,6 +17,7 @@ import com.github.onsdigital.perkin.transform.pck.PckTransformer;
 import com.github.onsdigital.perkin.publish.FtpPublisher;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.StatusLine;
+import org.apache.http.message.BasicNameValuePair;
 import org.eclipse.jetty.http.HttpStatus;
 
 import java.io.IOException;
@@ -86,7 +91,10 @@ public class TransformEngine {
 
             publisher.publish(files);
 
+            sendReceipt(survey);
+
             timer.stopStatus(200);
+
             return files;
         } catch (SurveyParserException e) {
             timer.stopStatus(400, e);
@@ -171,6 +179,36 @@ public class TransformEngine {
         }
 
         return decryptResponse.body;
+    }
+
+    private Boolean sendReceipt(Survey survey) throws IOException {
+
+        String receiptHost = ConfigurationManager.get("receipt.host");
+        String receiptPath = ConfigurationManager.get("receipt.path");
+
+        String receiptURI = receiptPath + "/" + survey.getMetadata().getRuRef() + "/collectionexercises/"
+                + survey.getCollection().getExerciseSid() + "/receipts";
+
+        Endpoint receiptEndpoint = new Endpoint(new Host(receiptHost), receiptURI);
+
+        String receiptData = getTemplate("templates/receipt.xml");
+        String respondentId = survey.getMetadata().getUserId();
+
+        receiptData = receiptData.replace("{respondent_id}", respondentId);
+
+        BasicNameValuePair applicationType = new BasicNameValuePair("Content-Type", "application/vnd.ons.receipt+xml");
+
+        Response<String> receiptResponse = new Http().postString(receiptEndpoint, receiptData, applicationType);
+
+        int status = receiptResponse.statusLine.getStatusCode();
+
+        if (status == HttpStatus.BAD_REQUEST_400) {
+            log.error("RECEIPT|RESPONSE|Failed for respondent: {}", respondentId);
+        } else if (status != HttpStatus.CREATED_201) {
+            throw new TransformException("receipt response indicated an error: " + receiptResponse);
+        }
+
+        return status == HttpStatus.CREATED_201;
     }
 
     private boolean isError(StatusLine statusLine) {
