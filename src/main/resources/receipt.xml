@@ -1,0 +1,4 @@
+<r:receipt xmlns:r="http://ns.ons.gov.uk/namespaces/resources/receipt">
+ <r:receipt_type>Completed</r:receipt_type>
+ <r:respondent_id>{respondent_id}</r:respondent_id>
+</r:receipt>

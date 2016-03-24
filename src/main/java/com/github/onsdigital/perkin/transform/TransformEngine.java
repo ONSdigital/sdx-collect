@@ -1,17 +1,23 @@
 package com.github.onsdigital.perkin.transform;
 
+import com.github.davidcarboni.httpino.Endpoint;
+import com.github.davidcarboni.httpino.Host;
 import com.github.davidcarboni.httpino.Response;
 import com.github.davidcarboni.httpino.Serialiser;
+import com.github.onsdigital.ConfigurationManager;
 import com.github.onsdigital.Json;
 import com.github.onsdigital.perkin.decrypt.HttpDecrypt;
 import com.github.onsdigital.perkin.helper.FileHelper;
+import com.github.onsdigital.perkin.helper.Http;
 import com.github.onsdigital.perkin.json.*;
 import com.github.onsdigital.perkin.transform.idbr.IdbrTransformer;
 import com.github.onsdigital.perkin.transform.jpg.ImageTransformer;
 import com.github.onsdigital.perkin.transform.pck.PckTransformer;
 import com.github.onsdigital.perkin.publish.FtpPublisher;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
+import org.apache.http.message.BasicNameValuePair;
 import org.eclipse.jetty.http.HttpStatus;
 
 import java.io.IOException;
@@ -72,7 +78,9 @@ public class TransformEngine {
                 files.addAll(transformer.transform(survey, context));
             }
 
-            publisher.publish(files);
+            //publisher.publish(files);
+
+            sendReceipt(survey);
 
             audit.increment("transform.200");
 
@@ -148,6 +156,32 @@ public class TransformEngine {
         //TODO audit time taken
 
         return decryptResponse.body;
+    }
+
+    private Boolean sendReceipt(Survey survey) throws IOException {
+
+        String receiptHost = ConfigurationManager.get("receipt.host");
+        String receiptPath = ConfigurationManager.get("receipt.path");
+
+        String receiptURI = receiptPath + "/" + survey.getMetadata().getRuRef() + "/collectionexercises/"
+                + survey.getCollection().getExerciseSid() + "/receipts";
+
+        Endpoint receiptEndpoint = new Endpoint(new Host(receiptHost), receiptURI);
+
+        String receiptData = FileHelper.loadFile("receipt.xml");
+        receiptData = receiptData.replace("{respondent_id}", survey.getMetadata().getUserId());
+
+        BasicNameValuePair applicationType = new BasicNameValuePair("Content-Type", "application/vnd.ons.receipt+xml");
+
+        Response<String> receiptResponse = new Http().postString(receiptEndpoint, receiptData, applicationType);
+
+        boolean success = receiptResponse.statusLine.getStatusCode() == HttpStatus.CREATED_201;
+
+        if (!success) {
+            throw new TransformException("receipt response indicated an error: " + receiptResponse);
+        }
+
+        return success;
     }
 
     private boolean isError(StatusLine statusLine) {
