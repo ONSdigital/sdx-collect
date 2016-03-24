@@ -15,6 +15,7 @@ public class Pck implements DataFile {
 	private List<Question> questions;
 
     private String filename;
+    private String path;
 
 	public String getHeader() {
 		return header;
@@ -55,6 +56,15 @@ public class Pck implements DataFile {
 
     public void setFilename(String filename) {
         this.filename = filename;
+    }
+
+    @Override
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
     @Override

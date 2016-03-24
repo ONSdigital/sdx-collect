@@ -13,6 +13,7 @@ import lombok.Data;
 public class ImageIndexCsv implements DataFile {
 
     private String csv;
+    private String path;
     private String filename;
 
     @Override

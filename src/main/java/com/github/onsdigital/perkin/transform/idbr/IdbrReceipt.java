@@ -13,6 +13,7 @@ import lombok.Data;
 public class IdbrReceipt implements DataFile {
 
     private String receipt;
+    private String path;
     private String filename;
 
     @Override

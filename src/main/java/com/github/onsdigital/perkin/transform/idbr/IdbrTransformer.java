@@ -47,6 +47,8 @@ public class IdbrTransformer implements Transformer {
         return IdbrReceipt.builder()
                 .receipt(createReceipt(survey))
                 .filename(createFilename(date, sequence))
+                //TODO: path is hardcoded for now
+                .path("\\\\NP3RVWAPXX370\\SDX_preprod\\EDC_QReceipts\\")
                 .build();
     }
 

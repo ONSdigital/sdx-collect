@@ -66,6 +66,8 @@ public class ImageTransformer implements Transformer {
 
                 Image image = Image.builder()
                         .filename(scanId + ".JPG")
+                        //TODO: path is hardcoded for now
+                        .path("\\\\NP3RVWAPXX370\\SDX_preprod\\EDC_QImages\\Images\\")
                         .data(baos.toByteArray())
                         .build();
                 files.add(image);
