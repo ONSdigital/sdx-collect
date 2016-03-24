@@ -49,14 +49,4 @@ public class Survey {
 
         return answers.keySet();
     }
-
-    //TODO: move to Metadata class
-    public String getRespondentId() {
-        return getMetadata().getRuRef().substring(0, 11);
-    }
-
-    //TODO: move to Metadata class
-    public char getRespondentCheckLetter() {
-        return getMetadata().getRuRef().substring(11, 12).charAt(0);
-    }
 }

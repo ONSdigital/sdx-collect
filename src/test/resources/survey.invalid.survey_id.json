@@ -1,9 +1,0 @@
-{
-  "type": "uk.gov.ons.edc.eq:surveyresponse",
-  "version": "0.0.2",
-  "origin": "uk.gov.ons.edc.eq"
-}
-
-//TODO: survey_id 23 should cause a failure
-(idbr receipt needs 3 digits)
-(loading template too)

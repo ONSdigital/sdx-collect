@@ -8,7 +8,7 @@
     "instrument_id": "yui789",
     "period": "1234"
   },
-  "submitted_at": "not-a-valid-date",
+  "submitted_at": "invalid-date-format",
   "metadata": {
     "user_id": "789473423",
     "ru_ref": "432423423423"

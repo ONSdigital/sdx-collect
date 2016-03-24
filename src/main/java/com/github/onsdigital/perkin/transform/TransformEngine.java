@@ -35,8 +35,9 @@ public class TransformEngine {
     private FtpPublisher publisher = new FtpPublisher();
 
     private Audit audit = Audit.getInstance();
-    private BatchNumberService batchNumberService = new BatchNumberService();
-    private SequenceNumberService sequenceNumberService = new SequenceNumberService();
+    private NumberService batchNumberService = new NumberService("batch", 30000, 39999);
+    private NumberService sequenceNumberService = new NumberService("sequence", 1000, 99999);
+    private NumberService scanNumberService = new NumberService("scan", 1, 999999999);
 
     private TransformEngine() {
         //use getInstance()
@@ -44,6 +45,15 @@ public class TransformEngine {
         //TODO: also, transformers on a per survey id basis?
         transformers = Arrays.asList(new IdbrTransformer(), new PckTransformer(), new ImageTransformer());
         templates = new HashMap<>();
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                log.info("SHUTDOWN|storing sequence numbers...");
+                batchNumberService.save();
+                sequenceNumberService.save();
+                scanNumberService.save();
+            }
+        });
     }
 
     public static TransformEngine getInstance() {
@@ -92,23 +102,33 @@ public class TransformEngine {
         }
     }
 
-    //TODO: make private
     public TransformContext createTransformContext(Survey survey) throws TemplateNotFoundException {
         return TransformContext.builder()
+                .date(new Date())
                 .batch(batchNumberService.getNext())
                 .sequence(sequenceNumberService.getNext())
+                .scanNumberService(scanNumberService)
                 .surveyTemplate(getSurveyTemplate(survey))
                 .pdfTemplate(getPdfTemplate(survey))
                 .build();
     }
 
     private String getPdfTemplate(Survey survey) throws TemplateNotFoundException {
+        return getTemplate("templates/" + survey.getId() + "." + survey.getCollection().getInstrumentId() + ".pdf.fo");
+    }
+
+    private SurveyTemplate getSurveyTemplate(Survey survey) throws TemplateNotFoundException {
+
+        String json = getTemplate("templates/" + survey.getId() + "." + survey.getCollection().getInstrumentId() + ".survey.json");
+        return Serialiser.deserialise(json, SurveyTemplate.class);
+    }
+
+    private String getTemplate(String templateFilename) throws TemplateNotFoundException {
 
         //only time if we load the template
         Timer timer = null;
 
         String pdfTemplate = null;
-        String templateFilename = "templates/" + survey.getId() + "." + survey.getCollection().getInstrumentId() + ".pdf.fo";
 
         try {
             //only load a template once
@@ -134,37 +154,6 @@ public class TransformEngine {
         }
 
         return pdfTemplate;
-    }
-
-    private SurveyTemplate getSurveyTemplate(Survey survey) throws TemplateNotFoundException {
-
-        //only time if we load the template
-        Timer timer = null;
-
-        //only load a template once
-        String templateFilename = "templates/" + survey.getId() + "." + survey.getCollection().getInstrumentId() + ".survey.json";
-
-        try {
-            String json = templates.get(templateFilename);
-            if (json == null) {
-                timer = new Timer("template.survey.load.");
-                timer.addInfo(templateFilename);
-
-                json = FileHelper.loadFile(templateFilename);
-                templates.put(templateFilename, json);
-
-                timer.stopStatus(200);
-                log.debug("TEMPLATE|storing template: " + templateFilename);
-            }
-            return Serialiser.deserialise(json, SurveyTemplate.class);
-        } catch (IOException e) {
-            if (timer != null ) {
-                timer.stopStatus(500, e);
-            }
-            throw new TemplateNotFoundException(templateFilename, e);
-        } finally {
-            audit.increment(timer);
-        }
     }
 
     private String decrypt(String data) throws IOException {
