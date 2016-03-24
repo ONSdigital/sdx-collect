@@ -186,6 +186,11 @@ public class TransformEngine {
         String receiptHost = ConfigurationManager.get("receipt.host");
         String receiptPath = ConfigurationManager.get("receipt.path");
 
+        if (receiptHost.equals("skip")) {
+            log.warn("RECEIPT|SKIP|skipping sending receipt to RM");
+            return true;
+        }
+
         String receiptURI = receiptPath + "/" + survey.getMetadata().getRuRef() + "/collectionexercises/"
                 + survey.getCollection().getExerciseSid() + "/receipts";
 
