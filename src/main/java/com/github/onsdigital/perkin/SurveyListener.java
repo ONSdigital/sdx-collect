@@ -1,7 +1,6 @@
 package com.github.onsdigital.perkin;
 
 import com.github.onsdigital.ConfigurationManager;
-import com.github.onsdigital.perkin.helper.Http;
 import com.github.onsdigital.perkin.transform.TransformEngine;
 import com.rabbitmq.client.*;
 import lombok.extern.slf4j.Slf4j;
