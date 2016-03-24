@@ -48,6 +48,9 @@ public class PckTransformer implements Transformer {
         //TODO: remove .pck extension (in tandem with Ian)
         pck.setFilename(survey.getId() + "_" + context.getSequence() + ".pck");
 
+        //TODO: path is hardcoded for now
+        pck.setPath("\\\\NP3RVWAPXX370\\SDX_preprod\\EDC_QData\\");
+
         timer.stopStatus(200);
         Audit.getInstance().increment(timer);
 

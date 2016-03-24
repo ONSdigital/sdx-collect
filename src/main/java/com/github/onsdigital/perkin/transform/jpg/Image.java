@@ -8,6 +8,7 @@ import lombok.Data;
 @Builder
 public class Image implements DataFile {
 
+    private String path;
     private String filename;
     private byte[] data;
 

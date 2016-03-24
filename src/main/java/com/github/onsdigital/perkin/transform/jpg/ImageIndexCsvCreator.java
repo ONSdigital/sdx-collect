@@ -13,6 +13,7 @@ public class ImageIndexCsvCreator {
     private static final char COMMA = ',';
 
     private String filename = "UNKNOWN.csv";
+    private String path = "UNKNOWN";
     private StringBuilder csv;
 
     public ImageIndexCsvCreator() {
@@ -26,8 +27,8 @@ public class ImageIndexCsvCreator {
     public void addImage(Date now, long sequence, Survey survey, String filename, String scanId, int pageNumber) {
 
         //TODO: hardcoded path for now
-        //TODO: note that the EDC_PROD could be other environments
-        String fullPath = "\\\\NP3RVWAPXX370\\EDC_PROD\\EDC_QImages\\Images\\" + filename;
+        //TODO: note that the env could be: SDX_PROD | SDX_preprod | SDX_sit
+        path = "\\\\NP3RVWAPXX370\\SDX_preprod\\EDC_QImages\\Images\\";
 
         if (pageNumber > 1) {
             //start a new line if it's not the first entry
@@ -35,7 +36,7 @@ public class ImageIndexCsvCreator {
         }
 
         csv.append(formatDateTime(now)).append(COMMA)
-                .append(fullPath).append(COMMA)
+                .append(path + filename).append(COMMA)
                 .append(formatDate(now)).append(COMMA) // this is their 'batch number' but it's a different batch number to what we know - we set to a date
                 .append(scanId).append(COMMA)
                 .append(survey.getId()).append(COMMA)
@@ -72,6 +73,7 @@ public class ImageIndexCsvCreator {
         return ImageIndexCsv.builder()
                 .csv(csv.toString())
                 .filename(filename)
+                .path(path)
                 .build();
     }
 }
