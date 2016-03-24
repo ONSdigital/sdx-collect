@@ -31,7 +31,7 @@ public class ImageTransformer implements Transformer {
 
         byte[] pdf = pdfCreator.createPdf(survey, context);
 
-        List<DataFile> images = createImages(pdf, survey, context.getSequence());
+        List<DataFile> images = createImages(pdf, survey, context);
 
         timer.stopStatus(200);
         Audit.getInstance().increment(timer);
@@ -39,14 +39,10 @@ public class ImageTransformer implements Transformer {
         return images;
     }
 
-    private List<DataFile> createImages(final byte[] pdf, final Survey survey, final long sequence) throws TransformException {
+    private List<DataFile> createImages(final byte[] pdf, final Survey survey, final TransformContext context) throws TransformException {
 
         List<DataFile> files = new ArrayList<>();
         ImageIndexCsvCreator csvCreator = new ImageIndexCsvCreator();
-
-        //TODO: persist the scan number, increment it each time
-        int scanNumber = 1;
-        String scanId = "S" + StringUtils.leftPad("" + scanNumber, 9, '0');
 
         try {
             //TODO can this be re-used?
@@ -57,6 +53,8 @@ public class ImageTransformer implements Transformer {
             int pageNumber = 0;
             for (PDPage page : pages) {
                 pageNumber++;
+
+                String scanId = getNextScanId(context);
 
                 //convert pdf page to image
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -73,7 +71,7 @@ public class ImageTransformer implements Transformer {
                 files.add(image);
 
                 log.info("TRANSFORM|IMAGE|created image: " + image.getFilename());
-                csvCreator.addImage(sequence, survey, image.getFilename(), scanId, pageNumber);
+                csvCreator.addImage(context.getDate(), context.getSequence(), survey, image.getFilename(), scanId, pageNumber);
             }
 
             document.close();
@@ -84,5 +82,10 @@ public class ImageTransformer implements Transformer {
         }
 
         return files;
+    }
+
+    private String getNextScanId(TransformContext context) {
+        long scanNumber = context.getScanNumberService().getNext();
+        return "S" + StringUtils.leftPad("" + scanNumber, 9, '0');
     }
 }

@@ -60,7 +60,8 @@ public class IdbrTransformerTest {
         log.debug("TEST|survey: {}", survey);
         long batch = 30001L;
         long sequence = 2000;
-        TransformContext context = ParameterizedTestHelper.createTransformContext(survey, batch, sequence);
+        long scan = 5;
+        TransformContext context = ParameterizedTestHelper.createTransformContext(survey, batch, sequence, scan);
 
         //When
         List<DataFile> files = classUnderTest.transform(survey, context);
