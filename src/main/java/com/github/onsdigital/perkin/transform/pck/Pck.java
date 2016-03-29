@@ -69,16 +69,7 @@ public class Pck implements DataFile {
 
     @Override
     public byte[] getBytes() {
-        StringBuilder sb = new StringBuilder()
-                .append(header).append(NEW_LINE)
-                .append(formLead).append(NEW_LINE)
-                .append(formIdentifier).append(NEW_LINE);
-
-        for (Question question : questions) {
-            sb.append(question.toString()).append(NEW_LINE);
-        }
-
-        return sb.toString().getBytes(StandardCharsets.UTF_8);
+        return this.toString().getBytes(StandardCharsets.UTF_8);
     }
 
     @Override
@@ -95,8 +86,14 @@ public class Pck implements DataFile {
 		        .append(formLead).append(NEW_LINE)
 		        .append(formIdentifier).append(NEW_LINE);
 		
-		for (Question question : questions) {
-			sb.append(question.toString()).append(NEW_LINE);
+		for (int i = 0; i < questions.size(); i++) {
+			Question question = questions.get(i);
+
+			sb.append(question.toString());
+
+			if (i < questions.size() - 1) {
+				sb.append(NEW_LINE);
+			}
 		}
 		
 		return sb.toString();
