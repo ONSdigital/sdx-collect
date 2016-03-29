@@ -72,8 +72,7 @@ public class IdbrTransformer implements Transformer {
             .append(DELIMITER)
             .append(TransformerHelper.leftPadZeroes(survey.getId(), 3))
             .append(DELIMITER)
-            .append(formatIdbrDate(survey.getDate()))
-            .append(NEW_LINE);
+            .append(formatIdbrDate(survey.getDate()));
 
         return receipt.toString();
     }
