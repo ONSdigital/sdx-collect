@@ -89,7 +89,7 @@ public class TransformEngine {
                 files.addAll(transformer.transform(survey, context));
             }
 
-            publisher.publish(files);
+            //publisher.publish(files);
 
             sendReceipt(survey);
 
@@ -182,11 +182,13 @@ public class TransformEngine {
     }
 
     private Boolean sendReceipt(Survey survey) throws IOException {
+        Timer timer = new Timer("receipt.");
 
         String receiptHost = ConfigurationManager.get("receipt.host");
         String receiptPath = ConfigurationManager.get("receipt.path");
 
         if (receiptHost.equals("skip")) {
+            Audit.getInstance().increment("receipt.host.skipped");
             log.warn("RECEIPT|SKIP|skipping sending receipt to RM");
             return true;
         }
@@ -206,6 +208,10 @@ public class TransformEngine {
         Response<String> receiptResponse = new Http().postString(receiptEndpoint, receiptData, applicationType);
 
         int status = receiptResponse.statusLine.getStatusCode();
+
+        timer.stopStatus(status);
+
+        audit.increment(timer);
 
         if (status == HttpStatus.BAD_REQUEST_400) {
             log.error("RECEIPT|RESPONSE|Failed for respondent: {}", respondentId);
