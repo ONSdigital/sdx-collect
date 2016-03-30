@@ -17,4 +17,5 @@ public class SurveyTemplate {
     private String formType;
     @Singular("question")
 	private List<QuestionTemplate> questions;
+
 }
