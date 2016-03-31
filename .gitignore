@@ -4,4 +4,4 @@ target
 *.class
 *.jar
 *.DS_Store
-
+*.sequence
