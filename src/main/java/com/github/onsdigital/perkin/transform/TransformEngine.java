@@ -193,7 +193,7 @@ public class TransformEngine {
             return true;
         }
 
-        String receiptURI = receiptPath + "/" + survey.getMetadata().getRuRef() + "/collectionexercises/"
+        String receiptURI = receiptPath + "/" + survey.getMetadata().getStatisticalUnitId() + "/collectionexercises/"
                 + survey.getCollection().getExerciseSid() + "/receipts";
 
         Endpoint receiptEndpoint = new Endpoint(new Host(receiptHost), receiptURI);

@@ -16,7 +16,7 @@ public class Metadata {
     /**
      * @return empty String if null, the first 11 characters if the length is 12 and the last character is a letter, otherwise the full String
      */
-    public String getRuRefId() {
+    public String getStatisticalUnitId() {
         if (ruRef == null) {
             return "";
         }
