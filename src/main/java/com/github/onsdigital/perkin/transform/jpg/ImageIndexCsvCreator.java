@@ -41,7 +41,7 @@ public class ImageIndexCsvCreator {
                 .append(scanId).append(COMMA)
                 .append(survey.getId()).append(COMMA)
                 .append(survey.getCollection().getInstrumentId()).append(COMMA)
-                .append(survey.getMetadata().getRespondentId()).append(COMMA)
+                .append(survey.getMetadata().getRuRefId()).append(COMMA)
                 .append(survey.getCollection().getPeriod()).append(COMMA)
                 .append(format(pageNumber));
 
