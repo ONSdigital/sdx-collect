@@ -16,7 +16,7 @@ public class Metadata {
     /**
      * @return empty String if null, the first 11 characters if the length is 12 and the last character is a letter, otherwise the full String
      */
-    public String getRespondentId() {
+    public String getRuRefId() {
         if (ruRef == null) {
             return "";
         }
@@ -33,7 +33,7 @@ public class Metadata {
         return ruRef;
     }
 
-    public char getRespondentCheckLetter() {
+    public char getRuRefCheckLetter() {
         int length = ruRef.length();
 
         if (ruRef == null || length < 12) {

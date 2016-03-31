@@ -66,9 +66,9 @@ public class IdbrTransformer implements Transformer {
     private String createReceipt(final Survey survey) {
 
         final StringBuilder receipt = new StringBuilder()
-            .append(survey.getMetadata().getRespondentId())
+            .append(survey.getMetadata().getRuRefId())
             .append(DELIMITER)
-            .append(survey.getMetadata().getRespondentCheckLetter())
+            .append(survey.getMetadata().getRuRefCheckLetter())
             .append(DELIMITER)
             .append(TransformerHelper.leftPadZeroes(survey.getId(), 3))
             .append(DELIMITER)
