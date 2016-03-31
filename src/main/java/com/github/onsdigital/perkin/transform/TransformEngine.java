@@ -203,7 +203,7 @@ public class TransformEngine {
 
         receiptData = receiptData.replace("{respondent_id}", respondentId);
 
-        BasicNameValuePair applicationType = new BasicNameValuePair("Content-Type", "application/vnd.collections+xml");
+        BasicNameValuePair applicationType = new BasicNameValuePair("Content-Type", "application/vnd.ons.receipt+xml");
 
         Response<String> receiptResponse = new Http().postString(receiptEndpoint, receiptData, applicationType);
 
