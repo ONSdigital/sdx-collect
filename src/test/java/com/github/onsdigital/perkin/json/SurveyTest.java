@@ -4,7 +4,9 @@ import com.github.davidcarboni.httpino.Endpoint;
 import com.github.davidcarboni.httpino.Host;
 import com.github.onsdigital.ConfigurationManager;
 import com.github.onsdigital.perkin.helper.FileHelper;
+import com.github.onsdigital.perkin.transform.TemplateNotFoundException;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.xalan.xsltc.compiler.Template;
 import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.InputSource;
@@ -25,13 +27,13 @@ import static org.mockito.Mockito.*;
  */
 public class SurveyTest {
 
-    Survey testSurvey;
+    private Survey testSurvey;
 
-    static final String RECEIPT_HOST = "http://localhost:5000";
-    static final String RECEIPT_PATH = "reportingunits";
+    private static final String RECEIPT_HOST = "http://localhost:5000";
+    private static final String RECEIPT_PATH = "reportingunits";
 
-    static final String RECEIPT_USER = "test";
-    static final String RECEIPT_PASS = "test";
+    private static final String RECEIPT_USER = "test";
+    private static final String RECEIPT_PASS = "test";
 
     @Before
     public void setUp() throws IOException {
@@ -86,8 +88,12 @@ public class SurveyTest {
     }
 
     @Test
-    public void shouldHaveCorrectContent() {
+    public void shouldHaveCorrectRespondentId() throws TemplateNotFoundException {
+        String content = testSurvey.getReceiptContent();
 
+        String respondentId = content.split("<respondent_id>")[1].split("</respondent_id>")[0];
+
+        assertThat(respondentId, is(testSurvey.getMetadata().getUserId()));
     }
 
     @Test

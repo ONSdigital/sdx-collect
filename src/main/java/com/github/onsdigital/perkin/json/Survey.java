@@ -95,15 +95,17 @@ public class Survey {
 
     public String getReceiptContent() throws TemplateNotFoundException {
         TemplateLoader loader = TemplateLoader.getInstance();
+        String respondentId = this.getMetadata().getUserId();
+        String template = loader.getTemplate("templates/receipt.xml");
 
-        return loader.getTemplate("templates/receipt.xml");
+        return template.replace("{respondent_id}", respondentId);
     }
 
     public Boolean sendReceipt() throws IOException {
         Timer timer = new Timer("receipt.");
         Audit audit = Audit.getInstance();
 
-        String receiptHost = ConfigurationManager.get("receipt.host");
+        String receiptHost = ConfigurationManager.get("RECEIPT_HOST");
 
         if (receiptHost.equals("skip")) {
             Audit.getInstance().increment("receipt.host.skipped");
