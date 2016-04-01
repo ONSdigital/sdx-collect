@@ -13,6 +13,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Base64;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -26,10 +27,19 @@ public class SurveyTest {
 
     Survey testSurvey;
 
+    static final String RECEIPT_HOST = "http://localhost:5000";
+    static final String RECEIPT_PATH = "reportingunits";
+
+    static final String RECEIPT_USER = "test";
+    static final String RECEIPT_PASS = "test";
+
     @Before
     public void setUp() throws IOException {
-        ConfigurationManager.set("receipt.host", "http://localhost:5000");
-        ConfigurationManager.set("receipt.path", "reportingunits");
+        ConfigurationManager.set("RECEIPT_HOST", RECEIPT_HOST);
+        ConfigurationManager.set("RECEIPT_PATH", RECEIPT_PATH);
+
+        ConfigurationManager.set("RECEIPT_USER", RECEIPT_USER);
+        ConfigurationManager.set("RECEIPT_PASS", RECEIPT_PASS);
 
         testSurvey = new SurveyParser().parse(FileHelper.loadFile("survey.ftp.json"));
     }
@@ -52,13 +62,10 @@ public class SurveyTest {
 
     @Test
     public void shouldUseCorrectEndpoint() {
-        String receiptHost = ConfigurationManager.get("receipt.host");
-        String receiptPath = ConfigurationManager.get("receipt.path");
-
-        String receiptURI = receiptPath + "/" + testSurvey.getMetadata().getRuRef() + "/collectionexercises/"
+        String receiptURI = RECEIPT_PATH + "/" + testSurvey.getMetadata().getStatisticalUnitId() + "/collectionexercises/"
                 + testSurvey.getCollection().getExerciseSid() + "/receipts";
 
-        Endpoint receiptEndpoint = new Endpoint(new Host(receiptHost), receiptURI);
+        Endpoint receiptEndpoint = new Endpoint(new Host(RECEIPT_HOST), receiptURI);
 
         assertThat(testSurvey.getReceiptEndpoint().toString(), is(receiptEndpoint.toString()));
     }
@@ -67,7 +74,20 @@ public class SurveyTest {
     public void shouldSetContentTypeHeader() {
         String contentType = getHeaderValue("Content-Type");
 
-        assertThat(contentType, is("application/vnd.ons.receipt+xml"));
+        assertThat(contentType, is("application/vnd.collections+xml"));
+    }
+
+    @Test
+    public void shouldSetAuthHeader() {
+        String authHeader = getHeaderValue("Authorization");
+        String auth = Base64.getEncoder().encodeToString((RECEIPT_USER + ":" + RECEIPT_PASS).getBytes());
+
+        assertThat(authHeader, is("Basic " + auth));
+    }
+
+    @Test
+    public void shouldHaveCorrectContent() {
+
     }
 
     @Test

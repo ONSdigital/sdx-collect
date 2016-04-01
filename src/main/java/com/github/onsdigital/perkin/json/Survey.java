@@ -18,7 +18,6 @@ import lombok.Singular;
 import java.util.*;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.eclipse.jetty.http.HttpStatus;
 import java.io.IOException;
@@ -65,20 +64,31 @@ public class Survey {
     }
 
     public BasicNameValuePair[] getReceiptHeaders() {
-        BasicNameValuePair[] headers = new BasicNameValuePair[1];
+        String receiptUser = ConfigurationManager.get("RECEIPT_USER");
+        String receiptPass = ConfigurationManager.get("RECEIPT_PASS");
 
-        headers[0] = new BasicNameValuePair("Content-Type", "application/vnd.ons.receipt+xml");
+        BasicNameValuePair[] headers = new BasicNameValuePair[2];
+
+        String auth = Base64.getEncoder().encodeToString((receiptUser + ":" + receiptPass).getBytes());
+
+        headers[0] = new BasicNameValuePair("Authorization", "Basic " + auth);
+        headers[1] = new BasicNameValuePair("Content-Type", "application/vnd.collections+xml");
+
+        log.debug("RECEIPT|AUTH: {}:***", receiptUser);
+        log.debug("RECEIPT|AUTH.ENCODED: {}", auth);
 
         return headers;
     }
 
     public Endpoint getReceiptEndpoint() {
 
-        String receiptHost = ConfigurationManager.get("receipt.host");
-        String receiptPath = ConfigurationManager.get("receipt.path");
+        String receiptHost = ConfigurationManager.get("RECEIPT_HOST");
+        String receiptPath = ConfigurationManager.get("RECEIPT_PATH");
 
-        String receiptURI = receiptPath + "/" + this.getMetadata().getRuRef() + "/collectionexercises/"
+        String receiptURI = receiptPath + "/" + this.getMetadata().getStatisticalUnitId() + "/collectionexercises/"
                 + this.getCollection().getExerciseSid() + "/receipts";
+
+        log.debug("RECEIPT|HOST/PATH: {}/{}", receiptHost, receiptPath);
 
         return new Endpoint(new Host(receiptHost), receiptURI);
     }
@@ -92,7 +102,6 @@ public class Survey {
     public Boolean sendReceipt() throws IOException {
         Timer timer = new Timer("receipt.");
         Audit audit = Audit.getInstance();
-        TemplateLoader loader = TemplateLoader.getInstance();
 
         String receiptHost = ConfigurationManager.get("receipt.host");
 
