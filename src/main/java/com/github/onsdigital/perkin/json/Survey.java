@@ -7,18 +7,18 @@ import com.github.onsdigital.perkin.helper.Http;
 import com.github.onsdigital.perkin.helper.TemplateLoader;
 import com.github.onsdigital.perkin.helper.Timer;
 import com.github.onsdigital.perkin.transform.Audit;
+import com.github.onsdigital.perkin.transform.TemplateNotFoundException;
 import com.github.onsdigital.perkin.transform.TransformException;
 import com.github.davidcarboni.httpino.Response;
 import com.google.gson.annotations.SerializedName;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Singular;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Map;
-import java.util.Set;
+
+import java.util.*;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.eclipse.jetty.http.HttpStatus;
 import java.io.IOException;
@@ -64,13 +64,37 @@ public class Survey {
         return answers.keySet();
     }
 
+    public BasicNameValuePair[] getReceiptHeaders() {
+        BasicNameValuePair[] headers = new BasicNameValuePair[1];
+
+        headers[0] = new BasicNameValuePair("Content-Type", "application/vnd.ons.receipt+xml");
+
+        return headers;
+    }
+
+    public Endpoint getReceiptEndpoint() {
+
+        String receiptHost = ConfigurationManager.get("receipt.host");
+        String receiptPath = ConfigurationManager.get("receipt.path");
+
+        String receiptURI = receiptPath + "/" + this.getMetadata().getRuRef() + "/collectionexercises/"
+                + this.getCollection().getExerciseSid() + "/receipts";
+
+        return new Endpoint(new Host(receiptHost), receiptURI);
+    }
+
+    public String getReceiptContent() throws TemplateNotFoundException {
+        TemplateLoader loader = TemplateLoader.getInstance();
+
+        return loader.getTemplate("templates/receipt.xml");
+    }
+
     public Boolean sendReceipt() throws IOException {
         Timer timer = new Timer("receipt.");
         Audit audit = Audit.getInstance();
         TemplateLoader loader = TemplateLoader.getInstance();
 
         String receiptHost = ConfigurationManager.get("receipt.host");
-        String receiptPath = ConfigurationManager.get("receipt.path");
 
         if (receiptHost.equals("skip")) {
             Audit.getInstance().increment("receipt.host.skipped");
@@ -78,19 +102,13 @@ public class Survey {
             return true;
         }
 
-        String receiptURI = receiptPath + "/" + this.getMetadata().getRuRef() + "/collectionexercises/"
-                + this.getCollection().getExerciseSid() + "/receipts";
-
-        Endpoint receiptEndpoint = new Endpoint(new Host(receiptHost), receiptURI);
-
-        String receiptData = loader.getTemplate("templates/receipt.xml");
+        String receiptData = this.getReceiptContent();
         String respondentId = this.getMetadata().getUserId();
 
         receiptData = receiptData.replace("{respondent_id}", respondentId);
 
-        BasicNameValuePair applicationType = new BasicNameValuePair("Content-Type", "application/vnd.ons.receipt+xml");
-
-        Response<String> receiptResponse = new Http().postString(receiptEndpoint, receiptData, applicationType);
+        Response<String> receiptResponse = new Http().postString(this.getReceiptEndpoint(), receiptData,
+                this.getReceiptHeaders());
 
         int status = receiptResponse.statusLine.getStatusCode();
 
