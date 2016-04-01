@@ -88,7 +88,7 @@ public class SurveyTest {
     }
 
     @Test
-    public void shouldHaveCorrectRespondentId() throws TemplateNotFoundException {
+    public void shouldContainRespondentId() throws TemplateNotFoundException {
         String content = testSurvey.getReceiptContent();
 
         String respondentId = content.split("<respondent_id>")[1].split("</respondent_id>")[0];
