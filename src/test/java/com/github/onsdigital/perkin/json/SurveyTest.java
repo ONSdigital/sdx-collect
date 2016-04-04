@@ -2,11 +2,16 @@ package com.github.onsdigital.perkin.json;
 
 import com.github.davidcarboni.httpino.Endpoint;
 import com.github.davidcarboni.httpino.Host;
+import com.github.davidcarboni.httpino.Response;
 import com.github.onsdigital.ConfigurationManager;
+import com.github.onsdigital.HttpManager;
 import com.github.onsdigital.perkin.helper.FileHelper;
+import com.github.onsdigital.perkin.helper.Http;
 import com.github.onsdigital.perkin.transform.TemplateNotFoundException;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.StatusLine;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.xalan.xsltc.compiler.Template;
 import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.InputSource;
@@ -103,5 +108,22 @@ public class SurveyTest {
 
         // Parse will throw an exception if not well formed
         builder.parse(new InputSource(new StringReader(testSurvey.getReceiptContent())));
+    }
+
+    @Test
+    public void shouldCallHttpWithCorrectParams() throws Exception {
+        Http mockedHttp = mock(Http.class);
+        HttpManager.setInstance(mockedHttp);
+
+        Response mockResponse = new MockedResponse(mock(StatusLine.class), "Some Mock Response");
+
+        when(mockedHttp.postString(any(), any(), (NameValuePair) anyVararg())).thenReturn(mockResponse);
+
+        when(mockResponse.statusLine.getStatusCode()).thenReturn(HttpStatus.SC_CREATED);
+
+        testSurvey.sendReceipt();
+
+        verify(mockedHttp).postString(testSurvey.getReceiptEndpoint(), testSurvey.getReceiptContent(),
+                (NameValuePair[]) testSurvey.getReceiptHeaders());
     }
 }

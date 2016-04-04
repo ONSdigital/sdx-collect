@@ -3,6 +3,7 @@ package com.github.onsdigital.perkin.decrypt;
 import com.github.davidcarboni.httpino.Endpoint;
 import com.github.davidcarboni.httpino.Host;
 import com.github.onsdigital.ConfigurationManager;
+import com.github.onsdigital.HttpManager;
 import com.github.onsdigital.perkin.helper.Http;
 import com.github.davidcarboni.httpino.Response;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,7 @@ public class HttpDecrypt {
 
         Endpoint endpoint = new Endpoint(new Host(host), path);
         log.debug("DECRYPT|decrypting data using endpoint: {}", endpoint);
-        return new Http().postString(endpoint, data);
+
+        return HttpManager.getInstance().postString(endpoint, data);
     }
 }
