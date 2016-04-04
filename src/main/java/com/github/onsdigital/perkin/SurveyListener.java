@@ -99,4 +99,20 @@ public class SurveyListener {
         boolean NO_AUTO_ACK = false;
         channel.basicConsume(queue, NO_AUTO_ACK, consumer);
     }
+
+    public String test() throws IOException {
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost(host);
+        if (StringUtils.isNotBlank(username)) factory.setUsername(username);
+        if (StringUtils.isNotBlank(password)) factory.setPassword(password);
+        Connection connection = factory.newConnection();
+        Channel channel = connection.createChannel();
+
+        channel.queueDeclare(queue, false, false, false, null);
+
+        String version = channel.getConnection().getServerProperties().get("version").toString();
+        channel.close();
+
+        return version;
+    }
 }
