@@ -16,6 +16,7 @@ import com.github.onsdigital.perkin.transform.jpg.ImageTransformer;
 import com.github.onsdigital.perkin.transform.pck.PckTransformer;
 import com.github.onsdigital.perkin.publish.FtpPublisher;
 import lombok.extern.slf4j.Slf4j;
+import java.util.Base64;
 import org.apache.http.StatusLine;
 import org.apache.http.message.BasicNameValuePair;
 import org.eclipse.jetty.http.HttpStatus;
@@ -184,14 +185,24 @@ public class TransformEngine {
     private Boolean sendReceipt(Survey survey) throws IOException {
         Timer timer = new Timer("receipt.");
 
-        String receiptHost = ConfigurationManager.get("receipt.host");
-        String receiptPath = ConfigurationManager.get("receipt.path");
+        String receiptHost = ConfigurationManager.get("RECEIPT_HOST");
+        String receiptPath = ConfigurationManager.get("RECEIPT_PATH");
+
+        String receiptUser = ConfigurationManager.get("RECEIPT_USER");
+        String receiptPass = ConfigurationManager.get("RECEIPT_PASS");
 
         if (receiptHost.equals("skip")) {
             Audit.getInstance().increment("receipt.host.skipped");
             log.warn("RECEIPT|SKIP|skipping sending receipt to RM");
             return true;
         }
+
+        log.debug("RECEIPT|HOST/PATH: {}/{}", receiptHost, receiptPath);
+        log.debug("RECEIPT|AUTH: {}:***", receiptUser);
+
+        String auth = Base64.getEncoder().encodeToString((receiptUser + ":" + receiptPass).getBytes());
+
+        log.debug("RECEIPT|AUTH.ENCODED: {}", auth);
 
         String receiptURI = receiptPath + "/" + survey.getMetadata().getStatisticalUnitId() + "/collectionexercises/"
                 + survey.getCollection().getExerciseSid() + "/receipts";
@@ -203,14 +214,14 @@ public class TransformEngine {
 
         receiptData = receiptData.replace("{respondent_id}", respondentId);
 
-        BasicNameValuePair applicationType = new BasicNameValuePair("Content-Type", "application/vnd.ons.receipt+xml");
+        BasicNameValuePair authHeader = new BasicNameValuePair("Authorization", "Basic " + auth);
+        BasicNameValuePair applicationType = new BasicNameValuePair("Content-Type", "application/vnd.collections+xml");
 
-        Response<String> receiptResponse = new Http().postString(receiptEndpoint, receiptData, applicationType);
+        Response<String> receiptResponse = new Http().postString(receiptEndpoint, receiptData, authHeader, applicationType);
 
         int status = receiptResponse.statusLine.getStatusCode();
 
         timer.stopStatus(status);
-
         audit.increment(timer);
 
         if (status == HttpStatus.BAD_REQUEST_400) {
@@ -221,6 +232,7 @@ public class TransformEngine {
 
         return status == HttpStatus.CREATED_201;
     }
+
 
     private boolean isError(StatusLine statusLine) {
         return statusLine.getStatusCode() != HttpStatus.OK_200;
