@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/ONSdigital/Perkin.svg?branch=master)](https://travis-ci.org/ONSdigital/Perkin)
+[![Build Status](https://travis-ci.org/ONSdigital/perkin.svg?branch=master)](https://travis-ci.org/ONSdigital/perkin)
 
 ![Logo](http://www.80snostalgia.com/files/fluperkins.jpg)
 
