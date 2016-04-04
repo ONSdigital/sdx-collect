@@ -2,28 +2,35 @@ package com.github.onsdigital.perkin.api;
 
 import com.github.davidcarboni.restolino.framework.Api;
 import com.github.onsdigital.perkin.SurveyListener;
-import com.github.onsdigital.perkin.json.Status;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Api
 public class Health {
 
     @GET
-    public Status get(HttpServletRequest request, HttpServletResponse response) {
+    public Map<String, Object> get(HttpServletRequest request, HttpServletResponse response) {
 
-        Status.StatusBuilder builder = Status.builder();
+        Map<String, Object> health = new HashMap<>();
+        Map<String, String> rabbit = new HashMap<>();
 
         SurveyListener listener = new SurveyListener();
         try {
-            builder.message("rabbit version " + listener.test()).status("UP");
+            health.put("status", "UP");
+            rabbit.put("status", "UP");
+            rabbit.put("version", listener.test());
         } catch (IOException e) {
-            builder.message(e.getMessage()).status("DOWN");
+            health.put("status", "DOWN");
+            rabbit.put("status", "DOWN");
+            rabbit.put("error", e.toString());
         }
+        health.put("rabbit", rabbit);
 
-        return builder.build();
+        return health;
     }
 }
