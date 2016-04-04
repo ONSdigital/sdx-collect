@@ -210,6 +210,27 @@
                 </executions>
             </plugin>
 
+            <plugin>
+                <groupId>com.rodiontsev.maven.plugins</groupId>
+                <artifactId>build-info-maven-plugin</artifactId>
+                <version>1.1</version>
+                <configuration>
+                    <filename>classes/build.info</filename>
+                    <projectProperties>
+                        <projectProperty>project.id</projectProperty>
+                    </projectProperties>
+                    <dateTimePattern>yyyy-MM-dd HH:mm:ss</dateTimePattern>
+                    <includeVcsInfo>true</includeVcsInfo>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>extract</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
