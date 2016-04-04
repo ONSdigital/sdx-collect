@@ -2,6 +2,7 @@ package com.github.onsdigital.perkin.api;
 
 import com.github.davidcarboni.restolino.framework.Api;
 import com.github.onsdigital.perkin.SurveyListener;
+import com.github.onsdigital.perkin.json.Status;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,9 +13,17 @@ import java.io.IOException;
 public class Health {
 
     @GET
-    public String get(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public Status get(HttpServletRequest request, HttpServletResponse response) {
+
+        Status.StatusBuilder builder = Status.builder();
 
         SurveyListener listener = new SurveyListener();
-        return listener.test();
+        try {
+            builder.message("rabbit version " + listener.test()).status("UP");
+        } catch (IOException e) {
+            builder.message(e.getMessage()).status("DOWN");
+        }
+
+        return builder.build();
     }
 }
