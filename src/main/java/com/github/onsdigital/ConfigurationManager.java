@@ -64,6 +64,16 @@ public class ConfigurationManager {
         return getInstance().getValue(key);
     }
 
+    /**
+     * Allow setting within configuration manager to facilitate tests
+     *
+     * @param key
+     * @param value
+     */
+    public static void set(String key, String value) {
+        getInstance().add(key, value);
+    }
+
     public static int getInt(String key) {
         int i = -1;
         String value = get(key);
