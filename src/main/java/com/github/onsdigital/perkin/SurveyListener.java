@@ -48,6 +48,7 @@ public class SurveyListener {
     private void startListening() throws IOException, InterruptedException {
 
         ConnectionFactory factory = new ConnectionFactory();
+        factory.setConnectionTimeout(10 * 1000); //10 seconds
         factory.setHost(host);
         if (StringUtils.isNotBlank(username)) factory.setUsername(username);
         if (StringUtils.isNotBlank(password)) factory.setPassword(password);
