@@ -19,6 +19,7 @@ import lombok.Singular;
 import java.util.*;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.message.BasicNameValuePair;
 import org.eclipse.jetty.http.HttpStatus;
@@ -65,11 +66,11 @@ public class Survey {
         return answers.keySet();
     }
 
-    public BasicNameValuePair[] getReceiptHeaders() {
+    public NameValuePair[] getReceiptHeaders() {
         String receiptUser = ConfigurationManager.get("RECEIPT_USER");
         String receiptPass = ConfigurationManager.get("RECEIPT_PASS");
 
-        BasicNameValuePair[] headers = new BasicNameValuePair[2];
+        NameValuePair[] headers = new NameValuePair[2];
 
         String auth = Base64.getEncoder().encodeToString((receiptUser + ":" + receiptPass).getBytes());
 
