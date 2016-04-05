@@ -87,28 +87,6 @@ public class PdfCreator {
         template = populate(template, "ruRef", survey.getMetadata().getRuRef());
         template = populate(template, "submittedAt", survey.getDate().toString());
 
-        //TODO: add question text from the template
-        Map<String, String> questions = new HashMap<>();
-        questions.put("q.51", "Male employees working more than 30 hours per week?");
-        questions.put("q.52", "Male employees working less than 30 hours per week?");
-        questions.put("q.53", "Female employees working more than 30 hours per week?");
-        questions.put("q.54", "Female employees working less than 30 hours per week?");
-        questions.put("q.50", "Total employees");
-        questions.put("q.11", "From");
-        questions.put("q.12", "To");
-        questions.put("q.22", "Food");
-        questions.put("q.26", "Other Goods");
-        questions.put("q.23", "Alcohol, Confectionary and Tobacco");
-        questions.put("q.27", "Automotive Fuel");
-        questions.put("q.24", "Clothing and Footware");
-        questions.put("q.20", "Total Retail Sales");
-        questions.put("q.25", "Household goods");
-        questions.put("q.21", "Of these figures, how much were from internet sales?");
-        questions.put("q.146", "Please explain any movements in your data e.g. sale held, branches opened or sold, extreme weather, or temporary closure of shop");
-        for (String key : questions.keySet()) {
-            template = populate(template, key, questions.get(key));
-        }
-
         //TODO: need to get the survey template to get the keys we expect - not just the keys in the answers
         for (String key : survey.getKeys()) {
             template = populate(template, key, survey.getAnswer(key));
