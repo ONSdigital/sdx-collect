@@ -3,7 +3,7 @@ package com.github.onsdigital.perkin.services;
 import com.github.davidcarboni.httpino.Response;
 import com.github.onsdigital.ConfigurationManager;
 import com.github.onsdigital.HttpManager;
-import com.github.onsdigital.perkin.decrypt.Decryption;
+import com.github.onsdigital.perkin.decrypt.Decrypt;
 import com.github.onsdigital.perkin.helper.FileHelper;
 import com.github.onsdigital.perkin.helper.Http;
 import com.github.onsdigital.perkin.transform.TransformException;
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.*;
 /**
  * Created by ian on 05/04/2016.
  */
-public class DecryptionTest {
+public class DecryptTest {
 
     private Http mockedHttp;
 
@@ -41,7 +41,7 @@ public class DecryptionTest {
     public void shouldNotDecryptUnencryptedJson() throws IOException {
 
         String testSurveyJson = FileHelper.loadFile("survey.ftp.json");
-        Decryption decrypt = new Decryption(testSurveyJson);
+        Decrypt decrypt = new Decrypt(testSurveyJson);
 
         assertEquals(decrypt.getDecrypted(), testSurveyJson);
     }
@@ -49,7 +49,7 @@ public class DecryptionTest {
     @Test
     public void shouldCallDecryptWithCorrectParams() throws Exception {
         String mockEncrypted = "aksdlkadlkasdkml";
-        Decryption decrypt = new Decryption(mockEncrypted);
+        Decrypt decrypt = new Decrypt(mockEncrypted);
 
         Response mockResponse = new MockedResponse(mock(StatusLine.class), "Some Mock Response");
 
@@ -66,7 +66,7 @@ public class DecryptionTest {
     public void shouldThrowTransformationExceptionOnError() throws IOException {
 
         String mockEncrypted = "aksdlkadlkasdkml";
-        Decryption decrypt = new Decryption(mockEncrypted);
+        Decrypt decrypt = new Decrypt(mockEncrypted);
 
         Response mockResponse = new MockedResponse(mock(StatusLine.class), "Some Mock Response");
 

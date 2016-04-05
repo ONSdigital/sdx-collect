@@ -4,7 +4,6 @@ import com.github.davidcarboni.httpino.Endpoint;
 import com.github.davidcarboni.httpino.Host;
 import com.github.onsdigital.ConfigurationManager;
 import com.github.onsdigital.HttpManager;
-import com.github.onsdigital.Json;
 import com.github.davidcarboni.httpino.Response;
 import com.github.onsdigital.perkin.helper.Timer;
 import com.github.onsdigital.perkin.transform.Audit;
@@ -19,7 +18,7 @@ import java.io.IOException;
  * Decrypt data via HTTP.
  */
 @Slf4j
-public class Decryption {
+public class Decrypt {
 
     private String encrypted;
 
@@ -28,7 +27,7 @@ public class Decryption {
 
     private Audit audit = Audit.getInstance();
 
-    public Decryption(String encryptedData) {
+    public Decrypt(String encryptedData) {
         encrypted = encryptedData;
 
         host = ConfigurationManager.get("DECRYPT_HOST");

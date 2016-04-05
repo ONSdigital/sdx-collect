@@ -1,6 +1,6 @@
 package com.github.onsdigital.perkin.transform;
 
-import com.github.onsdigital.perkin.decrypt.Decryption;
+import com.github.onsdigital.perkin.decrypt.Decrypt;
 import com.github.onsdigital.perkin.helper.TemplateLoader;
 import com.github.onsdigital.perkin.helper.Timer;
 import com.github.onsdigital.perkin.json.*;
@@ -22,7 +22,7 @@ public class TransformEngine {
     private static TransformEngine INSTANCE = new TransformEngine();
 
     private SurveyParser parser = new SurveyParser();
-    private Decryption decrypt;
+    private Decrypt decrypt;
 
     private Audit audit = Audit.getInstance();
     private TemplateLoader loader = TemplateLoader.getInstance();
@@ -60,7 +60,7 @@ public class TransformEngine {
         Timer timer = new Timer("survey.process.");
 
         try {
-            decrypt = new Decryption(data);
+            decrypt = new Decrypt(data);
             String json = decrypt.getDecrypted();
             Survey survey = parser.parse(json);
 
