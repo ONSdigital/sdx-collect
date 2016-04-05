@@ -69,7 +69,7 @@
           Comments
           </fo:block>
 
-    <fo:block text-align="start">$q.146$</fo:block>
+    <fo:block text-align="start">Please explain any movements in your data e.g. sale held, branches opened or sold, extreme weather, or temporary closure of shop</fo:block>
     <fo:block text-align="start" color="green">$146$</fo:block>
 
     <!-- answers -->
@@ -94,23 +94,23 @@
             <fo:table-cell ><fo:block>1. Employees</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>$q.51$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>Male employees working more than 30 hours per week?</fo:block></fo:table-cell>
           <fo:table-cell ><fo:block color="green">$51$</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>$q.52$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>Male employees working less than 30 hours per week?</fo:block></fo:table-cell>
           <fo:table-cell ><fo:block color="green">$52$</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>$q.53$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>Female employees working more than 30 hours per week?</fo:block></fo:table-cell>
           <fo:table-cell ><fo:block color="green">$53$</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>$q.54$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>Female employees working less than 30 hours per week?</fo:block></fo:table-cell>
           <fo:table-cell ><fo:block color="green">$54$</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>$q.50$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>Total employees</fo:block></fo:table-cell>
           <fo:table-cell ><fo:block color="green">$50$</fo:block></fo:table-cell>
         </fo:table-row>
 
@@ -122,11 +122,11 @@
             <fo:table-cell ><fo:block>2. Period</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>$q.11$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>From</fo:block></fo:table-cell>
           <fo:table-cell ><fo:block color="green">$11$</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>$q.12$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>To</fo:block></fo:table-cell>
           <fo:table-cell ><fo:block color="green">$12$</fo:block></fo:table-cell>
         </fo:table-row>
 
@@ -139,27 +139,27 @@
             <fo:table-cell ><fo:block>£ (omit pence)</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>$q.22$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>Food</fo:block></fo:table-cell>
           <fo:table-cell ><fo:block color="green">$22$</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>$q.23$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>Alcohol, Confectionary and Tobacco</fo:block></fo:table-cell>
           <fo:table-cell ><fo:block color="green">$23$</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>$q.24$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>Clothing and Footwear</fo:block></fo:table-cell>
           <fo:table-cell ><fo:block color="green">$24$</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>$q.25$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>Household goods</fo:block></fo:table-cell>
           <fo:table-cell ><fo:block color="green">$25$</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>$q.26$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>Other Goods</fo:block></fo:table-cell>
           <fo:table-cell ><fo:block color="green">$26$</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>$q.20$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>Total Retail Sales</fo:block></fo:table-cell>
           <fo:table-cell ><fo:block color="green">$20$</fo:block></fo:table-cell>
         </fo:table-row>
 
@@ -168,7 +168,7 @@
 </fo:table-row>
 
         <fo:table-row>
-          <fo:table-cell ><fo:block>4. $q.21$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>4. Of these figures, how much were from internet sales?</fo:block></fo:table-cell>
           <fo:table-cell ><fo:block color="green">$21$</fo:block></fo:table-cell>
         </fo:table-row>
 
@@ -177,7 +177,7 @@
 </fo:table-row>
 
         <fo:table-row>
-          <fo:table-cell ><fo:block>5. $q.27$</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>5. Automotive Fuel</fo:block></fo:table-cell>
           <fo:table-cell ><fo:block color="green">$27$</fo:block></fo:table-cell>
         </fo:table-row>
 
