@@ -22,5 +22,5 @@ public class Collection {
     private String exerciseSid;
     @SerializedName("instrument_id")
     private String instrumentId;
-    private String period;
+    private Date period;
 }
