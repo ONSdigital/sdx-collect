@@ -87,7 +87,7 @@ public class PckTransformer implements Transformer {
 		formIdentifer.append(HEADER_SEPARATOR);
 		formIdentifer.append(idbrReference);
 		formIdentifer.append(HEADER_SEPARATOR);
-		formIdentifer.append(formatPeriodDate(survey.getCollection().getPeriod()));
+		formIdentifer.append(survey.getCollection().getPeriod());
 
 		return formIdentifer.toString();
 	}
@@ -102,8 +102,4 @@ public class PckTransformer implements Transformer {
 	public static String formatDate(Date date){
 		return new SimpleDateFormat("dd/MM/yy").format(date);
 	}
-
-    public static String formatPeriodDate(Date date){
-        return new SimpleDateFormat("yyMM").format(date);
-    }
 }

@@ -45,14 +45,14 @@ public class SurveyParser {
             if (survey.getCollection() == null) {
                 logAndThrowError("'collection' section is mandatory", json);
             } else {
-                Date period = survey.getCollection().getPeriod();
-                if (period == null) {
+                String period = survey.getCollection().getPeriod();
+                if (StringUtils.isBlank(period)) {
                     logAndThrowError("collection 'period' is mandatory", json);
                 } else {
-//                    if (period.length() != 4) {
-//                        Audit.getInstance().increment("survey.period.length.not.4.WARNING");
-//                        log.warn("SURVEY|PARSE|PERIOD|expected 4 character period, got period: {} length: {}", period, period.length());
-//                    }
+                    if (period.length() != 4) {
+                        Audit.getInstance().increment("survey.period.length.not.4.WARNING");
+                        log.warn("SURVEY|PARSE|PERIOD|expected 4 character period, got period: {} length: {}", period, period.length());
+                    }
                 }
             }
 
@@ -86,7 +86,6 @@ public class SurveyParser {
     private String serialize(Survey survey) {
         Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
-                .registerTypeAdapter(Collection.class, new CollectionSerializer())
                 .registerTypeAdapter(Date.class, new DateSerializer())
                 .create();
         return gson.toJson(survey);
@@ -105,7 +104,7 @@ public class SurveyParser {
 
     private static final String[] DATE_FORMATS = new String[] {
             ISO8601,
-            "MMyyyy"
+            "yyyy-MM-dd"
     };
 
     private class DateSerializer implements JsonSerializer<Date> {
@@ -132,20 +131,6 @@ public class SurveyParser {
 
             throw new JsonParseException("Unparseable date: \"" + jsonElement.getAsString()
                     + "\". Supported formats: " + Arrays.toString(DATE_FORMATS));
-        }
-    }
-
-    private class CollectionSerializer implements JsonSerializer<Collection> {
-
-        @Override
-        public JsonElement serialize(Collection collection, Type type, JsonSerializationContext jsonSerializationContext) {
-            JsonObject object = new JsonObject();
-            SimpleDateFormat sdf = new SimpleDateFormat("MMyyyy");
-            object.add("exercise_sid", new JsonPrimitive(collection.getExerciseSid()));
-            object.add("instrument_id", new JsonPrimitive(collection.getInstrumentId()));
-            object.add("period", new JsonPrimitive(sdf.format(collection.getPeriod())));
-
-            return object;
         }
     }
 }
