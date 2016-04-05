@@ -1,18 +1,12 @@
 package com.github.onsdigital.perkin.services;
 
-import com.github.davidcarboni.httpino.Endpoint;
 import com.github.davidcarboni.httpino.Response;
 import com.github.onsdigital.ConfigurationManager;
 import com.github.onsdigital.HttpManager;
 import com.github.onsdigital.perkin.decrypt.Decryption;
 import com.github.onsdigital.perkin.helper.FileHelper;
 import com.github.onsdigital.perkin.helper.Http;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import com.github.onsdigital.perkin.json.Survey;
-import com.github.onsdigital.perkin.json.SurveyParser;
 import com.github.onsdigital.perkin.transform.TransformException;
-import org.apache.http.NameValuePair;
 import org.eclipse.jetty.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.junit.Before;
