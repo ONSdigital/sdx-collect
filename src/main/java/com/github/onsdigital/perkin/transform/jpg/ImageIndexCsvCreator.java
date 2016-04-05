@@ -42,7 +42,7 @@ public class ImageIndexCsvCreator {
                 .append(survey.getId()).append(COMMA)
                 .append(survey.getCollection().getInstrumentId()).append(COMMA)
                 .append(survey.getMetadata().getStatisticalUnitId()).append(COMMA)
-                .append(survey.getCollection().getPeriod()).append(COMMA)
+                .append(formatPeriodDate(survey.getCollection().getPeriod())).append(COMMA)
                 .append(format(pageNumber));
 
         if (pageNumber == 1) {
@@ -67,6 +67,10 @@ public class ImageIndexCsvCreator {
 
     protected static String formatDate(Date date) {
         return new SimpleDateFormat("yyyyMMdd").format(date);
+    }
+
+    protected static String formatPeriodDate(Date date) {
+        return new SimpleDateFormat("yyMM").format(date);
     }
 
     public ImageIndexCsv getFile() {
