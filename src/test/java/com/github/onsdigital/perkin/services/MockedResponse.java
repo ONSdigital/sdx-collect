@@ -1,4 +1,4 @@
-package com.github.onsdigital.perkin.json;
+package com.github.onsdigital.perkin.services;
 
 import com.github.davidcarboni.httpino.Response;
 import org.apache.http.StatusLine;

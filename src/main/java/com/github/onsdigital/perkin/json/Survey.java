@@ -20,7 +20,6 @@ import java.util.*;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.NameValuePair;
-import org.apache.http.StatusLine;
 import org.apache.http.message.BasicNameValuePair;
 import org.eclipse.jetty.http.HttpStatus;
 import java.io.IOException;

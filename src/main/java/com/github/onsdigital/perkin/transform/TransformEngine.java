@@ -1,7 +1,6 @@
 package com.github.onsdigital.perkin.transform;
 
-import com.github.onsdigital.Json;
-import com.github.onsdigital.perkin.decrypt.HttpDecrypt;
+import com.github.onsdigital.perkin.decrypt.Decryption;
 import com.github.onsdigital.perkin.helper.TemplateLoader;
 import com.github.onsdigital.perkin.helper.Timer;
 import com.github.onsdigital.perkin.json.*;
@@ -10,10 +9,6 @@ import com.github.onsdigital.perkin.transform.jpg.ImageTransformer;
 import com.github.onsdigital.perkin.transform.pck.PckTransformer;
 import com.github.onsdigital.perkin.publish.FtpPublisher;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.StatusLine;
-import org.eclipse.jetty.http.HttpStatus;
-
-import com.github.davidcarboni.httpino.Response;
 
 import java.io.IOException;
 import java.util.*;
@@ -27,7 +22,7 @@ public class TransformEngine {
     private static TransformEngine INSTANCE = new TransformEngine();
 
     private SurveyParser parser = new SurveyParser();
-    private HttpDecrypt decrypt = new HttpDecrypt();
+    private Decryption decrypt;
 
     private Audit audit = Audit.getInstance();
     private TemplateLoader loader = TemplateLoader.getInstance();
@@ -65,15 +60,8 @@ public class TransformEngine {
         Timer timer = new Timer("survey.process.");
 
         try {
-            //TODO: move into decrypt and make configurable
-            String json;
-            if (data != null && data.trim().startsWith("{")) {
-                audit.increment("surveys.plaintext");
-                log.info("DECRYPT|SKIPPING|json is plain text, not encrypted: {}", data);
-                json = data;
-            } else {
-                json = decrypt(data);
-            }
+            decrypt = new Decryption(data);
+            String json = decrypt.getDecrypted();
             Survey survey = parser.parse(json);
 
             TransformContext context = createTransformContext(survey);
@@ -114,26 +102,5 @@ public class TransformEngine {
                 .surveyTemplate(loader.getSurveyTemplate(survey))
                 .pdfTemplate(loader.getPdfTemplate(survey))
                 .build();
-    }
-
-    private String decrypt(String data) throws IOException {
-        log.debug("DECRYPT|REQUEST|decrypt: {}", data);
-
-        Timer timer = new Timer("decrypt.");
-        Response<String> decryptResponse = decrypt.decrypt(data);
-        timer.stopStatus(decryptResponse.statusLine.getStatusCode());
-        audit.increment(timer);
-
-        log.debug("DECRYPT|RESPONSE|survey: {}", Json.prettyPrint(decryptResponse));
-
-        if (isError(decryptResponse.statusLine)) {
-            throw new TransformException("decrypt response indicated an error: " + decryptResponse);
-        }
-
-        return decryptResponse.body;
-    }
-
-    private boolean isError(StatusLine statusLine) {
-        return statusLine.getStatusCode() != HttpStatus.OK_200;
     }
 }
