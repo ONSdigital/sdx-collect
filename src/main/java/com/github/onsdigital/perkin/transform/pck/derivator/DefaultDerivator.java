@@ -6,7 +6,7 @@ public class DefaultDerivator implements Derivator {
 	public String deriveValue(String answer) {
 		// Following the derivator pattern. In this case just use the answer passed through.
 		if (answer == null) {
-			return "";
+			return answer;
 		}
 
 		return answer.trim();
