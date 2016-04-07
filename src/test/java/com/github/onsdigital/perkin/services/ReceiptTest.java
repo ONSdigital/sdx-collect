@@ -1,14 +1,24 @@
-package com.github.onsdigital.perkin.json;
+package com.github.onsdigital.perkin.services;
 
 import com.github.davidcarboni.httpino.Endpoint;
 import com.github.davidcarboni.httpino.Host;
+import com.github.davidcarboni.httpino.Response;
 import com.github.onsdigital.ConfigurationManager;
+import com.github.onsdigital.HttpManager;
 import com.github.onsdigital.perkin.helper.FileHelper;
+import com.github.onsdigital.perkin.helper.Http;
+import com.github.onsdigital.perkin.json.Survey;
+import com.github.onsdigital.perkin.json.SurveyParser;
 import com.github.onsdigital.perkin.transform.TemplateNotFoundException;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.xalan.xsltc.compiler.Template;
+import com.github.onsdigital.perkin.transform.TransformException;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.StatusLine;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentMatcher;
+import org.mockito.internal.matchers.VarargMatcher;
 import org.xml.sax.InputSource;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -25,9 +35,10 @@ import static org.mockito.Mockito.*;
 /**
  * Created by ian on 01/04/2016.
  */
-public class SurveyTest {
+public class ReceiptTest {
 
     private Survey testSurvey;
+    private Http mockedHttp;
 
     private static final String RECEIPT_HOST = "http://localhost:5000";
     private static final String RECEIPT_PATH = "reportingunits";
@@ -37,6 +48,7 @@ public class SurveyTest {
 
     @Before
     public void setUp() throws IOException {
+
         ConfigurationManager.set("RECEIPT_HOST", RECEIPT_HOST);
         ConfigurationManager.set("RECEIPT_PATH", RECEIPT_PATH);
 
@@ -44,6 +56,9 @@ public class SurveyTest {
         ConfigurationManager.set("RECEIPT_PASS", RECEIPT_PASS);
 
         testSurvey = new SurveyParser().parse(FileHelper.loadFile("survey.ftp.json"));
+
+        mockedHttp = mock(Http.class);
+        HttpManager.setInstance(mockedHttp);
     }
 
     /**
@@ -52,9 +67,9 @@ public class SurveyTest {
      * @return The value for the key
      */
     public String getHeaderValue(String key) {
-        BasicNameValuePair[] headers = testSurvey.getReceiptHeaders();
+        NameValuePair[] headers = testSurvey.getReceiptHeaders();
 
-        for(BasicNameValuePair header: headers) {
+        for(NameValuePair header: headers) {
             if(header.getName() == key) {
                 return header.getValue();
             }
@@ -103,5 +118,50 @@ public class SurveyTest {
 
         // Parse will throw an exception if not well formed
         builder.parse(new InputSource(new StringReader(testSurvey.getReceiptContent())));
+    }
+
+    @Test
+    public void shouldCallReceiptHttpWithCorrectParams() throws Exception {
+        Response mockResponse = new MockedResponse(mock(StatusLine.class), "Some Mock Response");
+
+        when(mockedHttp.postString(any(Endpoint.class), anyString(), anyVararg())).thenReturn(mockResponse);
+
+        when(mockResponse.statusLine.getStatusCode()).thenReturn(HttpStatus.SC_CREATED);
+
+        testSurvey.sendReceipt();
+
+        verify(mockedHttp).postString(eq(testSurvey.getReceiptEndpoint()),
+                eq(testSurvey.getReceiptContent()), argThat(new MatchesHeaders(testSurvey.getReceiptHeaders())));
+    }
+
+    @Test(expected=TransformException.class)
+    public void shouldThrowTransformExceptionOnReceiptError() throws Exception {
+
+        Response mockResponse = new MockedResponse(mock(StatusLine.class), "Some Mock Response");
+
+        when(mockedHttp.postString(any(), any(), (NameValuePair) anyVararg())).thenReturn(mockResponse);
+
+        when(mockResponse.statusLine.getStatusCode()).thenReturn(HttpStatus.SC_BAD_GATEWAY);
+
+        testSurvey.sendReceipt();
+
+    }
+
+    /**
+     * We have to implement a custom varargs matcher in order to correctly match headers
+     */
+    private class MatchesHeaders extends ArgumentMatcher<NameValuePair[]> implements VarargMatcher {
+        private Object[] expectedValues;
+
+        MatchesHeaders(Object... expectedValues) {
+            this.expectedValues = expectedValues;
+        }
+
+        @Override
+        public boolean matches(Object varargArgument) {
+            return new EqualsBuilder()
+                    .append(expectedValues, varargArgument)
+                    .isEquals();
+        }
     }
 }
