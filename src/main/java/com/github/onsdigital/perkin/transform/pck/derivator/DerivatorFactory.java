@@ -43,9 +43,9 @@ public class DerivatorFactory {
 			String answer = survey.getAnswer(questionTemplate.getQuestionNumber());
 			Derivator derivator = getDerivator(questionTemplate.getType());
 			String derivedAnswer = derivator.deriveValue(answer);
-			if (derivedAnswer == null){
-				log.info("TRANSFORM|PCK|derived: Question number "+ questionTemplate.getQuestionNumber() +" from question template: "+ questionTemplate + " not submitted, not added to PCK");
-			}else{
+			if (derivedAnswer == null) {
+				log.debug("TRANSFORM|PCK|derived: "+ questionTemplate.getQuestionNumber() +" from question template: "+ questionTemplate + " no answer, not adding to PCK");
+			} else{
 				Question question = new Question(questionTemplate.getQuestionNumber(), derivedAnswer);
 				result.add(question);
 				log.debug("TRANSFORM|PCK|derived: " + question + " from question template: " + questionTemplate + " answer: " + answer);
@@ -73,5 +73,4 @@ public class DerivatorFactory {
 			throw new DerivatorNotFoundException(name, e);
 		}
 	}
-
 }
