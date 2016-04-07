@@ -7,10 +7,8 @@ import com.github.onsdigital.perkin.json.SurveyTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 
 @Slf4j
 public class DerivatorFactory {
@@ -42,14 +40,17 @@ public class DerivatorFactory {
 
         for (QuestionTemplate questionTemplate : surveyTemplate.getQuestions()) {
 
-            String answer = survey.getAnswer(questionTemplate.getQuestionNumber());
+			String answer = survey.getAnswer(questionTemplate.getQuestionNumber());
+			Derivator derivator = getDerivator(questionTemplate.getType());
+			String derivedAnswer = derivator.deriveValue(answer);
+			if (derivedAnswer == null){
+				log.info("TRANSFORM|PCK|derived: Question number "+ questionTemplate.getQuestionNumber() +" from question template: "+ questionTemplate + " not submitted, not added to PCK");
+			}else{
+				Question question = new Question(questionTemplate.getQuestionNumber(), derivedAnswer);
+				result.add(question);
+				log.debug("TRANSFORM|PCK|derived: " + question + " from question template: " + questionTemplate + " answer: " + answer);
+			}
 
-            Derivator derivator = getDerivator(questionTemplate.getType());
-            String derivedAnswer = derivator.deriveValue(answer);
-
-            Question question = new Question(questionTemplate.getQuestionNumber(), derivedAnswer);
-            result.add(question);
-            log.debug("TRANSFORM|PCK|derived: " + question + " from question template: " + questionTemplate + " answer: " + answer);
         }
 
         return result;
@@ -72,4 +73,5 @@ public class DerivatorFactory {
 			throw new DerivatorNotFoundException(name, e);
 		}
 	}
+
 }

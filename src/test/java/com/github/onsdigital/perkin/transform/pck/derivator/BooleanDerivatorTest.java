@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class BooleanDerivatorTest {
@@ -98,6 +99,6 @@ public class BooleanDerivatorTest {
 		String value = classUnderTest.deriveValue(data);
 
 		//then
-		assertThat(value, is(BooleanDerivator.FALSE));
+		assertThat(value, is(nullValue()));
 	}
 }

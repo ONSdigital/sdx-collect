@@ -9,7 +9,7 @@ public class BooleanDerivator implements Derivator {
 	public String deriveValue(String answer) {
 
 		if (answer == null) {
-			return FALSE;
+			return answer;
 		}
 
 		if(answer.trim().equalsIgnoreCase("y")) {

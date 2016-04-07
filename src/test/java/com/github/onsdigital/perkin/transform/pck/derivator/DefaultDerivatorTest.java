@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 
@@ -61,7 +62,7 @@ public class DefaultDerivatorTest {
         String value = classUnderTest.deriveValue(data);
 
         //then
-        assertThat(value, is(""));
+        assertThat(value, is(nullValue()));
     }
 
     @Test
