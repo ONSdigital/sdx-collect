@@ -2,7 +2,6 @@
 
 <fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
 
-
   <!-- defines the layout master -->
   <fo:layout-master-set>
     <fo:simple-page-master master-name="first"
@@ -12,8 +11,8 @@
                            margin-bottom="2cm"
                            margin-left="2.5cm"
                            margin-right="2.5cm">
-      <fo:region-body margin-top="3cm"/>
-      <fo:region-before extent="3cm"/>
+      <fo:region-body margin-top="1.5cm"/>
+      <fo:region-before extent="1.5cm"/>
       <fo:region-after extent="1.5cm"/>
     </fo:simple-page-master>
   </fo:layout-master-set>
@@ -23,134 +22,167 @@
 
   <fo:flow flow-name="xsl-region-body">
 
-      <!-- this defines a title level 1-->
-      <fo:block font-size="18pt"
-            font-family="sans-serif"
-            line-height="24pt"
-            space-after.optimum="15pt"
-            background-color="blue"
-            color="white"
-            text-align="center"
-            padding-top="3pt">
-      Monthly Business Survey - Retail Sales Index
-      </fo:block>
-
+    <!-- this defines a title level 1-->
+    <fo:block font-size="14pt"
+        font-family="sans-serif"
+        line-height="18pt"
+        background-color="rgb(0,62,87)"
+        color="white"
+        text-align="center">Monthly Business Survey - Retail Sales Index</fo:block>
 
     <!-- survey info -->
     <fo:table table-layout="fixed" width="100%" border-collapse="separate">
       <fo:table-column column-width="50mm"/>
-      <fo:table-column column-width="75mm"/>
-      <fo:table-body>
+      <fo:table-column column-width="110mm"/>
+      <fo:table-body font-size="10pt">
         <fo:table-row>
-          <fo:table-cell ><fo:block>Form type</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block color="blue">$formType$</fo:block></fo:table-cell>
+          <fo:table-cell border-color="rgb(0,62,87)" border-style="solid" border-width="1pt" padding="3pt"><fo:block color="rgb(0,62,87)" font-weight="bold">Form type</fo:block></fo:table-cell>
+          <fo:table-cell border-color="rgb(0,62,87)" border-style="solid" border-width="1pt" padding="3pt"><fo:block color="rgb(0,62,87)">$formType$</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>Respondent</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block color="blue">$ruRef$</fo:block></fo:table-cell>
+          <fo:table-cell border-color="rgb(0,62,87)" border-style="solid" border-width="1pt" padding="3pt"><fo:block color="rgb(0,62,87)" font-weight="bold">Respondent</fo:block></fo:table-cell>
+          <fo:table-cell border-color="rgb(0,62,87)" border-style="solid" border-width="1pt" padding="3pt"><fo:block color="rgb(0,62,87)">$ruRef$</fo:block></fo:table-cell>
         </fo:table-row>
         <fo:table-row>
-          <fo:table-cell ><fo:block>Submitted date</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block color="blue">$submittedAt$</fo:block></fo:table-cell>
+          <fo:table-cell border-color="rgb(0,62,87)" border-style="solid" border-width="1pt" padding="3pt"><fo:block color="rgb(0,62,87)" font-weight="bold">Submitted date</fo:block></fo:table-cell>
+          <fo:table-cell border-color="rgb(0,62,87)" border-style="solid" border-width="1pt" padding="3pt"><fo:block color="rgb(0,62,87)">$submittedAt$</fo:block></fo:table-cell>
         </fo:table-row>
       </fo:table-body>
     </fo:table>
 
+    <fo:block-container height="0.5cm" width="16cm">
+              <fo:block font-size="12pt"
+                    font-family="sans-serif"
+                    line-height="16pt"
+                    background-color="rgb(0,62,87)"
+                    color="white"
+                    text-align="center"></fo:block>
+    </fo:block-container>
+
     <!-- comments -->
-          <!-- this defines a title level 1-->
-          <fo:block font-size="16pt"
+      <!-- this defines a title level 1-->
+      <fo:block-container padding="3pt">
+          <fo:block font-size="14pt"
                 font-family="sans-serif"
-                line-height="20pt"
-                space-after.optimum="15pt"
-                background-color="blue"
+                line-height="18pt"
+                background-color="rgb(0,62,87)"
                 color="white"
-                text-align="center"
-                padding-top="3pt">
-          Comments
-          </fo:block>
+                text-align="center">Comments</fo:block>
 
-    <fo:block text-align="start">Please explain any movements in your data e.g. sale held, branches opened or sold, extreme weather, or temporary closure of shop</fo:block>
-    <fo:block text-align="start" color="green">$146$</fo:block>
+        <fo:table table-layout="fixed" width="100%" border-collapse="separate">
+        <fo:table-column column-width="160mm"/>
+            <fo:table-body font-size="10pt">
+                <fo:table-row>
+                    <fo:table-cell background-color="rgb(204,216,222)" border-color="rgb(0,62,87)" border-style="solid" border-width="1pt" padding="3pt"><fo:block background-color="rgb(204,216,222)" color="rgb(0,62,87)">Please explain any movements in your data e.g. sale held, branches opened or sold, extreme weather, or temporary closure of shop</fo:block></fo:table-cell>
+                </fo:table-row>
+                <fo:table-row>
+                  <fo:table-cell border-color="rgb(0,62,87)" border-style="solid" border-width="1pt" padding="3pt"><fo:block color="rgb(0,62,87)">$146$</fo:block></fo:table-cell>
+                </fo:table-row>
+            </fo:table-body>
+        </fo:table>
+    </fo:block-container>
 
-    <!-- answers -->
-          <!-- this defines a title level 1-->
-          <fo:block font-size="16pt"
-                font-family="sans-serif"
-                line-height="20pt"
-                space-after.optimum="15pt"
-                background-color="blue"
-                color="white"
-                text-align="center"
-                padding-top="3pt">
-          Answers
-          </fo:block>
+    <fo:block-container height="0.5cm" width="16cm">
+              <fo:block font-size="12pt"
+                    font-family="sans-serif"
+                    line-height="16pt"
+                    background-color="rgb(0,62,87)"
+                    color="white"
+                    text-align="center"></fo:block>
+    </fo:block-container>
+
 
     <fo:table table-layout="fixed" width="100%" border-collapse="separate">
       <fo:table-column column-width="120mm"/>
       <fo:table-column column-width="40mm"/>
-      <fo:table-body>
+      <fo:table-body font-size="10pt">
 
         <fo:table-row>
-            <fo:table-cell ><fo:block>1. Period</fo:block></fo:table-cell>
-        </fo:table-row>
-        <fo:table-row>
-          <fo:table-cell ><fo:block>From</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block color="green">$11$</fo:block></fo:table-cell>
-        </fo:table-row>
-        <fo:table-row>
-          <fo:table-cell ><fo:block>To</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block color="green">$12$</fo:block></fo:table-cell>
-        </fo:table-row>
-
-<fo:table-row>
-<fo:table-cell ><fo:block>.</fo:block></fo:table-cell>
-</fo:table-row>
-
-        <fo:table-row>
-            <fo:table-cell ><fo:block>2. Commodities - retail turnover</fo:block></fo:table-cell>
-            <fo:table-cell ><fo:block>£ (omit pence)</fo:block></fo:table-cell>
-        </fo:table-row>
-        <fo:table-row>
-          <fo:table-cell ><fo:block>Food</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block color="green">$22$</fo:block></fo:table-cell>
-        </fo:table-row>
-        <fo:table-row>
-          <fo:table-cell ><fo:block>Alcohol, Confectionary and Tobacco</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block color="green">$23$</fo:block></fo:table-cell>
-        </fo:table-row>
-        <fo:table-row>
-          <fo:table-cell ><fo:block>Clothing and Footwear</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block color="green">$24$</fo:block></fo:table-cell>
-        </fo:table-row>
-        <fo:table-row>
-          <fo:table-cell ><fo:block>Household goods</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block color="green">$25$</fo:block></fo:table-cell>
-        </fo:table-row>
-        <fo:table-row>
-          <fo:table-cell ><fo:block>Other Goods</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block color="green">$26$</fo:block></fo:table-cell>
-        </fo:table-row>
-        <fo:table-row>
-          <fo:table-cell ><fo:block>Total Retail Sales</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block color="green">$20$</fo:block></fo:table-cell>
+            <fo:table-cell border-color="rgb(0,62,87)" background-color="rgb(0,62,87)" border-style="solid" border-width="1pt" padding="3pt"><fo:block font-size="14pt"
+                                                                                                                               font-family="sans-serif"
+                                                                                                                               line-height="18pt"
+                                                                                                                               background-color="rgb(0,62,87)"
+                                                                                                                               color="white"
+                                                                                                                               text-align="left">1. Period</fo:block></fo:table-cell>
+            <fo:table-cell border-color="rgb(0,62,87)" background-color="rgb(0,62,87)" border-style="solid" border-width="1pt" padding="3pt"><fo:block font-size="14pt"
+                                                                                                                              font-family="sans-serif"
+                                                                                                                              line-height="18pt"
+                                                                                                                              background-color="rgb(0,62,87)"
+                                                                                                                              color="white"
+                                                                                                                              text-align="left"></fo:block></fo:table-cell>
         </fo:table-row>
 
-<fo:table-row>
-<fo:table-cell ><fo:block>.</fo:block></fo:table-cell>
-</fo:table-row>
-
         <fo:table-row>
-          <fo:table-cell ><fo:block>3. Of these figures, how much were from internet sales?</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block color="green">$21$</fo:block></fo:table-cell>
+          <fo:table-cell border-color="rgb(0,62,87)" border-style="solid" border-width="1pt" padding="3pt"><fo:block color="rgb(0,62,87)" font-weight="bold">From</fo:block></fo:table-cell>
+          <fo:table-cell border-color="rgb(0,62,87)" border-style="solid" border-width="1pt" padding="3pt"><fo:block color="rgb(0,62,87)">$11$</fo:block></fo:table-cell>
+        </fo:table-row>
+        <fo:table-row>
+          <fo:table-cell border-color="rgb(0,62,87)" border-style="solid" border-width="1pt" padding="3pt"><fo:block color="rgb(0,62,87)" font-weight="bold">To</fo:block></fo:table-cell>
+          <fo:table-cell border-color="rgb(0,62,87)" border-style="solid" border-width="1pt" padding="3pt"><fo:block color="rgb(0,62,87)">$12$</fo:block></fo:table-cell>
         </fo:table-row>
 
-<fo:table-row>
-<fo:table-cell ><fo:block>.</fo:block></fo:table-cell>
-</fo:table-row>
+        <fo:table-row>
+          <fo:table-cell padding="5pt"><fo:block></fo:block></fo:table-cell>
+          <fo:table-cell padding="5pt"><fo:block></fo:block></fo:table-cell>
+        </fo:table-row>
 
         <fo:table-row>
-          <fo:table-cell ><fo:block>4. Automotive Fuel</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block color="green">$27$</fo:block></fo:table-cell>
+            <fo:table-cell border-color="rgb(0,62,87)" background-color="rgb(0,62,87)" border-style="solid" border-width="1pt" padding="3pt"><fo:block font-size="14pt"
+                                                                                                                               font-family="sans-serif"
+                                                                                                                               line-height="18pt"
+                                                                                                                               background-color="rgb(0,62,87)"
+                                                                                                                               color="white"
+                                                                                                                               text-align="left">2. Commodities - retail turnover</fo:block></fo:table-cell>
+            <fo:table-cell border-color="rgb(0,62,87)" background-color="rgb(0,62,87)" border-style="solid" border-width="1pt" padding="3pt"><fo:block font-size="14pt"
+                                                                                                                              font-family="sans-serif"
+                                                                                                                              line-height="18pt"
+                                                                                                                              background-color="rgb(0,62,87)"
+                                                                                                                              color="white"
+                                                                                                                              text-align="left">£ (omit pence)</fo:block></fo:table-cell>
+        </fo:table-row>
+        <fo:table-row>
+          <fo:table-cell border-color="rgb(0,62,87)" border-style="solid" border-width="1pt" padding="3pt"><fo:block color="rgb(0,62,87)" font-weight="bold">Food</fo:block></fo:table-cell>
+          <fo:table-cell border-color="rgb(0,62,87)" border-style="solid" border-width="1pt" padding="3pt"><fo:block color="rgb(0,62,87)">$22$</fo:block></fo:table-cell>
+        </fo:table-row>
+        <fo:table-row>
+          <fo:table-cell border-color="rgb(0,62,87)" border-style="solid" border-width="1pt" padding="3pt"><fo:block color="rgb(0,62,87)" font-weight="bold">Alcohol, Confectionary and Tobacco</fo:block></fo:table-cell>
+          <fo:table-cell border-color="rgb(0,62,87)" border-style="solid" border-width="1pt" padding="3pt"><fo:block color="rgb(0,62,87)">$23$</fo:block></fo:table-cell>
+        </fo:table-row>
+        <fo:table-row>
+          <fo:table-cell border-color="rgb(0,62,87)" border-style="solid" border-width="1pt" padding="3pt"><fo:block color="rgb(0,62,87)" font-weight="bold">Clothing and Footwear</fo:block></fo:table-cell>
+          <fo:table-cell border-color="rgb(0,62,87)" border-style="solid" border-width="1pt" padding="3pt"><fo:block color="rgb(0,62,87)">$24$</fo:block></fo:table-cell>
+        </fo:table-row>
+        <fo:table-row>
+          <fo:table-cell border-color="rgb(0,62,87)" border-style="solid" border-width="1pt" padding="3pt"><fo:block color="rgb(0,62,87)" font-weight="bold">Household goods</fo:block></fo:table-cell>
+          <fo:table-cell border-color="rgb(0,62,87)" border-style="solid" border-width="1pt" padding="3pt"><fo:block color="rgb(0,62,87)">$25$</fo:block></fo:table-cell>
+        </fo:table-row>
+        <fo:table-row>
+          <fo:table-cell border-color="rgb(0,62,87)" border-style="solid" border-width="1pt" padding="3pt"><fo:block color="rgb(0,62,87)" font-weight="bold">Other Goods</fo:block></fo:table-cell>
+          <fo:table-cell border-color="rgb(0,62,87)" border-style="solid" border-width="1pt" padding="3pt"><fo:block color="rgb(0,62,87)">$26$</fo:block></fo:table-cell>
+        </fo:table-row>
+        <fo:table-row>
+          <fo:table-cell border-color="rgb(0,62,87)" border-style="solid" border-width="1pt" padding="3pt"><fo:block color="rgb(0,62,87)" font-weight="bold">Total Retail Sales</fo:block></fo:table-cell>
+          <fo:table-cell border-color="rgb(0,62,87)" border-style="solid" border-width="1pt" padding="3pt"><fo:block color="rgb(0,62,87)">$20$</fo:block></fo:table-cell>
+        </fo:table-row>
+
+        <fo:table-row>
+          <fo:table-cell padding="5pt"><fo:block></fo:block></fo:table-cell>
+          <fo:table-cell padding="5pt"><fo:block></fo:block></fo:table-cell>
+        </fo:table-row>
+
+        <fo:table-row>
+          <fo:table-cell border-color="rgb(0,62,87)" border-style="solid" border-width="1pt" padding="3pt"><fo:block color="rgb(0,62,87)" font-weight="bold">3. Of these figures, how much were from internet sales?</fo:block></fo:table-cell>
+          <fo:table-cell border-color="rgb(0,62,87)" border-style="solid" border-width="1pt" padding="3pt"><fo:block color="rgb(0,62,87)">$21$</fo:block></fo:table-cell>
+        </fo:table-row>
+
+        <fo:table-row>
+          <fo:table-cell padding="5pt"><fo:block></fo:block></fo:table-cell>
+          <fo:table-cell padding="5pt"><fo:block></fo:block></fo:table-cell>
+        </fo:table-row>
+
+        <fo:table-row>
+          <fo:table-cell border-color="rgb(0,62,87)" border-style="solid" border-width="1pt" padding="3pt"><fo:block color="rgb(0,62,87)" font-weight="bold">4. Automotive Fuel</fo:block></fo:table-cell>
+          <fo:table-cell border-color="rgb(0,62,87)" border-style="solid" border-width="1pt" padding="3pt"><fo:block color="rgb(0,62,87)">$27$</fo:block></fo:table-cell>
         </fo:table-row>
 
       </fo:table-body>
