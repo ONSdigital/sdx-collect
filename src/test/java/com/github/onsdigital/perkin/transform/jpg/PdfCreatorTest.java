@@ -29,14 +29,56 @@ public class PdfCreatorTest {
     }
 
     @Test
-    public void shouldCreatePdf() throws IOException {
+    public void shouldCreate0203Pdf() throws IOException {
         //given
         Survey survey = new SurveyParser().parse(FileHelper.loadFile("survey.ftp.json"));
         TransformContext context = TransformEngine.getInstance().createTransformContext(survey);
 
         //when
         byte[] pdf = classUnderTest.createPdf(survey, context);
-        FileHelper.saveFile(pdf, "mci.pdf");
+        FileHelper.saveFile(pdf, "0203.pdf");
+
+        //then
+        assertThat(pdf, is(notNullValue()));
+    }
+
+    @Test
+    public void shouldCreate0205Pdf() throws IOException {
+        //given
+        Survey survey = new SurveyParser().parse(FileHelper.loadFile("to-pck/valid.023.0205.json"));
+        TransformContext context = TransformEngine.getInstance().createTransformContext(survey);
+
+        //when
+        byte[] pdf = classUnderTest.createPdf(survey, context);
+        FileHelper.saveFile(pdf, "0205.pdf");
+
+        //then
+        assertThat(pdf, is(notNullValue()));
+    }
+
+    @Test
+    public void shouldCreate0213Pdf() throws IOException {
+        //given
+        Survey survey = new SurveyParser().parse(FileHelper.loadFile("to-pck/valid.0213.json.ignore"));
+        TransformContext context = TransformEngine.getInstance().createTransformContext(survey);
+
+        //when
+        byte[] pdf = classUnderTest.createPdf(survey, context);
+        FileHelper.saveFile(pdf, "0213.pdf");
+
+        //then
+        assertThat(pdf, is(notNullValue()));
+    }
+
+    @Test
+    public void shouldCreate0215Pdf() throws IOException {
+        //given
+        Survey survey = new SurveyParser().parse(FileHelper.loadFile("to-pck/valid.0215.json.ignore"));
+        TransformContext context = TransformEngine.getInstance().createTransformContext(survey);
+
+        //when
+        byte[] pdf = classUnderTest.createPdf(survey, context);
+        FileHelper.saveFile(pdf, "0215.pdf");
 
         //then
         assertThat(pdf, is(notNullValue()));
