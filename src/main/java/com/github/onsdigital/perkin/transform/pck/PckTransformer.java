@@ -45,8 +45,7 @@ public class PckTransformer implements Transformer {
         pck.setQuestions(derivatorFactory.deriveAllAnswers(survey, context.getSurveyTemplate()));
         pck.setFormLead(FORM_LEAD);
 
-        //TODO: remove .pck extension (in tandem with Ian)
-        pck.setFilename(survey.getId() + "_" + context.getSequence() + ".pck");
+        pck.setFilename(survey.getId() + "_" + context.getSequence());
 
         //TODO: path is hardcoded for now
         pck.setPath("\\\\NP3RVWAPXX370\\SDX_preprod\\EDC_QData\\");
