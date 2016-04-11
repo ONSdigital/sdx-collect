@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.IOException;
 
 @Slf4j
-public class SurveyListener {
+public class SurveyListener implements Runnable {
 
     private String host;
     private String queue;
@@ -26,8 +26,12 @@ public class SurveyListener {
     }
 
     public void start() {
-        //TODO: need to kickoff a new thread - otherwise if queue down, will never start
-        //while (true) {
+        new Thread(this).start();
+    }
+
+    @Override
+    public void run() {
+        while (true) {
 
             try {
                 startListening();
@@ -36,13 +40,13 @@ public class SurveyListener {
             }
 
             try {
-                Thread.sleep(3 * 1000);
+                Thread.sleep(5 * 1000);
             } catch (InterruptedException e) {
                 //ignore
             }
 
-           // log.info("QUEUE|CONNECTION|attempting to restart connection... ");
-        //}
+            log.info("QUEUE|CONNECTION|attempting to restart connection... ");
+        }
     }
 
     private void startListening() throws IOException, InterruptedException {
