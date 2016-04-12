@@ -9,6 +9,7 @@ import com.github.onsdigital.perkin.transform.jpg.ImageTransformer;
 import com.github.onsdigital.perkin.transform.pck.PckTransformer;
 import com.github.onsdigital.perkin.publish.FtpPublisher;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 
 import java.io.IOException;
 import java.util.*;
@@ -94,6 +95,12 @@ public class TransformEngine {
     }
 
     public TransformContext createTransformContext(Survey survey) throws TemplateNotFoundException {
+
+        MDC.clear();
+        MDC.put("statUnitId", survey.getMetadata().getStatisticalUnitId());
+        MDC.put("userId", survey.getMetadata().getUserId());
+        MDC.put("exerciseSid", survey.getCollection().getExerciseSid());
+
         return TransformContext.builder()
                 .date(new Date())
                 .batch(batchNumberService.getNext())

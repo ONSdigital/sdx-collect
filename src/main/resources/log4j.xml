@@ -13,7 +13,7 @@
                         name, line number, the message etc -->
 
                 <layout class="org.apache.log4j.PatternLayout">
-                        <param name="ConversionPattern" value="%d{ISO8601}|%p|thread:%t|%m|%l%n" />
+                        <param name="ConversionPattern" value="%d{ISO8601}|%p|thread:%t|userId:%X{userId},statUnitId:%X{statUnitId},exerciseSid:%X{exerciseSid}|%m|%l%n" />
                 </layout>
         </appender>
 
@@ -28,7 +28,7 @@
 
                 <!-- defines the format of each log message -->
                 <layout class="org.apache.log4j.PatternLayout">
-                        <param name="ConversionPattern" value="%d{ISO8601}|%p|thread:%t|%m|%l%n" />
+                        <param name="ConversionPattern" value="%d{ISO8601}|%p|thread:%t|userId:%X{userId},statUnitId:%X{statUnitId},exerciseSid:%X{exerciseSid}|%m|%l%n" />
                 </layout>
         </appender>
 
