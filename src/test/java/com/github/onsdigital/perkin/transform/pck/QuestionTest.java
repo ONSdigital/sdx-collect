@@ -22,7 +22,4 @@ public class QuestionTest {
         assertThat(question.getAnswer().length(), is(11));
         assertThat(question.getAnswer(), is("00000000027"));
     }
-
-    //TODO what if question number is > 4 chars?
-    //TODO what if question number is > 11 chars?
 }

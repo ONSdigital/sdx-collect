@@ -8,9 +8,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ContainsDerivatorTest {
 
-    //TODO: Andy - turn this into a parameterized test?
-    //e.g. http://www.tutorialspoint.com/junit/junit_parameterized_test.htm
-
     private ContainsDerivator classUnderTest;
 
     @Before

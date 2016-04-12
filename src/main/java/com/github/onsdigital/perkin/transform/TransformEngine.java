@@ -68,7 +68,7 @@ public class TransformEngine {
             TransformContext context = createTransformContext(survey);
 
             List<DataFile> files = new ArrayList<>();
-            //TODO: use executors (multithreading)
+            //note: could use executors (multithreading)
             for (Transformer transformer : transformers) {
                 files.addAll(transformer.transform(survey, context));
             }
