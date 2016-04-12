@@ -26,6 +26,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Base64;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -134,8 +135,8 @@ public class ReceiptTest {
                 eq(testSurvey.getReceiptContent()), argThat(new MatchesHeaders(testSurvey.getReceiptHeaders())));
     }
 
-    @Test(expected=TransformException.class)
-    public void shouldThrowTransformExceptionOnReceiptError() throws Exception {
+    @Test
+    public void shouldLogReceiptError() throws Exception {
 
         Response mockResponse = new MockedResponse(mock(StatusLine.class), "Some Mock Response");
 
@@ -145,6 +146,13 @@ public class ReceiptTest {
 
         testSurvey.sendReceipt();
 
+        List<String> testLogContents = FileHelper.loadFileAsList("test.log");
+        String lastLine = testLogContents.get(testLogContents.size() - 1);
+
+        String expectedLogMessage = "RECEIPT|RESPONSE|ERROR: Receipt failed for respondent_id="
+                + testSurvey.getMetadata().getUserId();
+
+        assert lastLine.contains(expectedLogMessage);
     }
 
     /**
