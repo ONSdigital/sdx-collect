@@ -38,9 +38,7 @@ public class SurveyTemplateTest {
 
         //Then
         log.debug("TEST|{}", template);
-        //TODO Should this be allowed to happen... Should a template be created with no questions?
         assertThat(template, instanceOf(SurveyTemplate.class));
-        //TODO should this return null?
         assertThat(template.getQuestions(), is(nullValue()));
     }
 }

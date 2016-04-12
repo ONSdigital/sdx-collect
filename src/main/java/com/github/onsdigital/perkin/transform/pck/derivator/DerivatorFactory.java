@@ -19,7 +19,6 @@ public class DerivatorFactory {
 		derivators = new HashMap<>();
 	}
 
-    //TODO make private? i.e. just use deriveAnswer(...)
 	public Derivator getDerivator(String name) throws DerivatorNotFoundException {
 
         if (name == null) name = "default";

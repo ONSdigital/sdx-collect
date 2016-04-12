@@ -83,7 +83,6 @@ public class SurveyListener implements Runnable {
                 } catch (Throwable t) {
                     log.error("QUEUE|MESSAGE|error during message processing", t);
 
-                    //TODO: primitive for now - needs a delay?
                     if (++retry <= maxRetry) {
                         log.info("QUEUE|MESSAGE|RETRY|fail, reject ({} retries), requeue. message: {}", retry, message);
                         channel.basicReject(envelope.getDeliveryTag(), REQUEUE);

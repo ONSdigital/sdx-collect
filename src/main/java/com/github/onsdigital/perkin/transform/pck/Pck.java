@@ -77,7 +77,6 @@ public class Pck implements DataFile {
         return getBytes().length;
     }
 
-    //TODO: remove?
     @Override
 	public String toString(){
 

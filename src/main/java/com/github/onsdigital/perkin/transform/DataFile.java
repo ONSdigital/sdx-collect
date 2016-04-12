@@ -6,6 +6,4 @@ public interface DataFile {
     String getPath();
     String getFilename();
     long getSize();
-
-    //TODO: getMimeType()?
 }

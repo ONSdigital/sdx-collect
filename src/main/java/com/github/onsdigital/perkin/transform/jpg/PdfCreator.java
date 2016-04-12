@@ -68,8 +68,7 @@ public class PdfCreator {
             try {
                 out.close();
             } catch (IOException e) {
-                //TODO: should we just log and not re-throw?
-                throw new TransformException("problem closing output stream of pdf", e);
+                log.warn("problem closing output stream of pdf", e);
             }
         }
 
@@ -96,10 +95,6 @@ public class PdfCreator {
     }
 
     private String populate(String template, String key, String value) {
-        if (value == null) {
-            //TODO: add a test to see what happens
-        }
-
         log.debug("TRANSFORM|IMAGE|pdf populating key: " + key + " value: " + value);
         return template.replace("$" + key + "$", value);
     }
