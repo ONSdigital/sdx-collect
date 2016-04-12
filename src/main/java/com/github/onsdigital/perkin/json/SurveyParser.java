@@ -19,9 +19,7 @@ public class SurveyParser {
         Timer timer = new Timer("survey.parse.");
         try {
             Survey survey = deserialize(json);
-
-            //TODO validation - type, origin, respondent should be 12 chars, 11 digits and a check letter - can be longer - log a warning?
-
+            
             if (survey == null) {
                 logAndThrowError("Problem parsing survey from json", json);
             }

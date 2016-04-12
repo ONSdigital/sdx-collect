@@ -45,7 +45,6 @@ public class ImageTransformer implements Transformer {
         ImageIndexCsvCreator csvCreator = new ImageIndexCsvCreator();
 
         try {
-            //TODO can this be re-used?
             ByteArrayInputStream is = new ByteArrayInputStream(pdf);
             PDDocument document = PDDocument.load(is);
 
@@ -58,7 +57,7 @@ public class ImageTransformer implements Transformer {
 
                 //convert pdf page to image
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                int dpiImageResolution = 72; //TODO: was 300
+                int dpiImageResolution = 72; //note: dpi was 300
                 BufferedImage bufferedImage = page.convertToImage(BufferedImage.TYPE_INT_RGB, dpiImageResolution);
                 ImageIO.write(bufferedImage, "JPG", baos);
                 baos.flush();
