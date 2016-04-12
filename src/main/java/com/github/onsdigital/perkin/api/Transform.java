@@ -60,13 +60,12 @@ public class Transform {
         //output the first image
         for (DataFile file : files) {
             if (file.getFilename().endsWith(ext)) {
-                log.info("ftp >>>>>>>> getting file from ftp image: " + file.getFilename() + " size: " + file.getBytes().length);
+                log.info("ftp >>>>>>>> getting file: " + file.getFilename() + " size: " + file.getBytes().length);
 
-                //get back from ftp
-                byte[] bytes = ftp.get(file.getFilename());
+                byte[] bytes = file.getBytes();
 
                 //stream image
-                log.info("ftp >>>>>>>> file retrieved from FTP: " + file.getFilename() + " size: " + bytes.length);
+                log.info("ftp >>>>>>>> file: " + file.getFilename() + " size: " + bytes.length);
                 response.setContentType(mime);
                 response.setContentLength(bytes.length);
 

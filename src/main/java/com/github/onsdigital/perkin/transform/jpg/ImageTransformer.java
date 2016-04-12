@@ -65,14 +65,13 @@ public class ImageTransformer implements Transformer {
 
                 Image image = Image.builder()
                         .filename(scanId + ".JPG")
-                        //TODO: path is hardcoded for now
-                        .path("\\\\NP3RVWAPXX370\\SDX_preprod\\EDC_QImages\\Images\\")
+                        .path(context.getImagePath())
                         .data(baos.toByteArray())
                         .build();
                 files.add(image);
 
                 log.info("TRANSFORM|IMAGE|created image: " + image.getFilename());
-                csvCreator.addImage(context.getDate(), context.getSequence(), survey, image.getFilename(), scanId, pageNumber);
+                csvCreator.addImage(context.getDate(), context.getSequence(), survey, context.getImagePath(), image.getFilename(), scanId, pageNumber);
             }
 
             document.close();

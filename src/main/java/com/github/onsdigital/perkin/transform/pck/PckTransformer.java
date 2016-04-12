@@ -47,8 +47,7 @@ public class PckTransformer implements Transformer {
 
         pck.setFilename(survey.getId() + "_" + context.getSequence());
 
-        //TODO: path is hardcoded for now
-        pck.setPath("\\\\NP3RVWAPXX370\\SDX_preprod\\EDC_QData\\");
+        pck.setPath(context.getPckPath());
 
         timer.stopStatus(200);
         Audit.getInstance().increment(timer);

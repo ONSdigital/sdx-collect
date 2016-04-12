@@ -34,7 +34,7 @@ public class IdbrTransformer implements Transformer {
 
         Timer timer = new Timer("transform.idbr.");
 
-        List<DataFile> idbr = Arrays.asList(createIdbrReceipt(survey, survey.getDate(), context.getSequence()));
+        List<DataFile> idbr = Arrays.asList(createIdbrReceipt(survey, survey.getDate(), context));
 
         timer.stopStatus(200);
         Audit.getInstance().increment(timer);
@@ -42,13 +42,12 @@ public class IdbrTransformer implements Transformer {
         return idbr;
     }
 
-    public IdbrReceipt createIdbrReceipt(final Survey survey, final Date date, final long sequence) {
+    public IdbrReceipt createIdbrReceipt(final Survey survey, final Date date, final TransformContext context) {
 
         return IdbrReceipt.builder()
                 .receipt(createReceipt(survey))
-                .filename(createFilename(date, sequence))
-                //TODO: path is hardcoded for now
-                .path("\\\\NP3RVWAPXX370\\SDX_preprod\\EDC_QReceipts\\")
+                .filename(createFilename(date, context.getSequence()))
+                .path(context.getIdbrPath())
                 .build();
     }
 

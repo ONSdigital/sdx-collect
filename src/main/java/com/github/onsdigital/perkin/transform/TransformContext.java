@@ -18,4 +18,8 @@ public class TransformContext {
 
     private SurveyTemplate surveyTemplate;
     private String pdfTemplate;
+
+    private String idbrPath;
+    private String pckPath;
+    private String imagePath;
 }
