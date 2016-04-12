@@ -24,11 +24,7 @@ public class ImageIndexCsvCreator {
     date+time, full path to image, batch number - a date, scan number (image name without suffix), survey_id, form_type
     e.g. 0203, idbr ru_ref without check letter, period, page number, optional front page marker 03/03/2016 10:05:03,\\NP3RVWAPXX370\EDC_PROD\EDC_QImages\Images\E100080458.JPG,20160303,E100080458,244,0005,49902138794,201602,001,0
     */
-    public void addImage(Date now, long sequence, Survey survey, String filename, String scanId, int pageNumber) {
-
-        //TODO: hardcoded path for now
-        //TODO: note that the env could be: SDX_PROD | SDX_preprod | SDX_sit
-        path = "\\\\NP3RVWAPXX370\\SDX_preprod\\EDC_QImages\\Images\\";
+    public void addImage(Date now, long sequence, Survey survey, String path, String filename, String scanId, int pageNumber) {
 
         if (pageNumber > 1) {
             //start a new line if it's not the first entry

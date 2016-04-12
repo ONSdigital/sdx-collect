@@ -108,6 +108,10 @@ public class TransformEngine {
                 .scanNumberService(scanNumberService)
                 .surveyTemplate(loader.getSurveyTemplate(survey))
                 .pdfTemplate(loader.getPdfTemplate(survey))
+                //TODO: note that the env could be: SDX_PROD | SDX_preprod | SDX_sit
+                .idbrPath("\\\\NP3RVWAPXX370\\SDX_preprod\\EDC_QReceipts\\")
+                .pckPath("\\\\NP3RVWAPXX370\\SDX_preprod\\EDC_QData\\")
+                .imagePath("\\\\NP3RVWAPXX370\\SDX_preprod\\EDC_QImages\\Images\\")
                 .build();
     }
 }
