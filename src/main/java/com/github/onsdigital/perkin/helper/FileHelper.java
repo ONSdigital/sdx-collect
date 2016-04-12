@@ -44,6 +44,17 @@ public abstract class FileHelper {
         log.info("saved file target/example/" + filename);
     }
 
+    public static List<String> loadFileAsList(String filename) throws IOException {
+
+        Path path = Paths.get("target/" + filename);
+
+        List<String> lines = Files.readAllLines(path);
+
+        log.info("loaded file target/" + filename + " contents: {}", lines);
+
+        return lines;
+    }
+
     public static byte[] loadFileAsBytes(String filename) throws IOException {
 
         log.debug("loading file: " + filename);

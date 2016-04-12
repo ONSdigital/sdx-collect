@@ -125,10 +125,8 @@ public class Survey {
 
         audit.increment(timer);
 
-        if (status == HttpStatus.BAD_REQUEST_400) {
-            log.error("RECEIPT|RESPONSE|Failed for respondent: {}", this.getMetadata().getUserId());
-        } else if (status != HttpStatus.CREATED_201) {
-            throw new TransformException("receipt response indicated an error: " + receiptResponse);
+        if (status != HttpStatus.CREATED_201) {
+            log.error("RECEIPT|RESPONSE|ERROR: Receipt failed for respondent_id={}", this.getMetadata().getUserId());
         }
 
         return status == HttpStatus.CREATED_201;
