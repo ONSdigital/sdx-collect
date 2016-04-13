@@ -1,11 +1,13 @@
 package com.github.onsdigital.perkin.transform.jpg;
 
 import com.github.onsdigital.perkin.json.Survey;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+@Slf4j
 public class ImageIndexCsvCreator {
 
     //TODO: this may need to be a windows new line? - check with Martyn Colmer. FTP may modify this though - he's happy with unix format
@@ -31,6 +33,8 @@ public class ImageIndexCsvCreator {
             csv.append(NEW_LINE);
         }
 
+        String period = createPeriod(survey);
+
         csv.append(formatDateTime(now)).append(COMMA)
                 .append(path + filename).append(COMMA)
                 .append(formatDate(now)).append(COMMA) // this is their 'batch number' but it's a different batch number to what we know - we set to a date
@@ -38,7 +42,7 @@ public class ImageIndexCsvCreator {
                 .append(survey.getId()).append(COMMA)
                 .append(survey.getCollection().getInstrumentId()).append(COMMA)
                 .append(survey.getMetadata().getStatisticalUnitId()).append(COMMA)
-                .append(survey.getCollection().getPeriod()).append(COMMA)
+                .append(period).append(COMMA)
                 .append(format(pageNumber));
 
         if (pageNumber == 1) {
@@ -47,6 +51,30 @@ public class ImageIndexCsvCreator {
             //set the filename
             this.filename = "EDC_" + survey.getId() + "_" + formatDate(survey.getDate()) + "_" + sequence + ".csv";
         }
+    }
+
+    protected static String createPeriod(Survey survey) {
+        String period = survey.getCollection().getPeriod();
+
+        if (period == null) {
+            period = "";
+        }
+
+        if (period.length() == 4) {
+            period = "20" + period;
+            log.debug("CSV|prepending period with 20. period now: {}", period);
+        } else {
+            if (period.length() > 6) {
+                period = period.substring(0, 6);
+            } else {
+                if (period.length() < 6) {
+                    period = StringUtils.leftPad(period, 6, '0');
+                    log.debug("CSV|left padded period with 0. period now: {}", period);
+                }
+            }
+        }
+
+        return period;
     }
 
     /**
