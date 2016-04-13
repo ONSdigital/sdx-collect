@@ -1,16 +1,18 @@
 {
   "survey_id": "023",
-  "form_type": "0205",
+  "form_type": "0213",
   "questions": [
     {
       "q": "1",
       "type": "contains"
     },
     {
-      "q": "11"
+      "q": "11",
+      "type": "date"
     },
     {
-      "q": "12"
+      "q": "12",
+      "type": "date"
     },
     {
       "q": "20"
