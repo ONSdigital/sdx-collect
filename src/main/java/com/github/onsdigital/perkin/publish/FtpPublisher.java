@@ -31,7 +31,6 @@ public class FtpPublisher {
         port = ConfigurationManager.getInt("ftp.port");
         user = ConfigurationManager.get("ftp.user");
         password = ConfigurationManager.get("ftp.password");
-        path = ConfigurationManager.get("ftp.path");
     }
 
     public void publish(List<DataFile> files) throws IOException {
@@ -42,7 +41,7 @@ public class FtpPublisher {
 
 
             InputStream inputStream = new ByteArrayInputStream(file.getBytes());
-            put(inputStream, path, filename);
+            put(inputStream, file.getPath(), filename);
 
             timer.stopStatus(200);
             Audit.getInstance().increment(timer, file);
