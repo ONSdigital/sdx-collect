@@ -66,6 +66,7 @@ public class ImageIndexCsvCreator {
         } else {
             if (period.length() > 6) {
                 period = period.substring(0, 6);
+                log.debug("CSV|shortened period to 6 chars. period now: {}", period);
             } else {
                 if (period.length() < 6) {
                     period = StringUtils.leftPad(period, 6, '0');
