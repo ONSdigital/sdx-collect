@@ -10,7 +10,7 @@ public class ContainsDerivator implements Derivator {
 	@Override
 	public String deriveValue(String answer) {
 		
-		if(StringUtils.isBlank(answer)){
+		if (StringUtils.isBlank(answer)) {
 			return FALSE;
 		} else {
 			return TRUE;
