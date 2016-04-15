@@ -19,16 +19,25 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.ssl.TrustStrategy;
 import org.apache.http.util.EntityUtils;
 
+import javax.net.ssl.SSLContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 
 /**
@@ -589,7 +598,21 @@ public class Http implements AutoCloseable {
 
     protected CloseableHttpClient httpClient() {
         if (httpClient == null) {
-            httpClient = HttpClients.createDefault();
+            HttpClientBuilder b = HttpClientBuilder.create();
+            // setup a Trust Strategy that allows all certificates.
+            //
+            SSLContext sslContext = null;
+            try {
+                sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
+                    public boolean isTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+                        return true;
+                    }
+                }).build();
+                b.setSslcontext(sslContext);
+                httpClient = b.build();// HttpClients.createDefault();
+            } catch (NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
+                throw new RuntimeException("Error building httpclient.");
+            }
         }
         return httpClient;
     }
