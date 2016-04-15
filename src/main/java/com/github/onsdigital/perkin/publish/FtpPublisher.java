@@ -55,9 +55,10 @@ public class FtpPublisher {
             return "/";
         }
 
+        path = path.replace("\\", "/");
         int end = path.length();
         int pos = path.indexOf("EDC_");
-        if (path.endsWith("\\")) {
+        if (path.endsWith("/")) {
             end -= 1;
         }
         if (pos > -1) {
@@ -93,7 +94,10 @@ public class FtpPublisher {
                 //store the file in the remote server
                 log.debug("FTP|storing binary file: " + filename);
                 ftp.setFileType(FTP.BINARY_FILE_TYPE);
-                ftp.storeFile(filename, inputStream);
+                boolean ok = ftp.storeFile(filename, inputStream);
+                if (!ok) {
+                    throw new IOException("ftp failed to store file: " + path + "/" + filename);
+                }
                 //close the stream
                 log.debug("FTP|closing stream");
                 inputStream.close();
