@@ -91,11 +91,19 @@ public class FtpPublisher {
                 ftp.changeWorkingDirectory(path);
                 log.debug("FTP|current directory is " + ftp.printWorkingDirectory());
 
+                log.debug("FTP|entering local passive mode (new)");
+                ftp.enterLocalPassiveMode();
+
                 //store the file in the remote server
                 log.debug("FTP|storing binary file: " + filename);
                 ftp.setFileType(FTP.BINARY_FILE_TYPE);
                 boolean ok = ftp.storeFile(filename, inputStream);
                 if (!ok) {
+                    String replyString = ftp.getReplyString();
+                    if(!FTPReply.isPositiveCompletion(reply)) {
+                        log.debug("FTP|failed to store file. reply string: {}", replyString);
+                    }
+
                     throw new IOException("ftp failed to store file: " + path + "/" + filename);
                 }
                 //close the stream
