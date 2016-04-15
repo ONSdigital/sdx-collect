@@ -86,6 +86,7 @@ public class FtpPublisher {
                 //get system name
                 log.debug("FTP|remote system is " + ftp.getSystemType());
                 //change current directory
+                log.debug("FTP|changing dir to: {}", path);
                 ftp.changeWorkingDirectory(path);
                 log.debug("FTP|current directory is " + ftp.printWorkingDirectory());
 
