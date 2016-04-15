@@ -159,6 +159,18 @@ public class FtpPublisherTest {
         String determined = classUnderTest.determinPath(path);
 
         //then
-        assertThat(determined, is("EDC_QImages\\Images"));
+        assertThat(determined, is("EDC_QImages/Images"));
+    }
+
+    @Test
+    public void shouldDeterminePathIndex() {
+        //given
+        String path = "\\\\NP3RVWAPXX370\\SDX_PROD\\EDC_QImages\\Index\\";
+
+        //when
+        String determined = classUnderTest.determinPath(path);
+
+        //then
+        assertThat(determined, is("EDC_QImages/Index"));
     }
 }
