@@ -27,11 +27,11 @@ public class FtpPublisher {
     private String path;
 
     public FtpPublisher() {
-        host = ConfigurationManager.get("ftp.host");
-        port = ConfigurationManager.getInt("ftp.port");
-        user = ConfigurationManager.get("ftp.user");
-        password = ConfigurationManager.get("ftp.password");
-        path = ConfigurationManager.get("ftp.path");
+        host = ConfigurationManager.get("FTP_HOST");
+        port = ConfigurationManager.getInt("FTP_PORT");
+        user = ConfigurationManager.get("FTP_USER");
+        password = ConfigurationManager.get("FTP_PASS");
+        path = ConfigurationManager.get("FTP_PATH");
     }
 
     public void publish(List<DataFile> files) throws IOException {
