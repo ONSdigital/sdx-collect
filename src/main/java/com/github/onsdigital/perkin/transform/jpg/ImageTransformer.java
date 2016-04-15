@@ -76,7 +76,7 @@ public class ImageTransformer implements Transformer {
 
             document.close();
 
-            files.add(csvCreator.getFile());
+            files.add(csvCreator.getFile(context));
         } catch (IOException e) {
             throw new TransformException("error creating images from pdf", e);
         }

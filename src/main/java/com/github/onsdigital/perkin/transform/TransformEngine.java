@@ -115,6 +115,7 @@ public class TransformEngine {
                 .idbrPath("\\\\NP3RVWAPXX370\\SDX_" + env + "\\EDC_QReceipts\\")
                 .pckPath("\\\\NP3RVWAPXX370\\SDX_" + env + "\\EDC_QData\\")
                 .imagePath("\\\\NP3RVWAPXX370\\SDX_" + env + "\\EDC_QImages\\Images\\")
+                .indexPath("\\\\NP3RVWAPXX370\\SDX_" + env + "\\EDC_QImages\\Index\\")
                 .build();
     }
 }
