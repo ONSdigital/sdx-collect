@@ -31,11 +31,16 @@ public class SurveyListener implements Runnable {
 
     @Override
     public void run() {
-        while (true) {
+        boolean notConnected = true;
+        while (notConnected) {
+
+            log.info("QUEUE|CONNECTION|attempting to restart connection... ");
 
             try {
                 startListening();
+                notConnected = false;
             } catch (IOException | InterruptedException e) {
+                notConnected = true;
                 log.error("QUEUE|problem processing queue message: ", e);
             }
 
@@ -44,8 +49,6 @@ public class SurveyListener implements Runnable {
             } catch (InterruptedException e) {
                 //ignore
             }
-
-            log.info("QUEUE|CONNECTION|attempting to restart connection... ");
         }
     }
 

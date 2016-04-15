@@ -24,14 +24,12 @@ public class FtpPublisher {
     private int port;
     private String user;
     private String password;
-    private String path;
 
     public FtpPublisher() {
         host = ConfigurationManager.get("FTP_HOST");
         port = ConfigurationManager.getInt("FTP_PORT");
         user = ConfigurationManager.get("FTP_USER");
         password = ConfigurationManager.get("FTP_PASS");
-        path = ConfigurationManager.get("FTP_PATH");
     }
 
     public void publish(List<DataFile> files) throws IOException {
@@ -42,11 +40,31 @@ public class FtpPublisher {
 
 
             InputStream inputStream = new ByteArrayInputStream(file.getBytes());
+
+            String path = determinPath(file.getPath());
             put(inputStream, path, filename);
 
             timer.stopStatus(200);
             Audit.getInstance().increment(timer, file);
         }
+    }
+
+    protected static String determinPath(String path) {
+
+        if (path == null) {
+            return "/";
+        }
+
+        int end = path.length();
+        int pos = path.indexOf("EDC_");
+        if (path.endsWith("\\")) {
+            end -= 1;
+        }
+        if (pos > -1) {
+            return path.substring(pos, end);
+        }
+
+        return path;
     }
 
     private void put(InputStream inputStream, String path, String filename) throws IOException {
@@ -116,8 +134,6 @@ public class FtpPublisher {
 
                 //get system name
                 log.debug("FTP|remote system is " + ftp.getSystemType());
-                //change current directory
-                ftp.changeWorkingDirectory(path);
                 log.debug("FTP|current directory is " + ftp.printWorkingDirectory());
 
                 log.info("FTP|GET|get binary file " + filename);

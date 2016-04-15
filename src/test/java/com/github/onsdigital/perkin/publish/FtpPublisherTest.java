@@ -126,5 +126,39 @@ public class FtpPublisherTest {
         assertThat(files[0].getName(), is("test.txt"));
     }
 
-    //TODO: add test for file writing fails
+    @Test
+    public void shouldDeterminePathReceipts() {
+        //given
+        String path = "\\\\NP3RVWAPXX370\\SDX_PROD\\EDC_QReceipts\\";
+
+        //when
+        String determined = classUnderTest.determinPath(path);
+
+        //then
+        assertThat(determined, is("EDC_QReceipts"));
+    }
+
+    @Test
+    public void shouldDeterminePathPck() {
+        //given
+        String path = "\\\\NP3RVWAPXX370\\SDX_PROD\\EDC_QData\\";
+
+        //when
+        String determined = classUnderTest.determinPath(path);
+
+        //then
+        assertThat(determined, is("EDC_QData"));
+    }
+
+    @Test
+    public void shouldDeterminePathImages() {
+        //given
+        String path = "\\\\NP3RVWAPXX370\\SDX_PROD\\EDC_QImages\\Images\\";
+
+        //when
+        String determined = classUnderTest.determinPath(path);
+
+        //then
+        assertThat(determined, is("EDC_QImages\\Images"));
+    }
 }
