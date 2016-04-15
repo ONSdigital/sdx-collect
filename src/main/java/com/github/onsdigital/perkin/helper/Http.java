@@ -598,7 +598,7 @@ public class Http implements AutoCloseable {
 
     protected CloseableHttpClient httpClient() {
         if (httpClient == null) {
-            HttpClientBuilder b = new HttpClientBuilder();
+            HttpClientBuilder b = HttpClientBuilder.create();
             // setup a Trust Strategy that allows all certificates.
             //
             SSLContext sslContext = null;
