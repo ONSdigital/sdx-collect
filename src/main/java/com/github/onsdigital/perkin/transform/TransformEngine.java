@@ -1,5 +1,6 @@
 package com.github.onsdigital.perkin.transform;
 
+import com.github.onsdigital.ConfigurationManager;
 import com.github.onsdigital.perkin.decrypt.Decrypt;
 import com.github.onsdigital.perkin.helper.TemplateLoader;
 import com.github.onsdigital.perkin.helper.Timer;
@@ -101,6 +102,9 @@ public class TransformEngine {
         MDC.put("userId", survey.getMetadata().getUserId());
         MDC.put("exerciseSid", survey.getCollection().getExerciseSid());
 
+        String env = ConfigurationManager.get("SDX_ENV");
+        log.debug("TRANSFORM|SDX_ENV:{}", env);
+
         return TransformContext.builder()
                 .date(new Date())
                 .batch(batchNumberService.getNext())
@@ -108,10 +112,9 @@ public class TransformEngine {
                 .scanNumberService(scanNumberService)
                 .surveyTemplate(loader.getSurveyTemplate(survey))
                 .pdfTemplate(loader.getPdfTemplate(survey))
-                //TODO: note that the env could be: SDX_PROD | SDX_preprod | SDX_sit
-                .idbrPath("\\\\NP3RVWAPXX370\\SDX_preprod\\EDC_QReceipts\\")
-                .pckPath("\\\\NP3RVWAPXX370\\SDX_preprod\\EDC_QData\\")
-                .imagePath("\\\\NP3RVWAPXX370\\SDX_preprod\\EDC_QImages\\Images\\")
+                .idbrPath("\\\\NP3RVWAPXX370\\SDX_" + env + "\\EDC_QReceipts\\")
+                .pckPath("\\\\NP3RVWAPXX370\\SDX_" + env + "\\EDC_QData\\")
+                .imagePath("\\\\NP3RVWAPXX370\\SDX_" + env + "\\EDC_QImages\\Images\\")
                 .build();
     }
 }
