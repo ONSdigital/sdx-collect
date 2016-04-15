@@ -1,6 +1,7 @@
 package com.github.onsdigital.perkin.transform.jpg;
 
 import com.github.onsdigital.perkin.json.Survey;
+import com.github.onsdigital.perkin.transform.TransformContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -15,7 +16,6 @@ public class ImageIndexCsvCreator {
     private static final char COMMA = ',';
 
     private String filename = "UNKNOWN.csv";
-    private String path = "UNKNOWN";
     private StringBuilder csv;
 
     public ImageIndexCsvCreator() {
@@ -94,11 +94,11 @@ public class ImageIndexCsvCreator {
         return new SimpleDateFormat("yyyyMMdd").format(date);
     }
 
-    public ImageIndexCsv getFile() {
+    public ImageIndexCsv getFile(TransformContext context) {
         return ImageIndexCsv.builder()
                 .csv(csv.toString())
                 .filename(filename)
-                .path(path)
+                .path(context.getIndexPath())
                 .build();
     }
 }

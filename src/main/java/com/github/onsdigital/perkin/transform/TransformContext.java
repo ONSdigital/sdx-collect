@@ -22,4 +22,5 @@ public class TransformContext {
     private String idbrPath;
     private String pckPath;
     private String imagePath;
+    private String indexPath;
 }
