@@ -1,5 +1,6 @@
 package com.github.onsdigital.perkin.transform.jpg;
 
+import com.github.onsdigital.perkin.json.QuestionTemplate;
 import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.transform.TransformContext;
 import com.github.onsdigital.perkin.transform.TransformException;
@@ -16,6 +17,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -86,8 +88,9 @@ public class PdfCreator {
         template = populate(template, "ruRef", survey.getMetadata().getRuRef());
         template = populate(template, "submittedAt", survey.getDate().toString());
 
-        //TODO: need to get the survey template to get the keys we expect - not just the keys in the answers
-        for (String key : survey.getKeys()) {
+        List<QuestionTemplate> questions = context.getSurveyTemplate().getQuestions();
+        for (QuestionTemplate question : questions) {
+            String key = question.getQuestionNumber();
             template = populate(template, key, survey.getAnswer(key));
         }
 
@@ -95,6 +98,10 @@ public class PdfCreator {
     }
 
     private String populate(String template, String key, String value) {
+        if (value == null) {
+            log.debug("TRANSFORM|IMAGE|value was null, changing to empty string");
+            value = "";
+        }
         log.debug("TRANSFORM|IMAGE|pdf populating key: " + key + " value: " + value);
         return template.replace("$" + key + "$", value);
     }
