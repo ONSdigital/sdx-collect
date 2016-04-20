@@ -57,7 +57,7 @@ public class ImageTransformer implements Transformer {
 
                 //convert pdf page to image
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                int dpiImageResolution = 72; //note: dpi was 300
+                int dpiImageResolution = 200; //note: dpi was 300, then 72
                 BufferedImage bufferedImage = page.convertToImage(BufferedImage.TYPE_INT_RGB, dpiImageResolution);
                 ImageIO.write(bufferedImage, "JPG", baos);
                 baos.flush();
