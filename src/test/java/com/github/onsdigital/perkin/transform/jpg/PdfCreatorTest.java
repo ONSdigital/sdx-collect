@@ -83,4 +83,19 @@ public class PdfCreatorTest {
         //then
         assertThat(pdf, is(notNullValue()));
     }
+
+
+    @Test
+    public void shouldCreatePdfWithAnswersNotSupplied() throws IOException {
+        //given
+        Survey survey = new SurveyParser().parse(FileHelper.loadFile("to-pck/valid.023.0203.no.answers.json"));
+        TransformContext context = TransformEngine.getInstance().createTransformContext(survey);
+
+        //when
+        byte[] pdf = classUnderTest.createPdf(survey, context);
+        FileHelper.saveFile(pdf, "valid.023.0203.no.answers.pdf");
+
+        //then
+        assertThat(pdf, is(notNullValue()));
+    }
 }
