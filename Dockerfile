@@ -13,7 +13,7 @@ RUN keytool -import -noprompt -trustcacerts -file /usr/src/ons-root.cer -alias o
       -keystore $JAVA_HOME/jre/lib/security/cacerts
 RUN keytool -import -noprompt -trustcacerts -file /usr/src/ons-intermediate-01.cer -alias ons-intermediate-01 -storepass changeit \
       -keystore $JAVA_HOME/jre/lib/security/cacerts
-      
+
 #
 
 # Set the entry point

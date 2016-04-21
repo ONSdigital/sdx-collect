@@ -11,7 +11,6 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -28,7 +27,6 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.TrustStrategy;
 import org.apache.http.util.EntityUtils;
-import org.apache.pdfbox.util.StringUtil;
 
 import javax.net.ssl.SSLContext;
 import javax.servlet.http.HttpServletRequest;
