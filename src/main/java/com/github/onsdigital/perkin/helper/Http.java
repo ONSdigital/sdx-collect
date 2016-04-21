@@ -3,12 +3,14 @@ package com.github.onsdigital.perkin.helper;
 import com.github.davidcarboni.httpino.Endpoint;
 import com.github.davidcarboni.httpino.Response;
 import com.github.davidcarboni.httpino.Serialiser;
+import com.github.onsdigital.Configuration;
 import com.google.gson.JsonSyntaxException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.Header;
@@ -600,7 +602,7 @@ public class Http implements AutoCloseable {
 
     protected CloseableHttpClient httpClient() {
         if (httpClient == null) {
-            if (StringUtils.isNotBlank(System.getProperty("NO_SSL_VERIFICATION"))) {
+            if (BooleanUtils.toBoolean(Configuration.get("NO_SSL_VERIFICATION"))) {
                 httpClient = httpClientPermissive();
                 log.debug("HTTP|client: {}", "No SSL verification");
             } else {
