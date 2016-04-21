@@ -9,6 +9,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -25,6 +26,7 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.TrustStrategy;
 import org.apache.http.util.EntityUtils;
+import org.apache.pdfbox.util.StringUtil;
 
 import javax.net.ssl.SSLContext;
 import javax.servlet.http.HttpServletRequest;
@@ -598,6 +600,22 @@ public class Http implements AutoCloseable {
 
     protected CloseableHttpClient httpClient() {
         if (httpClient == null) {
+            if (StringUtils.isNotBlank(System.getProperty("NO_SSL_VERIFICATION"))) {
+                httpClient = httpClientPermissive();
+                log.debug("HTTP|client: {}", "No SSL verification");
+            } else {
+                httpClient = HttpClients.createDefault();
+                log.debug("HTTP|client: {}", "SSL verification enabled");
+            }
+        }
+        return httpClient;
+    }
+
+    /**
+     * Preserved this code in case we need to switch to it again.
+     * @return An HttpClient that always trusts SSL hosts. Danger Will Robinson.
+     */
+    private CloseableHttpClient httpClientPermissive() {
             HttpClientBuilder b = HttpClientBuilder.create();
             // setup a Trust Strategy that allows all certificates.
             //
@@ -609,12 +627,10 @@ public class Http implements AutoCloseable {
                     }
                 }).build();
                 b.setSslcontext(sslContext);
-                httpClient = b.build();// HttpClients.createDefault();
+                return b.build();// HttpClients.createDefault();
             } catch (NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
                 throw new RuntimeException("Error building httpclient.");
             }
-        }
-        return httpClient;
     }
 
     @Override
