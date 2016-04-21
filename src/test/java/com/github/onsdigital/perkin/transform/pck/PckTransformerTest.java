@@ -66,6 +66,11 @@ public class PckTransformerTest {
         //Then
         //TODO: cope with expected Exceptions
         String expected = FileHelper.loadFile(pck);
+        expected = expected.trim();
+        log.debug("TEST|expected:\n{}", expected);
+        if (expected.endsWith("\n")) {
+            log.warn("TEST|expected ends with new line!");
+        }
         String expectedFilename = survey.getId() + "_" + sequence;
 
         assertThat(files, hasSize(1));

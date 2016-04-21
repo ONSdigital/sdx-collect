@@ -16,7 +16,7 @@ import java.util.*;
 public class PckTransformer implements Transformer {
 
 	private static final String HEADER_SEPARATOR = ":";
-	private static final String FORM_LEAD = "FV";
+	private static final String FORM_LEAD = "FV          ";
 
 	private static final int LENGTH_BATCH = 6;
 
