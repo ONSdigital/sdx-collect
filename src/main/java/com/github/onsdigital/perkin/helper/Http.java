@@ -11,6 +11,10 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.BooleanUtils;
+<<<<<<< 8ee44732bcfe001269556f93144dc999ffaa57f5
+=======
+import org.apache.commons.lang3.StringUtils;
+>>>>>>> Moved NO_SSL_VERIFICATION feature switch into standard configuration mechanism.
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
