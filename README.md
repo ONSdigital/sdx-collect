@@ -3,7 +3,28 @@
 ![Logo](http://www.80snostalgia.com/files/fluperkins.jpg)
 
 # perkin
-Questionnaire data transformer
+Perkin is a Questionnaire data transformer written in Java. It is a component of the Office of National Statistics (ONS) Survey Data Exchange (SDE) project which listens to a JMS queue for survey data.
+On receipt it hands off to Posie to decrypt the survey data, then transforms it into downstream formats and sends the data via ftp for processing by the ONS.
 
-Listens to a queue for encrypted surveys, decrypts, transforms to downstream data formats (e.g. pck, idbr, images) and publishes via ftp
+## Installation
+
+Using java 8 and maven
+
+    $ mvn clean install
+
+## Usage
+
+To start perkin, just run the server:
+
+    $ java -jar target/Perkin*-dependencies.jar
+
+perkin exposes the following endpoints:
+
+| endpoint                      | purpose                                                |
+|-------------------------------|--------------------------------------------------------|
+| http://localhost:8080/version | shows version information                              |
+| http://localhost:8080/env     | shows configuration                                    |
+| http://localhost:8080/health  | shows health information - is the queue connection ok? |
+| http://localhost:8080/metrics | shows statistics of successful / failed messages       |
+| http://localhost:8080/trace   | shows recent requests                                  |
 
