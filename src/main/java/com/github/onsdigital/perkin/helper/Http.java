@@ -10,9 +10,15 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
+<<<<<<< 64baf4ba37d47a724cc91260e2b0a3e35ad7e5f6
 import org.apache.commons.lang3.BooleanUtils;
+<<<<<<< 4b9b5f6cfd8ca7d88fec97af74e5b2c32fa4b1f3
 <<<<<<< 8ee44732bcfe001269556f93144dc999ffaa57f5
 =======
+=======
+=======
+>>>>>>> Added a NO_SSL_VERIFICATION feature switch so we can test SSL verification of the RRM receipt host.
+>>>>>>> Added a NO_SSL_VERIFICATION feature switch so we can test SSL verification of the RRM receipt host.
 import org.apache.commons.lang3.StringUtils;
 >>>>>>> Moved NO_SSL_VERIFICATION feature switch into standard configuration mechanism.
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -604,7 +610,11 @@ public class Http implements AutoCloseable {
 
     protected CloseableHttpClient httpClient() {
         if (httpClient == null) {
+<<<<<<< 64baf4ba37d47a724cc91260e2b0a3e35ad7e5f6
             if (BooleanUtils.toBoolean(Configuration.get("NO_SSL_VERIFICATION"))) {
+=======
+            if (StringUtils.isNotBlank(System.getProperty("NO_SSL_VERIFICATION"))) {
+>>>>>>> Added a NO_SSL_VERIFICATION feature switch so we can test SSL verification of the RRM receipt host.
                 httpClient = httpClientPermissive();
                 log.debug("HTTP|client: {}", "No SSL verification");
             } else {
