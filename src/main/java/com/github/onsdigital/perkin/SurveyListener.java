@@ -54,7 +54,6 @@ public class SurveyListener implements Runnable {
             }
 
             try {
-                log.debug("QUEUE|CONNECTION|OPEN|sleeping for 5 seconds...");
                 Thread.sleep(5 * 1000);
             } catch (InterruptedException e) {
                 //ignore
