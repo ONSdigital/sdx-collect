@@ -32,16 +32,25 @@ public class SurveyListener implements Runnable {
     @Override
     public void run() {
         boolean notConnected = true;
-        while (notConnected) {
+        Connection connection = null;
 
-            log.info("QUEUE|CONNECTION|attempting to restart connection... ");
+        while (true) {
 
-            try {
-                startListening();
-                notConnected = false;
-            } catch (IOException | InterruptedException e) {
-                notConnected = true;
-                log.error("QUEUE|problem processing queue message: ", e);
+            if (notConnected) {
+                log.info("QUEUE|CONNECTION|attempting to restart connection... ");
+
+                try {
+                    connection = startListening();
+                    log.debug("QUEUE|CONNECTION|returned from startListening()");
+                } catch (IOException | InterruptedException e) {
+                    log.error("QUEUE|problem processing queue message: ", e);
+                }
+
+                if (connection == null) {
+                    notConnected = true;
+                } else {
+                    notConnected = ! connection.isOpen();
+                }
             }
 
             try {
@@ -52,7 +61,7 @@ public class SurveyListener implements Runnable {
         }
     }
 
-    private void startListening() throws IOException, InterruptedException {
+    private Connection startListening() throws IOException, InterruptedException {
 
         ConnectionFactory factory = new ConnectionFactory();
         factory.setConnectionTimeout(10 * 1000); //10 seconds
@@ -100,11 +109,20 @@ public class SurveyListener implements Runnable {
             @Override
             public void handleShutdownSignal(String consumerTag, ShutdownSignalException e) {
                 log.warn("QUEUE|CONNECTION|END|handle shutdown - stopped listening to queue: {} on host: {}", queue, host, e);
+                try {
+                    if (connection.isOpen()) {
+                        log.debug("QUEUE|CONNECTION|closing queue connection...");
+                        connection.close();
+                    }
+                } catch (IOException ioe) {
+                    log.warn("QUEUE|CONNECTION|END|exception closing queue connection", ioe);
+                }
             }
         };
 
         boolean NO_AUTO_ACK = false;
         channel.basicConsume(queue, NO_AUTO_ACK, consumer);
+        return connection;
     }
 
     public String test() throws IOException {
