@@ -32,20 +32,29 @@ public class SurveyListener implements Runnable {
     @Override
     public void run() {
         boolean notConnected = true;
-        while (notConnected) {
+        Connection connection = null;
 
-            log.info("QUEUE|CONNECTION|attempting to restart connection... ");
+        while (true) {
 
-            try {
-                startListening();
-                log.debug("QUEUE|CONNECTION|returned from startListening()");
-                notConnected = true;
-            } catch (IOException | InterruptedException e) {
-                notConnected = true;
-                log.error("QUEUE|problem processing queue message: ", e);
+            if (notConnected) {
+                log.info("QUEUE|CONNECTION|attempting to restart connection... ");
+
+                try {
+                    connection = startListening();
+                    log.debug("QUEUE|CONNECTION|returned from startListening()");
+                } catch (IOException | InterruptedException e) {
+                    log.error("QUEUE|problem processing queue message: ", e);
+                }
+
+                if (connection == null) {
+                    notConnected = true;
+                } else {
+                    notConnected = ! connection.isOpen();
+                }
             }
 
             try {
+                log.debug("QUEUE|CONNECTION|OPEN|sleeping for 5 seconds...");
                 Thread.sleep(5 * 1000);
             } catch (InterruptedException e) {
                 //ignore
@@ -53,7 +62,7 @@ public class SurveyListener implements Runnable {
         }
     }
 
-    private void startListening() throws IOException, InterruptedException {
+    private Connection startListening() throws IOException, InterruptedException {
 
         ConnectionFactory factory = new ConnectionFactory();
         factory.setConnectionTimeout(10 * 1000); //10 seconds
@@ -114,6 +123,7 @@ public class SurveyListener implements Runnable {
 
         boolean NO_AUTO_ACK = false;
         channel.basicConsume(queue, NO_AUTO_ACK, consumer);
+        return connection;
     }
 
     public String test() throws IOException {
