@@ -8,8 +8,8 @@ import com.github.onsdigital.perkin.helper.Http;
 public class HttpManager {
     private static Http INSTANCE = new Http();
 
-    public HttpManager() {
-
+    private HttpManager() {
+        //use getInstance()
     }
 
     public static Http getInstance() {
