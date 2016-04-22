@@ -102,20 +102,18 @@ public class SurveyListener implements Runnable {
             public void handleShutdownSignal(String consumerTag, ShutdownSignalException e) {
                 log.warn("QUEUE|CONNECTION|END|handle shutdown - stopped listening to queue: {} on host: {}", queue, host, e);
                 try {
-                    log.debug("QUEUE|CONNECTION|closing queue connection...");
-                    connection.close();
+                    if (connection.isOpen()) {
+                        log.debug("QUEUE|CONNECTION|closing queue connection...");
+                        connection.close();
+                    }
                 } catch (IOException ioe) {
-                    log.warn("QUEUE|CONNECTION|END|exception", ioe);
+                    log.warn("QUEUE|CONNECTION|END|exception closing queue connection", ioe);
                 }
             }
         };
 
         boolean NO_AUTO_ACK = false;
         channel.basicConsume(queue, NO_AUTO_ACK, consumer);
-        if (connection.isOpen()) {
-            log.debug("QUEUE|CONNECTION|closing queue connection...");
-            connection.close();
-        }
     }
 
     public String test() throws IOException {
