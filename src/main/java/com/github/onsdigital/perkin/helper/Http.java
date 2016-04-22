@@ -614,15 +614,7 @@ public class Http implements AutoCloseable {
 
     protected CloseableHttpClient httpClient() {
         if (httpClient == null) {
-<<<<<<< 0b8a4dd23a8859144000c079a1e5259a7e3556ba
-<<<<<<< 64baf4ba37d47a724cc91260e2b0a3e35ad7e5f6
             if (BooleanUtils.toBoolean(Configuration.get("NO_SSL_VERIFICATION"))) {
-=======
-            if (StringUtils.isNotBlank(System.getProperty("NO_SSL_VERIFICATION"))) {
->>>>>>> Added a NO_SSL_VERIFICATION feature switch so we can test SSL verification of the RRM receipt host.
-=======
-            if (BooleanUtils.toBoolean(Configuration.get("NO_SSL_VERIFICATION"))) {
->>>>>>> Moved NO_SSL_VERIFICATION feature switch into standard configuration mechanism.
                 httpClient = httpClientPermissive();
                 log.debug("HTTP|client: {}", "No SSL verification");
             } else {
