@@ -38,7 +38,8 @@ public class SurveyListener implements Runnable {
 
             try {
                 startListening();
-                notConnected = false;
+                log.debug("QUEUE|CONNECTION|returned from startListening()");
+                notConnected = true;
             } catch (IOException | InterruptedException e) {
                 notConnected = true;
                 log.error("QUEUE|problem processing queue message: ", e);
@@ -100,11 +101,21 @@ public class SurveyListener implements Runnable {
             @Override
             public void handleShutdownSignal(String consumerTag, ShutdownSignalException e) {
                 log.warn("QUEUE|CONNECTION|END|handle shutdown - stopped listening to queue: {} on host: {}", queue, host, e);
+                try {
+                    log.debug("QUEUE|CONNECTION|closing queue connection...");
+                    connection.close();
+                } catch (IOException ioe) {
+                    log.warn("QUEUE|CONNECTION|END|exception", ioe);
+                }
             }
         };
 
         boolean NO_AUTO_ACK = false;
         channel.basicConsume(queue, NO_AUTO_ACK, consumer);
+        if (connection.isOpen()) {
+            log.debug("QUEUE|CONNECTION|closing queue connection...");
+            connection.close();
+        }
     }
 
     public String test() throws IOException {
