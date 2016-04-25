@@ -2,10 +2,10 @@ package com.github.onsdigital.perkin.transform;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -41,11 +41,13 @@ public class NumberService {
 
         log.debug("SEQUENCE|next '{}': {}", name, next);
 
+        save();
         return next;
     }
 
     public void save() {
-        try (FileOutputStream out = new FileOutputStream("./" + name + ".sequence")) {
+        Path file = filename();
+        try (OutputStream out = Files.newOutputStream(file)) {
 
             Properties properties = new Properties();
             properties.put(name, "" + number.get());
@@ -64,9 +66,9 @@ public class NumberService {
      */
     public void load(long start, long end) {
         String value = null;
-        File file = new File("./" + name + ".sequence");
-        if (file.exists()) {
-            try (FileInputStream in = new FileInputStream(file)) {
+        Path file = filename();
+        if (Files.isRegularFile(file)) {
+            try (InputStream in = Files.newInputStream(file)) {
 
                 Properties properties = new Properties();
                 properties.load(in);
@@ -81,5 +83,18 @@ public class NumberService {
                 log.error("SEQUENCE|problem loading sequence: {} value could not be parsed as a number: {}", name, value);
             }
         }
+    }
+
+    public void reset() {
+        number.set(start);
+        save();
+    }
+
+    private Path filename() {
+        Path folder = Paths.get("/sequence");
+        if (!Files.isDirectory(folder)) {
+            folder = Paths.get(".");
+        }
+        return folder.resolve(name + ".sequence");
     }
 }
