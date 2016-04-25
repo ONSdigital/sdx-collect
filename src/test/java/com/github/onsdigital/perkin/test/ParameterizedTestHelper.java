@@ -32,7 +32,9 @@ public abstract class ParameterizedTestHelper {
         //override
         context.setBatch(batch);
         context.setSequence(sequence);
-        context.setScanNumberService(new NumberService("scan", scan, 999999999));
+        NumberService numberService = new NumberService("scan", scan, 999999999);
+        numberService.reset();
+        context.setScanNumberService(numberService);
         return context;
     }
 

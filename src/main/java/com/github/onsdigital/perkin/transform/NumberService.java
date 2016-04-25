@@ -2,8 +2,10 @@ package com.github.onsdigital.perkin.transform;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -26,8 +28,8 @@ public class NumberService {
         this.start = start;
         this.end = end;
 
-        //TODO: see if file exists for initial value
         number = new AtomicLong(start);
+        load(start, end);
     }
 
     public long getNext() {
@@ -39,20 +41,60 @@ public class NumberService {
 
         log.debug("SEQUENCE|next '{}': {}", name, next);
 
+        save();
         return next;
     }
 
     public void save() {
-        try {
-            FileOutputStream out = new FileOutputStream("./" + name + ".sequence");
+        Path file = filename();
+        try (OutputStream out = Files.newOutputStream(file)) {
 
             Properties properties = new Properties();
             properties.put(name, "" + number.get());
 
             properties.store(out, "saved on shutdown");
-            out.close();
         } catch (IOException e) {
             log.error("SEQUENCE|problem saving sequence: {} value: {}", name, number.get());
         }
+    }
+
+    /**
+     * Gracefully loads a saved sequence value, ensuring it is in the start/end range.
+     *
+     * @param start The minimum value.
+     * @param end   The maximum value.
+     */
+    public void load(long start, long end) {
+        String value = null;
+        Path file = filename();
+        if (Files.isRegularFile(file)) {
+            try (InputStream in = Files.newInputStream(file)) {
+
+                Properties properties = new Properties();
+                properties.load(in);
+                value = properties.getProperty(name, String.valueOf(number.get()));
+                long sequence = Math.max(Long.parseLong(value), start);
+                sequence = Math.min(sequence, end);
+                number.set(sequence);
+
+            } catch (IOException e) {
+                log.error("SEQUENCE|problem loading sequence: {} value: {}", name, number.get());
+            } catch (NumberFormatException e) {
+                log.error("SEQUENCE|problem loading sequence: {} value could not be parsed as a number: {}", name, value);
+            }
+        }
+    }
+
+    public void reset() {
+        number.set(start);
+        save();
+    }
+
+    private Path filename() {
+        Path folder = Paths.get("/sequence");
+        if (!Files.isDirectory(folder)) {
+            folder = Paths.get(".");
+        }
+        return folder.resolve(name + ".sequence");
     }
 }

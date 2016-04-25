@@ -26,6 +26,7 @@ public class NumberServiceTest {
         //Given
         long start = 5L;
         classUnderTest = new NumberService("test", start, 10L);
+        classUnderTest.reset();
 
         //When / Then
         for (int i = 0; i < 6; i++) {
