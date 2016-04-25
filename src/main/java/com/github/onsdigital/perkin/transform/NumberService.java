@@ -34,9 +34,8 @@ public class NumberService {
 
     public long getNext() {
         long next = number.getAndIncrement();
-        if (next > end) {
+        if (number.get() > end) {
             number.set(start);
-            next = start;
         }
 
         log.debug("SEQUENCE|next '{}': {}", name, next);
@@ -52,7 +51,7 @@ public class NumberService {
             Properties properties = new Properties();
             properties.put(name, "" + number.get());
 
-            properties.store(out, "saved on shutdown");
+            properties.store(out, "Next sequence number");
         } catch (IOException e) {
             log.error("SEQUENCE|problem saving sequence: {} value: {}", name, number.get());
         }
