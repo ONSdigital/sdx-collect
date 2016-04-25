@@ -52,10 +52,15 @@ import java.nio.file.Path;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 
+<<<<<<< 86ec13eac9ed16a9cbc1b880f9def3dc5f8ada03
+=======
+
+>>>>>>> Fixing conflicts.
 /**
  * Simplified Http client, providing for common operations.
  */
@@ -623,6 +628,17 @@ public class Http implements AutoCloseable {
             }
         }
         return httpClient;
+    }
+
+    public static void main(String[] args) throws NoSuchAlgorithmException, InterruptedException {
+        SecureRandom prng = SecureRandom.getInstance("SHA1PRNG");
+        byte[] random = new byte[2];
+        while (true) {
+            prng.nextBytes(random);
+            int number = ((127 + random[0]) << 4) + ((127 + random[1]) >> 4);
+            System.out.println("number = " + number);
+            Thread.sleep(2000);
+        }
     }
 
     /**
