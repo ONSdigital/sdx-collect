@@ -10,21 +10,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
-<<<<<<< 0b8a4dd23a8859144000c079a1e5259a7e3556ba
-<<<<<<< 64baf4ba37d47a724cc91260e2b0a3e35ad7e5f6
 import org.apache.commons.lang3.BooleanUtils;
-<<<<<<< 4b9b5f6cfd8ca7d88fec97af74e5b2c32fa4b1f3
-<<<<<<< 8ee44732bcfe001269556f93144dc999ffaa57f5
-=======
-=======
-=======
->>>>>>> Added a NO_SSL_VERIFICATION feature switch so we can test SSL verification of the RRM receipt host.
->>>>>>> Added a NO_SSL_VERIFICATION feature switch so we can test SSL verification of the RRM receipt host.
-=======
-import org.apache.commons.lang3.BooleanUtils;
->>>>>>> Moved NO_SSL_VERIFICATION feature switch into standard configuration mechanism.
-import org.apache.commons.lang3.StringUtils;
->>>>>>> Moved NO_SSL_VERIFICATION feature switch into standard configuration mechanism.
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -57,10 +43,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 
-<<<<<<< 86ec13eac9ed16a9cbc1b880f9def3dc5f8ada03
-=======
-
->>>>>>> Fixing conflicts.
 /**
  * Simplified Http client, providing for common operations.
  */
@@ -628,17 +610,6 @@ public class Http implements AutoCloseable {
             }
         }
         return httpClient;
-    }
-
-    public static void main(String[] args) throws NoSuchAlgorithmException, InterruptedException {
-        SecureRandom prng = SecureRandom.getInstance("SHA1PRNG");
-        byte[] random = new byte[2];
-        while (true) {
-            prng.nextBytes(random);
-            int number = ((127 + random[0]) << 4) + ((127 + random[1]) >> 4);
-            System.out.println("number = " + number);
-            Thread.sleep(2000);
-        }
     }
 
     /**
