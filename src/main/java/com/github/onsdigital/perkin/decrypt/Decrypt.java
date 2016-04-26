@@ -39,13 +39,6 @@ public class Decrypt {
     }
 
     public String getDecrypted() throws IOException {
-        if (isJson(encrypted)) {
-            audit.increment("surveys.plaintext");
-
-            log.info("DECRYPT|SKIPPING|json is plain text, not encrypted: {}", encrypted);
-
-            return encrypted;
-        }
         return decryptPayload(encrypted);
     }
 
@@ -74,9 +67,5 @@ public class Decrypt {
 
     private boolean isError(StatusLine statusLine) {
         return statusLine.getStatusCode() != HttpStatus.OK_200;
-    }
-
-    private boolean isJson(String testData) {
-        return testData != null && testData.trim().startsWith("{");
     }
 }
