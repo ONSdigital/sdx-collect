@@ -38,15 +38,6 @@ public class DecryptTest {
     }
 
     @Test
-    public void shouldNotDecryptUnencryptedJson() throws IOException {
-
-        String testSurveyJson = FileHelper.loadFile("survey.ftp.json");
-        Decrypt decrypt = new Decrypt(testSurveyJson);
-
-        assertEquals(decrypt.getDecrypted(), testSurveyJson);
-    }
-
-    @Test
     public void shouldCallDecryptWithCorrectParams() throws Exception {
         String mockEncrypted = "aksdlkadlkasdkml";
         Decrypt decrypt = new Decrypt(mockEncrypted);
