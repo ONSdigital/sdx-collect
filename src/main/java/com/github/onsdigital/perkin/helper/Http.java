@@ -3,12 +3,14 @@ package com.github.onsdigital.perkin.helper;
 import com.github.davidcarboni.httpino.Endpoint;
 import com.github.davidcarboni.httpino.Response;
 import com.github.davidcarboni.httpino.Serialiser;
+import com.github.onsdigital.Configuration;
 import com.google.gson.JsonSyntaxException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -36,6 +38,7 @@ import java.nio.file.Path;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -598,6 +601,22 @@ public class Http implements AutoCloseable {
 
     protected CloseableHttpClient httpClient() {
         if (httpClient == null) {
+            if (BooleanUtils.toBoolean(Configuration.get("NO_SSL_VERIFICATION"))) {
+                httpClient = httpClientPermissive();
+                log.debug("HTTP|client: {}", "No SSL verification");
+            } else {
+                httpClient = HttpClients.createDefault();
+                log.debug("HTTP|client: {}", "SSL verification enabled");
+            }
+        }
+        return httpClient;
+    }
+
+    /**
+     * Preserved this code in case we need to switch to it again.
+     * @return An HttpClient that always trusts SSL hosts. Danger Will Robinson.
+     */
+    private CloseableHttpClient httpClientPermissive() {
             HttpClientBuilder b = HttpClientBuilder.create();
             // setup a Trust Strategy that allows all certificates.
             //
@@ -609,12 +628,10 @@ public class Http implements AutoCloseable {
                     }
                 }).build();
                 b.setSslcontext(sslContext);
-                httpClient = b.build();// HttpClients.createDefault();
+                return b.build();// HttpClients.createDefault();
             } catch (NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
                 throw new RuntimeException("Error building httpclient.");
             }
-        }
-        return httpClient;
     }
 
     @Override

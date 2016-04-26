@@ -66,12 +66,15 @@ public class SurveyListener implements Runnable {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setConnectionTimeout(10 * 1000); //10 seconds
         factory.setHost(host);
+        factory.setAutomaticRecoveryEnabled(true);
+
         if (StringUtils.isNotBlank(username)) factory.setUsername(username);
         if (StringUtils.isNotBlank(password)) factory.setPassword(password);
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
 
         channel.queueDeclare(queue, false, false, false, null);
+
         log.info("QUEUE|CONNECTION|START|listening to queue: {} on host: {} username: {} password: {}", queue, host, username, ConfigurationManager.getSafe("RABBITMQ_DEFAULT_PASS"));
 
         Consumer consumer = new DefaultConsumer(channel) {
@@ -108,15 +111,7 @@ public class SurveyListener implements Runnable {
 
             @Override
             public void handleShutdownSignal(String consumerTag, ShutdownSignalException e) {
-                log.warn("QUEUE|CONNECTION|END|handle shutdown - stopped listening to queue: {} on host: {}", queue, host, e);
-                try {
-                    if (connection.isOpen()) {
-                        log.debug("QUEUE|CONNECTION|closing queue connection...");
-                        connection.close();
-                    }
-                } catch (IOException ioe) {
-                    log.warn("QUEUE|CONNECTION|END|exception closing queue connection", ioe);
-                }
+                log.warn("QUEUE|CONNECTION|END|shutdown on queue: {} on host: {}", queue, host, e);
             }
         };
 
