@@ -1,5 +1,6 @@
 package com.github.onsdigital.perkin.transform;
 
+import org.junit.After;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
@@ -8,6 +9,11 @@ import static org.junit.Assert.assertThat;
 public class NumberServiceTest {
 
     private NumberService classUnderTest;
+
+    @After
+    public void tearDown() {
+        classUnderTest.destroy();
+    }
 
     @Test
     public void shouldStartAtCorrectNumber() {

@@ -89,6 +89,17 @@ public class NumberService {
         save();
     }
 
+    /**
+     * Delete the persisted bath number for this service
+     */
+    public void destroy() {
+        try {
+            Files.deleteIfExists(filename());
+        } catch (IOException e) {
+            log.error("SEQUENCE|problem deleting file: {}", filename());
+        }
+    }
+
     private Path filename() {
         Path folder = Paths.get("/sequence");
         if (!Files.isDirectory(folder)) {
