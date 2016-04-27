@@ -2,6 +2,4 @@ language: java
 jdk:
   - oraclejdk8
 env:
-- LOG_LEVEL=DEBUG
-- ROOT_LOG_LEVEL=INFO
-
+  - LOG_LEVEL=DEBUG ROOT_LOG_LEVEL=INFO
