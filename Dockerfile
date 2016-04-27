@@ -6,6 +6,7 @@ WORKDIR /usr/src
 ADD ./target/*-jar-with-dependencies.jar /usr/src/target/
 ADD ./src/main/resources/ons-root.cer /usr/src/
 ADD ./src/main/resources/ons-intermediate-01.cer /usr/src/
+ADD ./startup.sh /usr/src
 
 EXPOSE 8080
 
@@ -15,8 +16,4 @@ RUN keytool -import -noprompt -trustcacerts -file /usr/src/ons-intermediate-01.c
       -keystore $JAVA_HOME/jre/lib/security/cacerts
 
 # Set the entry point
-ENTRYPOINT java -Xmx4094m \
-          -Drestolino.packageprefix=com.github.onsdigital.perkin.api \
-	  -Dlog.level=$LOG_LEVEL \
-	  -Droot.log.level=$ROOT_LOG_LEVEL \
-          -jar target/*-jar-with-dependencies.jar
+ENTRYPOINT ./startup.sh
