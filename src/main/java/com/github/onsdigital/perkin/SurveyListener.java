@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.IOException;
 
 @Slf4j
-public class SurveyListener implements Runnable {
+public class SurveyListener implements Runnable, RecoveryListener {
 
     private String host;
     private String queue;
@@ -72,6 +72,7 @@ public class SurveyListener implements Runnable {
         if (StringUtils.isNotBlank(password)) factory.setPassword(password);
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
+        ((Recoverable) channel).addRecoveryListener(this);
 
         channel.queueDeclare(queue, false, false, false, null);
 
@@ -134,5 +135,11 @@ public class SurveyListener implements Runnable {
         channel.close();
 
         return version;
+    }
+
+    @Override
+    public void handleRecovery(Recoverable recoverable) {
+        log.warn("QUEUE|CONNECTION|END|queue connection was recovered");
+        log.info("QUEUE|CONNECTION|START|queue connection was recovered");
     }
 }
