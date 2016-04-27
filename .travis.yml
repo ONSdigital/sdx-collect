@@ -1,5 +1,4 @@
 language: java
 jdk:
   - oraclejdk8
-env:
-  - LOG_LEVEL=DEBUG ROOT_LOG_LEVEL=INFO
+script: mvn -Droot_log_level=INFO -Dlog_level=DEBUG test
