@@ -36,7 +36,7 @@
                 e.g. above, our logger is called co.uk.mycompany.mypackage.HelloLoggingWorld -->
         <!-- could do global logging DEBUG to CONSOLE using this... -->
         <category name="com.github.onsdigital" additivity="false">
-                <priority value="DEBUG" />
+                <priority value="${log_level}" />
                 <appender-ref ref="CONSOLE" />
                 <appender-ref ref="FILE" />
         </category>
@@ -50,7 +50,7 @@
                 logger e.g. if restlet was logging something with log4j we would see it at
                 debug level using this... -->
         <root>
-                <priority value="INFO" />
+                <priority value="${root_log_level}" />
                 <appender-ref ref="CONSOLE" />
         </root>
 

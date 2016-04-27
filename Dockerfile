@@ -17,4 +17,6 @@ RUN keytool -import -noprompt -trustcacerts -file /usr/src/ons-intermediate-01.c
 # Set the entry point
 ENTRYPOINT java -Xmx4094m \
           -Drestolino.packageprefix=com.github.onsdigital.perkin.api \
+	  -Dlog.level=$LOG_LEVEL
+	  -Droot.log.level=$ROOT_LOG_LEVEL
           -jar target/*-jar-with-dependencies.jar
