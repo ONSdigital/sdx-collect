@@ -48,7 +48,7 @@ public class Decrypt {
         // Make call
         log.debug("DECRYPT|decrypting data using endpoint: {}", endpoint);
 
-        log.debug("DECRYPT|REQUEST|decrypt: {}", encryptedData);
+        log.info("DECRYPT|REQUEST|decrypt: {}", encryptedData);
 
         Timer timer = new Timer("decrypt.");
 
@@ -59,6 +59,7 @@ public class Decrypt {
         log.debug("DECRYPT|RESPONSE|survey: {}", decryptResponse);
 
         if (isError(decryptResponse.statusLine)) {
+            log.warn("DECRYPT|RESPONSE|FAIL|failed to decrypt data: {} response: {}", encryptedData, decryptResponse);
             throw new TransformException("decrypt response indicated an error: " + decryptResponse);
         }
 

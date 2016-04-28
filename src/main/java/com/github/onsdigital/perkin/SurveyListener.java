@@ -97,7 +97,7 @@ public class SurveyListener implements Runnable, RecoveryListener {
                     retry = 0;
 
                 } catch (Throwable t) {
-                    log.error("QUEUE|MESSAGE|error during message processing", t);
+                    log.error("QUEUE|MESSAGE|ERROR|error during message processing", t);
 
                     if (++retry <= maxRetry) {
                         log.info("QUEUE|MESSAGE|RETRY|fail, reject ({} retries), requeue. message: {}", retry, message);
