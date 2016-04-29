@@ -56,10 +56,10 @@ public class Decrypt {
         timer.stopStatus(decryptResponse.statusLine.getStatusCode());
         audit.increment(timer);
 
-        log.debug("DECRYPT|RESPONSE|survey: {}", decryptResponse);
+        log.debug("DECRYPT|RESPONSE|survey: {}", decryptResponse.statusLine);
 
         if (isError(decryptResponse.statusLine)) {
-            log.warn("DECRYPT|RESPONSE|FAIL|failed to decrypt data: {} response: {}", encryptedData, decryptResponse);
+            log.warn("DECRYPT|RESPONSE|FAIL|failed to decrypt data: {} response: {}", encryptedData, decryptResponse.statusLine);
             throw new TransformException("decrypt response indicated an error: " + decryptResponse);
         }
 
