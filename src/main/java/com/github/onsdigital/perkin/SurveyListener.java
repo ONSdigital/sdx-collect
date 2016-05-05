@@ -132,7 +132,7 @@ public class SurveyListener implements Runnable, RecoveryListener {
         channel.queueDeclare(queue, false, false, false, null);
 
         String version = channel.getConnection().getServerProperties().get("version").toString();
-        channel.close();
+        connection.close();
 
         return version;
     }
