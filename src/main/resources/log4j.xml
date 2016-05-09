@@ -22,7 +22,7 @@
 
         <appender name="FILE" class="org.apache.log4j.DailyRollingFileAppender">
                 <!-- defines the name of the log file produced -->
-                <param name="file" value="target/test.log" />
+                <param name="file" value="logs/perkin.log" />
                 <param name="datePattern" value="'.'yyyy-MM" />
                 <param name="append" value="true" />
 
