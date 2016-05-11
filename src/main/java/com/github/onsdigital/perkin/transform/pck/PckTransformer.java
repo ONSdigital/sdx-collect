@@ -26,6 +26,8 @@ public class PckTransformer implements Transformer {
 
     static {
         lookup = new HashMap<>();
+        lookup.put("0102", "RSI5B");
+        lookup.put("0112", "RSI6B");
         lookup.put("0203", "RSI7B");
         lookup.put("0205", "RSI9B");
         lookup.put("0213", "RSI8B");

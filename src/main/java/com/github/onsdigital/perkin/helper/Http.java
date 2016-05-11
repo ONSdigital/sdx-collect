@@ -162,7 +162,6 @@ public class Http implements AutoCloseable {
         // Send the request and process the response
         try (CloseableHttpResponse response = httpClient().execute(post)) {
             String body = deserialiseResponseMessage(response);
-            log.debug("HTTP|response body: {}", body);
             return new Response<>(response.getStatusLine(), body);
         }
     }
@@ -183,7 +182,6 @@ public class Http implements AutoCloseable {
         // Send the request and process the response
         try (CloseableHttpResponse response = httpClient().execute(post)) {
             String body = deserialiseResponseMessage(response);
-            log.debug("HTTP|response body: {}", body);
             return new Response<>(response.getStatusLine(), body);
         }
     }
@@ -562,8 +560,6 @@ public class Http implements AutoCloseable {
         } else {
             EntityUtils.consume(entity);
         }
-
-        log.debug("HTTP|body: {}", body);
 
         return body;
     }

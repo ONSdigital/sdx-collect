@@ -28,3 +28,8 @@ perkin exposes the following endpoints:
 | http://localhost:8080/metrics | shows statistics of successful / failed messages       |
 | http://localhost:8080/trace   | shows recent requests                                  |
 
+## Lombok
+
+Perkin uses Lombok, so to see method documentation, you'll need to install the lombok plugin into eclipse, intellij etc
+https://projectlombok.org/download.html
+

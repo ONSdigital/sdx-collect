@@ -59,7 +59,7 @@ public class PdfCreatorTest {
     @Test
     public void shouldCreate0213Pdf() throws IOException {
         //given
-        Survey survey = new SurveyParser().parse(FileHelper.loadFile("to-pck/valid.0213.json.ignore"));
+        Survey survey = new SurveyParser().parse(FileHelper.loadFile("to-pck/valid.023.0213.json"));
         TransformContext context = TransformEngine.getInstance().createTransformContext(survey);
 
         //when
@@ -73,7 +73,7 @@ public class PdfCreatorTest {
     @Test
     public void shouldCreate0215Pdf() throws IOException {
         //given
-        Survey survey = new SurveyParser().parse(FileHelper.loadFile("to-pck/valid.0215.json.ignore"));
+        Survey survey = new SurveyParser().parse(FileHelper.loadFile("to-pck/valid.023.0215.json"));
         TransformContext context = TransformEngine.getInstance().createTransformContext(survey);
 
         //when
