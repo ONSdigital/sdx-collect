@@ -4,6 +4,7 @@ import com.github.onsdigital.perkin.helper.Timer;
 import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.transform.*;
 import com.github.onsdigital.perkin.transform.pck.TransformerHelper;
+import lombok.extern.slf4j.Slf4j;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -16,6 +17,7 @@ import java.util.List;
  *
  * An IDBR batch receipt file can contain multiple receipts.
  */
+@Slf4j
 public class IdbrTransformer implements Transformer {
 
     private static final String DELIMITER = ":";
@@ -24,10 +26,7 @@ public class IdbrTransformer implements Transformer {
     private static final String SEPARATOR = "_";
     private static final String IDBR_FILE_TYPE = ".DAT";
 
-    private static final String NEW_LINE = System.getProperty("line.separator");
-
     public static final String FILENAME_DATE_FORMAT = "ddMM";
-    public static final String RECEIPT_DATE_FORMAT = "yyyyMM";
 
     @Override
     public List<DataFile> transform(final Survey survey, final TransformContext context) throws TransformException {
@@ -71,7 +70,7 @@ public class IdbrTransformer implements Transformer {
             .append(DELIMITER)
             .append(TransformerHelper.leftPadZeroes(survey.getId(), 3))
             .append(DELIMITER)
-            .append(formatIdbrDate(survey.getDate()));
+            .append(formatIdbrDate(survey.getCollection().getPeriod()));
 
         return receipt.toString();
     }
@@ -99,7 +98,10 @@ public class IdbrTransformer implements Transformer {
         return filename.toString();
     }
 
-    private String formatIdbrDate(final Date surveyDate) {
-        return new SimpleDateFormat(RECEIPT_DATE_FORMAT).format(surveyDate);
+    private String formatIdbrDate(final String period) {
+        if (period == null || period.length() != 4) {
+            log.warn("IDBR|period does not have length 4. IDBR receipt will have a problem downstream! period: {}", period);
+        }
+        return "20" + period;
     }
 }

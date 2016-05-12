@@ -9,9 +9,10 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.IOException;
 
 @Slf4j
-public class SurveyListener implements Runnable {
+public class SurveyListener implements Runnable, RecoveryListener {
 
     private String host;
+    private String host2;
     private String queue;
     private String username;
     private String password;
@@ -20,6 +21,7 @@ public class SurveyListener implements Runnable {
 
     public SurveyListener() {
         host = ConfigurationManager.get("RABBITMQ_HOST");
+        host2 = ConfigurationManager.get("RABBITMQ_HOST2");
         queue = ConfigurationManager.get("RABBITMQ_QUEUE");
         username = ConfigurationManager.get("RABBITMQ_DEFAULT_USER");
         password = ConfigurationManager.get("RABBITMQ_DEFAULT_PASS");
@@ -65,17 +67,18 @@ public class SurveyListener implements Runnable {
 
         ConnectionFactory factory = new ConnectionFactory();
         factory.setConnectionTimeout(10 * 1000); //10 seconds
-        factory.setHost(host);
+        Address[] addresses = {new Address(host), new Address(host2)};
         factory.setAutomaticRecoveryEnabled(true);
 
         if (StringUtils.isNotBlank(username)) factory.setUsername(username);
         if (StringUtils.isNotBlank(password)) factory.setPassword(password);
-        Connection connection = factory.newConnection();
+        Connection connection = factory.newConnection(addresses);
         Channel channel = connection.createChannel();
+        ((Recoverable) channel).addRecoveryListener(this);
 
         channel.queueDeclare(queue, false, false, false, null);
 
-        log.info("QUEUE|CONNECTION|START|listening to queue: {} on host: {} username: {} password: {}", queue, host, username, ConfigurationManager.getSafe("RABBITMQ_DEFAULT_PASS"));
+        log.info("QUEUE|CONNECTION|START|listening to queue: {} on host: {} host2: {} username: {} password: {}", queue, host, host2, username, ConfigurationManager.getSafe("RABBITMQ_DEFAULT_PASS"));
 
         Consumer consumer = new DefaultConsumer(channel) {
             public static final boolean REQUEUE = true;
@@ -96,7 +99,7 @@ public class SurveyListener implements Runnable {
                     retry = 0;
 
                 } catch (Throwable t) {
-                    log.error("QUEUE|MESSAGE|error during message processing", t);
+                    log.error("QUEUE|MESSAGE|ERROR|error during message processing", t);
 
                     if (++retry <= maxRetry) {
                         log.info("QUEUE|MESSAGE|RETRY|fail, reject ({} retries), requeue. message: {}", retry, message);
@@ -122,17 +125,23 @@ public class SurveyListener implements Runnable {
 
     public String test() throws IOException {
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost(host);
+        Address[] addresses = {new Address(host), new Address(host2)};
         if (StringUtils.isNotBlank(username)) factory.setUsername(username);
         if (StringUtils.isNotBlank(password)) factory.setPassword(password);
-        Connection connection = factory.newConnection();
+        Connection connection = factory.newConnection(addresses);
         Channel channel = connection.createChannel();
 
         channel.queueDeclare(queue, false, false, false, null);
 
         String version = channel.getConnection().getServerProperties().get("version").toString();
-        channel.close();
+        connection.close();
 
         return version;
+    }
+
+    @Override
+    public void handleRecovery(Recoverable recoverable) {
+        log.warn("QUEUE|CONNECTION|END|queue connection was recovered");
+        log.info("QUEUE|CONNECTION|START|queue connection was recovered");
     }
 }

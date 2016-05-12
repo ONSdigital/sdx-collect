@@ -127,6 +127,8 @@ public class Survey {
 
         if (status != HttpStatus.CREATED_201) {
             log.error("RECEIPT|RESPONSE|ERROR: Receipt failed for respondent_id={}", this.getMetadata().getUserId());
+        } else {
+            log.info("RECEIPT|RESPONSE|SUCCESS: Receipt success for respondent_id={}", this.getMetadata().getUserId());
         }
 
         return status == HttpStatus.CREATED_201;
