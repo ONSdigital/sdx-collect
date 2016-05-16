@@ -132,7 +132,7 @@ public class FtpPublisherTest {
         String path = "\\\\NP3RVWAPXX370\\SDX_PROD\\EDC_QReceipts\\";
 
         //when
-        String determined = classUnderTest.determinPath(path);
+        String determined = classUnderTest.determinePath(path);
 
         //then
         assertThat(determined, is("EDC_QReceipts"));
@@ -144,7 +144,7 @@ public class FtpPublisherTest {
         String path = "\\\\NP3RVWAPXX370\\SDX_PROD\\EDC_QData\\";
 
         //when
-        String determined = classUnderTest.determinPath(path);
+        String determined = classUnderTest.determinePath(path);
 
         //then
         assertThat(determined, is("EDC_QData"));
@@ -156,7 +156,7 @@ public class FtpPublisherTest {
         String path = "\\\\NP3RVWAPXX370\\SDX_PROD\\EDC_QImages\\Images\\";
 
         //when
-        String determined = classUnderTest.determinPath(path);
+        String determined = classUnderTest.determinePath(path);
 
         //then
         assertThat(determined, is("EDC_QImages/Images"));
@@ -168,7 +168,7 @@ public class FtpPublisherTest {
         String path = "\\\\NP3RVWAPXX370\\SDX_PROD\\EDC_QImages\\Index\\";
 
         //when
-        String determined = classUnderTest.determinPath(path);
+        String determined = classUnderTest.determinePath(path);
 
         //then
         assertThat(determined, is("EDC_QImages/Index"));

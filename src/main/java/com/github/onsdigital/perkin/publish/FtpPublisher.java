@@ -24,6 +24,8 @@ public class FtpPublisher {
     private int port;
     private String user;
     private String password;
+    private FTPClient ftpClient;
+    private boolean loggedIn = false;
 
     public FtpPublisher() {
         host = ConfigurationManager.get("FTP_HOST");
@@ -33,6 +35,8 @@ public class FtpPublisher {
     }
 
     public void publish(List<DataFile> files) throws IOException {
+        login();
+
         for (DataFile file : files) {
             Timer timer = new Timer("publish.");
 
@@ -41,15 +45,17 @@ public class FtpPublisher {
 
             InputStream inputStream = new ByteArrayInputStream(file.getBytes());
 
-            String path = determinPath(file.getPath());
+            String path = determinePath(file.getPath());
             put(inputStream, path, filename);
 
             timer.stopStatus(200);
             Audit.getInstance().increment(timer, file);
         }
+
+        logout();
     }
 
-    protected static String determinPath(String path) {
+    protected static String determinePath(String path) {
 
         if (path == null) {
             return "/";
@@ -68,62 +74,86 @@ public class FtpPublisher {
         return path;
     }
 
-    private void put(InputStream inputStream, String path, String filename) throws IOException {
-
+    private void login() throws IOException {
         //new ftp client
-        FTPClient ftp = new FTPClient();
-        //try to connect
-        log.debug("FTP|connect to " + host + " " + port);
-        ftp.connect(host, port);
+        ftpClient = new FTPClient();
+        //try to login
+        log.debug("FTP|login to " + host + " " + port);
+        ftpClient.connect(host, port);
 
         //login to server
         log.debug("FTP|login user: " + user);
-        if (ftp.login(user, password)) {
 
-            int reply = ftp.getReplyCode();
-            //FTPReply stores a set of constants for FTP reply codes.
-            if (FTPReply.isPositiveCompletion(reply)) {
+        boolean ftpLogin = ftpClient.login(user, password);
 
-                //get system name
-                log.debug("FTP|remote system is " + ftp.getSystemType());
-                //change current directory
-                log.debug("FTP|changing dir to: {}", path);
-                ftp.changeWorkingDirectory(path);
-                log.debug("FTP|current directory is " + ftp.printWorkingDirectory());
-
-                log.debug("FTP|entering local passive mode (new)");
-                ftp.enterLocalPassiveMode();
-
-                //store the file in the remote server
-                log.debug("FTP|storing binary file: " + filename);
-                ftp.setFileType(FTP.BINARY_FILE_TYPE);
-                boolean ok = ftp.storeFile(filename, inputStream);
-                if (!ok) {
-                    String replyString = ftp.getReplyString();
-                    if(!FTPReply.isPositiveCompletion(reply)) {
-                        log.debug("FTP|failed to store file. reply string: {}", replyString);
-                    }
-
-                    throw new IOException("ftp failed to store file: " + path + "/" + filename);
-                }
-                //close the stream
-                log.debug("FTP|closing stream");
-                inputStream.close();
-                log.info("FTP|PUT|wrote file: " + filename);
-                log.debug("FTP|logout");
-                ftp.logout();
-                log.debug("FTP|disconnect");
-                ftp.disconnect();
-
-            } else {
-                log.warn("FTP|login to server was not positive completion. reply code: " + reply);
-                ftp.disconnect();
-            }
-        } else {
+        if (!ftpLogin) {
             String msg = "FTP|login to " + host + ":" + port + " failed for user: " + user;
             log.error(msg);
-            ftp.logout();
+            ftpClient.logout();
             throw new IOException(msg);
+        }
+
+        int reply = ftpClient.getReplyCode();
+
+        //FTPReply stores a set of constants for FTP reply codes.
+        if (!FTPReply.isPositiveCompletion(reply)) {
+            log.warn("FTP|login to server was not positive completion. reply code: " + reply);
+            ftpClient.disconnect();
+        }
+
+        loggedIn = FTPReply.isPositiveCompletion(reply) && ftpLogin;
+    }
+
+    private void logout() throws IOException{
+
+        if (loggedIn) {
+            log.debug("FTP|logout");
+            ftpClient.logout();
+            log.debug("FTP|logout");
+            ftpClient.disconnect();
+        } else {
+            log.info("FTP|Can't logout, not connected");
+        }
+    }
+
+    private void put(InputStream inputStream, String path, String filename) throws IOException {
+
+        if (loggedIn) {
+            //get system name
+            log.debug("FTP|remote system is " + ftpClient.getSystemType());
+            //change current directory
+            log.debug("FTP|changing dir to: {}", path);
+            ftpClient.changeWorkingDirectory(path);
+            log.debug("FTP|current directory is " + ftpClient.printWorkingDirectory());
+
+            log.debug("FTP|entering local passive mode (new)");
+            ftpClient.enterLocalPassiveMode();
+
+            //store the file in the remote server
+            log.debug("FTP|storing binary file: " + filename);
+            ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+
+            boolean ok = ftpClient.storeFile(filename, inputStream);
+
+            if (!ok) {
+                String replyString = ftpClient.getReplyString();
+
+                int reply = ftpClient.getReplyCode();
+
+                if(!FTPReply.isPositiveCompletion(reply)) {
+                    log.debug("FTP|failed to store file. reply string: {}", replyString);
+                }
+                throw new IOException("ftp failed to store file: " + path + "/" + filename);
+            }
+
+            //close the stream
+            log.debug("FTP|closing stream");
+            inputStream.close();
+            log.info("FTP|PUT|wrote file: " + filename);
+
+            ftpClient.changeWorkingDirectory("/");
+        } else {
+            log.info("FTP|Can't put files, not connected");
         }
     }
 
@@ -133,8 +163,8 @@ public class FtpPublisher {
 
         //new ftp client
         FTPClient ftp = new FTPClient();
-        //try to connect
-        log.debug("FTP|connect to " + host + " " + port);
+        //try to login
+        log.debug("FTP|login to " + host + " " + port);
         ftp.connect(host, port);
 
         //login to server
@@ -158,7 +188,7 @@ public class FtpPublisher {
 
                 log.debug("FTP|logout");
                 ftp.logout();
-                log.debug("FTP|disconnect");
+                log.debug("FTP|logout");
                 ftp.disconnect();
 
             } else {
