@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -85,6 +86,21 @@ public class FtpPublisherTest {
 
         //when
         classUnderTest.publish(files);
+    }
+
+    @Test
+    public void shouldLogoutOnTransferError() throws IOException {
+        DataFile fileToFail = mock(DataFile.class);
+
+        // Create some content that will fail
+        when(fileToFail.getFilename()).thenReturn("test&*aslkd  //2.txt");
+        when(fileToFail.getBytes()).thenReturn(new byte[0]);
+
+        files.add(fileToFail);
+
+        classUnderTest.publish(files);
+
+        assertThat(classUnderTest.isLoggedIn(), is(false));
     }
 
     @Test(expected = IOException.class)

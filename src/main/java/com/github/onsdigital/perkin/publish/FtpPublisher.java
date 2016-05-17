@@ -37,22 +37,28 @@ public class FtpPublisher {
     public void publish(List<DataFile> files) throws IOException {
         login();
 
-        for (DataFile file : files) {
-            Timer timer = new Timer("publish.");
+        try {
+            for (DataFile file : files) {
+                Timer timer = new Timer("publish.");
 
-            String filename = file.getFilename();
+                String filename = file.getFilename();
 
 
-            InputStream inputStream = new ByteArrayInputStream(file.getBytes());
+                InputStream inputStream = new ByteArrayInputStream(file.getBytes());
 
-            String path = determinePath(file.getPath());
-            put(inputStream, path, filename);
+                String path = determinePath(file.getPath());
+                put(inputStream, path, filename);
 
-            timer.stopStatus(200);
-            Audit.getInstance().increment(timer, file);
+                timer.stopStatus(200);
+                Audit.getInstance().increment(timer, file);
+            }
         }
-
-        logout();
+        catch(IOException e) {
+            log.error("FTP|problem during ftp transfer: ", e);
+        }
+        finally {
+            logout();
+        }
     }
 
     protected static String determinePath(String path) {
@@ -111,9 +117,14 @@ public class FtpPublisher {
             ftpClient.logout();
             log.debug("FTP|disconnect");
             ftpClient.disconnect();
+            loggedIn = false;
         } else {
             log.info("FTP|Can't logout, not connected");
         }
+    }
+
+    public boolean isLoggedIn() {
+        return loggedIn;
     }
 
     private void put(InputStream inputStream, String path, String filename) throws IOException {
