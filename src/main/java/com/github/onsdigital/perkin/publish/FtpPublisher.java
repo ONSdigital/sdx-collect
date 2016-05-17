@@ -109,7 +109,7 @@ public class FtpPublisher {
         if (loggedIn) {
             log.debug("FTP|logout");
             ftpClient.logout();
-            log.debug("FTP|logout");
+            log.debug("FTP|disconnect");
             ftpClient.disconnect();
         } else {
             log.info("FTP|Can't logout, not connected");
