@@ -80,10 +80,14 @@ public class Pck implements DataFile {
     @Override
 	public String toString(){
 
-		StringBuilder sb = new StringBuilder()
-                .append(header).append(NEW_LINE)
-		        .append(formLead).append(NEW_LINE)
-		        .append(formIdentifier).append(NEW_LINE);
+		StringBuilder sb = new StringBuilder();
+
+		if (header.length() > 0) {
+			sb.append(header).append(NEW_LINE);
+		}
+
+		sb.append(formLead).append(NEW_LINE)
+				.append(formIdentifier).append(NEW_LINE);
 		
 		for (int i = 0; i < questions.size(); i++) {
 			Question question = questions.get(i);
