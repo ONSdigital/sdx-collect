@@ -4,7 +4,7 @@
 
 # perkin
 Perkin is a Questionnaire data transformer written in Java. It is a component of the Office of National Statistics (ONS) Survey Data Exchange (SDE) project which listens to a JMS queue for survey data.
-On receipt it hands off to Posie to decrypt the survey data, then transforms it into downstream formats and sends the data via ftp for processing by the ONS.
+On receipt it hands off to sdx-decrypt to decrypt the survey data, then transforms it into downstream formats and sends the data via ftp for processing by the ONS.
 
 ## Installation
 
