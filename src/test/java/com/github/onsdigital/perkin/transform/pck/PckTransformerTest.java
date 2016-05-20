@@ -55,7 +55,7 @@ public class PckTransformerTest {
         log.debug("TEST|json: " + survey.getName() + " pck: " + pck.getName());
 
         //Given
-        Configuration.set("batch", "true");
+        Configuration.set("WRITE_BATCH_HEADER", "true");
 
         Survey survey = ParameterizedTestHelper.loadSurvey(this.survey);
         log.debug("TEST|survey: {}", survey);
@@ -69,7 +69,6 @@ public class PckTransformerTest {
         FileHelper.saveFiles(files);
 
         //Then
-        //TODO: cope with expected Exceptions
         String expected = FileHelper.loadFile(pck);
         String expectedFilename = survey.getId() + "_" + sequence;
 
@@ -84,7 +83,7 @@ public class PckTransformerTest {
         log.debug("TEST|json: " + survey.getName() + " noBatch: " + noBatch.getName());
 
         //Given
-        Configuration.set("batch", "false");
+        Configuration.set("WRITE_BATCH_HEADER", "false");
 
         Survey survey = ParameterizedTestHelper.loadSurvey(this.survey);
         log.debug("TEST|survey: {}", survey);
@@ -98,14 +97,11 @@ public class PckTransformerTest {
         FileHelper.saveFiles(files);
 
         //Then
-        //TODO: cope with expected Exceptions
         String expected = FileHelper.loadFile(noBatch);
         String expectedFilename = survey.getId() + "_" + sequence;
 
         assertThat(files, hasSize(1));
         assertThat(files.get(0).toString(), is(expected));
         assertThat(files.get(0).getFilename(), is(expectedFilename));
-
-        Configuration.set("batch", "true");
     }
 }

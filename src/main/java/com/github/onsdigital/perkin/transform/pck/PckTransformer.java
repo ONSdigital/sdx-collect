@@ -61,7 +61,7 @@ public class PckTransformer implements Transformer {
     }
 
     private String generateHeader(final long batch, final Date date) {
-        if (Configuration.getBoolean("batch", true)) {
+        if (Configuration.getBoolean("WRITE_BATCH_HEADER", true)) {
             return "FBFV" + TransformerHelper.leftPadZeroes(String.valueOf(batch), LENGTH_BATCH) + formatDate(date);
         } else {
             //don;t include a batch header
