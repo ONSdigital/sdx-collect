@@ -27,6 +27,18 @@ public abstract class ParameterizedTestHelper {
         return objects;
     }
 
+    public static Collection<Object[]> getFiles(String path, String sourceExtension, String targetExtension, String noBatchExtension) {
+
+        Collection<File> files = FileHelper.findListOfFiles(path, sourceExtension);
+        List<Object[]> objects = new ArrayList<>();
+
+        for (File file: files){
+            objects.add(new Object[]{ file, FileHelper.changeFileExtension(file, targetExtension), FileHelper.changeFileExtension(file, noBatchExtension) });
+        }
+
+        return objects;
+    }
+
     public static TransformContext createTransformContext(Survey survey, long batch, long sequence, long scan) throws TemplateNotFoundException {
         TransformContext context = TransformEngine.getInstance().createTransformContext(survey);
         //override
