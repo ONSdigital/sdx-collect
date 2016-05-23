@@ -32,6 +32,16 @@ public abstract class Configuration {
         return i;
     }
 
+    public static boolean getBoolean(String key, boolean defaultValue) {
+        boolean b = defaultValue;
+        String value = System.getProperty(key);
+        if (value != null) {
+            b = Boolean.parseBoolean(value);
+        }
+        log.info("CONFIGURATION|key: {} value: {}", key, b);
+        return b;
+    }
+
     /**
      * Gets a configuration value from {@link System#getProperty(String)}, falling back to {@link System#getenv()}
      * if the property comes back blank, then falling back to the default value.

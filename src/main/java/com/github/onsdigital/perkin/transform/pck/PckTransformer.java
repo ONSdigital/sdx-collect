@@ -1,5 +1,6 @@
 package com.github.onsdigital.perkin.transform.pck;
 
+import com.github.onsdigital.Configuration;
 import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.helper.Timer;
 import com.github.onsdigital.perkin.transform.*;
@@ -60,7 +61,12 @@ public class PckTransformer implements Transformer {
     }
 
     private String generateHeader(final long batch, final Date date) {
-		return "FBFV" + TransformerHelper.leftPadZeroes(String.valueOf(batch), LENGTH_BATCH) + formatDate(date);
+        if (Configuration.getBoolean("WRITE_BATCH_HEADER", true)) {
+            return "FBFV" + TransformerHelper.leftPadZeroes(String.valueOf(batch), LENGTH_BATCH) + formatDate(date);
+        } else {
+            //don;t include a batch header
+            return "";
+        }
 	}
 
     private String generateFormIdentifier(Survey survey) {

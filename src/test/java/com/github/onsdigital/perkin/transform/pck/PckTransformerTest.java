@@ -1,6 +1,7 @@
 package com.github.onsdigital.perkin.transform.pck;
 
 
+import com.github.onsdigital.Configuration;
 import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.json.SurveyParser;
 import com.github.onsdigital.perkin.test.FileHelper;
@@ -29,10 +30,12 @@ public class PckTransformerTest {
 
     private File survey;
     private File pck;
+    private File noBatch;
 
-    public PckTransformerTest(File survey, File pck){
+    public PckTransformerTest(File survey, File pck, File noBatch){
         this.survey = survey;
         this.pck = pck;
+        this.noBatch = noBatch;
     }
 
     @Before
@@ -43,7 +46,7 @@ public class PckTransformerTest {
     @Parameterized.Parameters(name = "{index}: {0} should produce {1}")
     public static Collection<Object[]> data() throws IOException {
 
-        return ParameterizedTestHelper.getFiles("to-pck", "json", "pck");
+        return ParameterizedTestHelper.getFiles("to-pck", "json", "pck", "nobatch");
     }
 
     @Test
@@ -52,6 +55,8 @@ public class PckTransformerTest {
         log.debug("TEST|json: " + survey.getName() + " pck: " + pck.getName());
 
         //Given
+        Configuration.set("WRITE_BATCH_HEADER", "true");
+
         Survey survey = ParameterizedTestHelper.loadSurvey(this.survey);
         log.debug("TEST|survey: {}", survey);
         long batch = 30001L;
@@ -64,8 +69,35 @@ public class PckTransformerTest {
         FileHelper.saveFiles(files);
 
         //Then
-        //TODO: cope with expected Exceptions
         String expected = FileHelper.loadFile(pck);
+        String expectedFilename = survey.getId() + "_" + sequence;
+
+        assertThat(files, hasSize(1));
+        assertThat(files.get(0).toString(), is(expected));
+        assertThat(files.get(0).getFilename(), is(expectedFilename));
+    }
+
+    @Test
+    public void shouldTransformSurveyToPckNoBatch() throws IOException {
+
+        log.debug("TEST|json: " + survey.getName() + " noBatch: " + noBatch.getName());
+
+        //Given
+        Configuration.set("WRITE_BATCH_HEADER", "false");
+
+        Survey survey = ParameterizedTestHelper.loadSurvey(this.survey);
+        log.debug("TEST|survey: {}", survey);
+        long batch = 30001L;
+        long sequence = 1000;
+        long scan = 2;
+        TransformContext context = ParameterizedTestHelper.createTransformContext(survey, batch, sequence, scan);
+
+        //When
+        List<DataFile> files = classUnderTest.transform(survey, context);
+        FileHelper.saveFiles(files);
+
+        //Then
+        String expected = FileHelper.loadFile(noBatch);
         String expectedFilename = survey.getId() + "_" + sequence;
 
         assertThat(files, hasSize(1));
