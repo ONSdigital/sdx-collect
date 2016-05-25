@@ -15,26 +15,49 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Create one or more images representing the survey questions and answers.
  */
 @Slf4j
-public class ImageTransformer implements Transformer {
+public class ImageTransformer implements Transformer, Callable<List<DataFile>> {
+
+    private Survey survey;
+    private TransformContext context;
+    private CountDownLatch latch;
+
+    public ImageTransformer(final Survey survey, final TransformContext context, final CountDownLatch latch) {
+        this.survey = survey;
+        this.context = context;
+        this.latch = latch;
+    }
+
+    @Override
+    public List<DataFile> call() throws TransformException {
+        return transform(survey, context);
+    }
 
     @Override
     public List<DataFile> transform(final Survey survey, final TransformContext context) throws TransformException {
 
-        Timer timer = new Timer("transform.images.");
+        List<DataFile> images = new ArrayList<>();
 
-        PdfCreator pdfCreator = new PdfCreator();
+        try {
+            Timer timer = new Timer("transform.images.");
 
-        byte[] pdf = pdfCreator.createPdf(survey, context);
+            PdfCreator pdfCreator = new PdfCreator();
 
-        List<DataFile> images = createImages(pdf, survey, context);
+            byte[] pdf = pdfCreator.createPdf(survey, context);
 
-        timer.stopStatus(200);
-        Audit.getInstance().increment(timer);
+            images = createImages(pdf, survey, context);
+
+            timer.stopStatus(200);
+            Audit.getInstance().increment(timer);
+        } finally {
+            latch.countDown();
+        }
 
         return images;
     }

@@ -4,12 +4,13 @@ import com.github.onsdigital.perkin.helper.Timer;
 import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.transform.*;
 import com.github.onsdigital.perkin.transform.pck.TransformerHelper;
+import com.github.onsdigital.perkin.transform.pck.derivator.DerivatorFactory;
 import lombok.extern.slf4j.Slf4j;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * An IDBR receipt records that a respondent unit (RU) has completed a survey (id)
@@ -18,7 +19,7 @@ import java.util.List;
  * An IDBR batch receipt file can contain multiple receipts.
  */
 @Slf4j
-public class IdbrTransformer implements Transformer {
+public class IdbrTransformer implements Transformer, Callable<List<DataFile>> {
 
     private static final String DELIMITER = ":";
 
@@ -28,15 +29,36 @@ public class IdbrTransformer implements Transformer {
 
     public static final String FILENAME_DATE_FORMAT = "ddMM";
 
+    private Survey survey;
+    private TransformContext context;
+    private CountDownLatch latch;
+
+    public IdbrTransformer(final Survey survey, final TransformContext context, final CountDownLatch latch) {
+        this.survey = survey;
+        this.context = context;
+        this.latch = latch;
+    }
+
+    @Override
+    public List<DataFile> call() throws TransformException {
+        return transform(survey, context);
+    }
+
     @Override
     public List<DataFile> transform(final Survey survey, final TransformContext context) throws TransformException {
 
-        Timer timer = new Timer("transform.idbr.");
+        List<DataFile> idbr = new ArrayList<>();
 
-        List<DataFile> idbr = Arrays.asList(createIdbrReceipt(survey, survey.getDate(), context));
+        try {
+            Timer timer = new Timer("transform.idbr.");
 
-        timer.stopStatus(200);
-        Audit.getInstance().increment(timer);
+            idbr = Arrays.asList(createIdbrReceipt(survey, survey.getDate(), context));
+
+            timer.stopStatus(200);
+            Audit.getInstance().increment(timer);
+        } finally {
+            latch.countDown();
+        }
 
         return idbr;
     }
