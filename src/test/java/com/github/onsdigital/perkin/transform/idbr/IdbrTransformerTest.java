@@ -12,12 +12,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
@@ -32,14 +35,17 @@ public class IdbrTransformerTest {
     private File survey;
     private File idbr;
 
+    @Mock
+    private CountDownLatch latch;
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+    }
+
     public IdbrTransformerTest(File survey, File idbr){
         this.survey = survey;
         this.idbr = idbr;
-    }
-
-    @Before
-    public void setUp(){
-        classUnderTest = new IdbrTransformer();
     }
 
     @Parameterized.Parameters(name = "{index}: {0} should produce {1}")
@@ -62,6 +68,8 @@ public class IdbrTransformerTest {
         long sequence = 2000;
         long scan = 5;
         TransformContext context = ParameterizedTestHelper.createTransformContext(survey, batch, sequence, scan);
+
+        classUnderTest = new IdbrTransformer(survey, context, latch);
 
         //When
         List<DataFile> files = classUnderTest.transform(survey, context);

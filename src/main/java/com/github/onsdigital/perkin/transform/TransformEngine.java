@@ -14,6 +14,7 @@ import org.slf4j.MDC;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * Transform a Survey into a format for downstream systems.
@@ -29,7 +30,7 @@ public class TransformEngine {
     private Audit audit = Audit.getInstance();
     private TemplateLoader loader = TemplateLoader.getInstance();
 
-    private List<Transformer> transformers;
+    //private List<Transformer> transformers;
 
     private FtpPublisher publisher = new FtpPublisher();
 
@@ -39,9 +40,6 @@ public class TransformEngine {
 
     private TransformEngine() {
         //use getInstance()
-        //TODO: make configurable
-        //TODO: also, transformers on a per survey id basis?
-        transformers = Arrays.asList(new IdbrTransformer(), new PckTransformer(), new ImageTransformer());
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
@@ -57,9 +55,12 @@ public class TransformEngine {
         return INSTANCE;
     }
 
-    public List<DataFile> transform(final String data) throws TransformException {
+    public List<DataFile> transform(final String data) throws TransformException, InterruptedException, ExecutionException {
 
         Timer timer = new Timer("survey.process.");
+
+        ExecutorService taskExecutor = Executors.newFixedThreadPool(4);
+        CountDownLatch latch = new CountDownLatch(4);
 
         try {
             decrypt = new Decrypt(data);
@@ -68,12 +69,22 @@ public class TransformEngine {
 
             TransformContext context = createTransformContext(survey);
 
+            List<Callable<List<DataFile>>> tasks = new ArrayList<>();
             List<DataFile> files = new ArrayList<>();
-            //note: could use executors (multithreading)
-            for (Transformer transformer : transformers) {
-                files.addAll(transformer.transform(survey, context));
+
+            //TODO: make configurable per survey
+            //TOOO: put latch and survey in context?
+            tasks.add(new IdbrTransformer(survey, context, latch));
+            tasks.add(new PckTransformer(survey, context, latch));
+            tasks.add(new ImageTransformer(survey, context, latch));
+
+            List<Future<List<DataFile>>> futures = taskExecutor.invokeAll(tasks);
+
+            for (Future<List<DataFile>> future : futures) {
+                files.addAll(future.get());
             }
 
+            //TODO: multithreading for the ftp as well? - probably most to gain here
             publisher.publish(files);
 
             survey.sendReceipt();

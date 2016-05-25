@@ -9,12 +9,14 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Convert a survey into PCK prettyPrint.
  */
 @Slf4j
-public class PckTransformer implements Transformer {
+public class PckTransformer implements Transformer, Callable<List<DataFile>> {
 
 	private static final String HEADER_SEPARATOR = ":";
 	private static final String FORM_LEAD = "FV          ";
@@ -22,6 +24,10 @@ public class PckTransformer implements Transformer {
 	private static final int LENGTH_BATCH = 6;
 
 	private DerivatorFactory derivatorFactory = new DerivatorFactory();
+
+    private Survey survey;
+    private TransformContext context;
+    private CountDownLatch latch;
 
     private static Map<String, String> lookup;
 
@@ -35,27 +41,43 @@ public class PckTransformer implements Transformer {
         lookup.put("0215", "RSI10B");
     }
 
+    public PckTransformer(final Survey survey, final TransformContext context, final CountDownLatch latch) {
+        this.survey = survey;
+        this.context = context;
+        this.latch = latch;
+    }
+
+    @Override
+    public List<DataFile> call() throws TransformException {
+        return transform(survey, context);
+    }
+
     @Override
     public List<DataFile> transform(final Survey survey, final TransformContext context) throws TransformException {
-        Timer timer = new Timer("transform.pck.");
-
-        log.debug("TRANSFORM|PCK|transforming into pck from survey: {}", survey);
-
-        //we only have the MCI survey template for now
         Pck pck = new Pck();
-        pck.setHeader(generateHeader(context.getBatch(), survey.getDate()));
-        pck.setFormIdentifier(generateFormIdentifier(survey));
-        pck.setQuestions(derivatorFactory.deriveAllAnswers(survey, context.getSurveyTemplate()));
-        pck.setFormLead(FORM_LEAD);
 
-        pck.setFilename(survey.getId() + "_" + context.getSequence());
+        try {
+            Timer timer = new Timer("transform.pck.");
 
-        pck.setPath(context.getPckPath());
+            log.debug("TRANSFORM|PCK|transforming into pck from survey: {}", survey);
 
-        timer.stopStatus(200);
-        Audit.getInstance().increment(timer);
+            //we only have the MCI survey template for now
+            pck.setHeader(generateHeader(context.getBatch(), survey.getDate()));
+            pck.setFormIdentifier(generateFormIdentifier(survey));
+            pck.setQuestions(derivatorFactory.deriveAllAnswers(survey, context.getSurveyTemplate()));
+            pck.setFormLead(FORM_LEAD);
 
-        log.info("TRANSFORM|PCK|created pck: ", pck);
+            pck.setFilename(survey.getId() + "_" + context.getSequence());
+
+            pck.setPath(context.getPckPath());
+
+            timer.stopStatus(200);
+            Audit.getInstance().increment(timer);
+
+            log.info("TRANSFORM|PCK|created pck: ", pck);
+        } finally {
+            latch.countDown();
+        }
 
         return Arrays.asList(pck);
     }
