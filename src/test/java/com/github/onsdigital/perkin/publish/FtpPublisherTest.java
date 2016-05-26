@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -87,6 +88,21 @@ public class FtpPublisherTest {
         classUnderTest.publish(files);
     }
 
+    @Test
+    public void shouldLogoutOnTransferError() throws IOException {
+        DataFile fileToFail = mock(DataFile.class);
+
+        // Create some content that will fail
+        when(fileToFail.getFilename()).thenReturn("test&*aslkd  //2.txt");
+        when(fileToFail.getBytes()).thenReturn(new byte[0]);
+
+        files.add(fileToFail);
+
+        classUnderTest.publish(files);
+
+        assertThat(classUnderTest.isLoggedIn(), is(false));
+    }
+
     @Test(expected = IOException.class)
     public void shouldErrorInvalidCredentials() throws IOException {
         //given
@@ -132,7 +148,7 @@ public class FtpPublisherTest {
         String path = "\\\\NP3RVWAPXX370\\SDX_PROD\\EDC_QReceipts\\";
 
         //when
-        String determined = classUnderTest.determinPath(path);
+        String determined = classUnderTest.determinePath(path);
 
         //then
         assertThat(determined, is("EDC_QReceipts"));
@@ -144,7 +160,7 @@ public class FtpPublisherTest {
         String path = "\\\\NP3RVWAPXX370\\SDX_PROD\\EDC_QData\\";
 
         //when
-        String determined = classUnderTest.determinPath(path);
+        String determined = classUnderTest.determinePath(path);
 
         //then
         assertThat(determined, is("EDC_QData"));
@@ -156,7 +172,7 @@ public class FtpPublisherTest {
         String path = "\\\\NP3RVWAPXX370\\SDX_PROD\\EDC_QImages\\Images\\";
 
         //when
-        String determined = classUnderTest.determinPath(path);
+        String determined = classUnderTest.determinePath(path);
 
         //then
         assertThat(determined, is("EDC_QImages/Images"));
@@ -168,7 +184,7 @@ public class FtpPublisherTest {
         String path = "\\\\NP3RVWAPXX370\\SDX_PROD\\EDC_QImages\\Index\\";
 
         //when
-        String determined = classUnderTest.determinPath(path);
+        String determined = classUnderTest.determinePath(path);
 
         //then
         assertThat(determined, is("EDC_QImages/Index"));
