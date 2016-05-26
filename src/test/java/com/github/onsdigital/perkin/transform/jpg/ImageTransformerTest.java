@@ -13,6 +13,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,6 +23,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
@@ -34,14 +38,17 @@ public class ImageTransformerTest {
     private File survey;
     private File csv;
 
+    @Mock
+    private CountDownLatch latch;
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+    }
+
     public ImageTransformerTest(File survey, File csv){
         this.survey = survey;
         this.csv = csv;
-    }
-
-    @Before
-    public void setUp(){
-        classUnderTest = new ImageTransformer();
     }
 
     @Parameterized.Parameters(name = "{index}: {0} should produce {1}")
@@ -64,6 +71,8 @@ public class ImageTransformerTest {
         long scan = 7;
         TransformContext context = ParameterizedTestHelper.createTransformContext(survey, batch, sequence, scan);
         context.setDate(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse("15/03/2016 10:05:03"));
+
+        classUnderTest = new ImageTransformer(survey, context, latch);
 
         //When
         List<DataFile> files = classUnderTest.transform(survey, context);

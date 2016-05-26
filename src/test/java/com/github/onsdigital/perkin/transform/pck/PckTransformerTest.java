@@ -1,9 +1,7 @@
 package com.github.onsdigital.perkin.transform.pck;
 
-
 import com.github.onsdigital.Configuration;
 import com.github.onsdigital.perkin.json.Survey;
-import com.github.onsdigital.perkin.json.SurveyParser;
 import com.github.onsdigital.perkin.test.FileHelper;
 import com.github.onsdigital.perkin.test.ParameterizedTestHelper;
 import com.github.onsdigital.perkin.transform.*;
@@ -12,11 +10,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
@@ -32,15 +33,18 @@ public class PckTransformerTest {
     private File pck;
     private File noBatch;
 
+    @Mock
+    private CountDownLatch latch;
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+    }
+
     public PckTransformerTest(File survey, File pck, File noBatch){
         this.survey = survey;
         this.pck = pck;
         this.noBatch = noBatch;
-    }
-
-    @Before
-    public void setUp(){
-        classUnderTest = new PckTransformer();
     }
 
     @Parameterized.Parameters(name = "{index}: {0} should produce {1}")
@@ -63,6 +67,8 @@ public class PckTransformerTest {
         long sequence = 1000;
         long scan = 2;
         TransformContext context = ParameterizedTestHelper.createTransformContext(survey, batch, sequence, scan);
+
+        classUnderTest = new PckTransformer(survey, context, latch);
 
         //When
         List<DataFile> files = classUnderTest.transform(survey, context);
@@ -91,6 +97,8 @@ public class PckTransformerTest {
         long sequence = 1000;
         long scan = 2;
         TransformContext context = ParameterizedTestHelper.createTransformContext(survey, batch, sequence, scan);
+
+        classUnderTest = new PckTransformer(survey, context, latch);
 
         //When
         List<DataFile> files = classUnderTest.transform(survey, context);
