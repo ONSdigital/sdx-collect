@@ -66,12 +66,6 @@ public class Audit {
         increment(key, size, message);
     }
 
-    public void increment(Timer timer, DataFile file) {
-        String message = createMessage(timer) + getDataFileMessage(file);
-        increment(timer.getName() + ".count", 1, message);
-        increment(timer.getName() + ".duration", timer.getDuration());
-        setAverage(timer.getName());
-    }
 
     protected String getExceptionMessage(Exception e) {
         return " " + e.getClass().getName() + " " + e.getMessage() + getCause(e);
@@ -84,10 +78,6 @@ public class Audit {
         }
 
         return cause;
-    }
-
-    private String getDataFileMessage(DataFile file) {
-        return " " + file.getFilename() + " (" + file.getSize() + " bytes)";
     }
 
     private void increment(String key, long size) {

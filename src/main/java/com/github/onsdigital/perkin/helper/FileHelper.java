@@ -1,6 +1,5 @@
 package com.github.onsdigital.perkin.helper;
 
-import com.github.onsdigital.perkin.transform.DataFile;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 
@@ -16,23 +15,6 @@ import java.util.List;
 
 @Slf4j
 public abstract class FileHelper {
-
-    public static void saveFiles(List<DataFile> files) throws IOException {
-
-        for (DataFile file : files) {
-            saveFile(file);
-        }
-    }
-
-    public static void saveFile(DataFile file) throws IOException {
-
-        new File("target/example").mkdir();
-        Path path = Paths.get("target/example/" + file.getFilename());
-
-        Files.write(path, file.getBytes());
-
-        log.info("saved file target/example/" + file.getFilename());
-    }
 
     public static void saveFile(byte[] bytes, String filename) throws IOException {
 

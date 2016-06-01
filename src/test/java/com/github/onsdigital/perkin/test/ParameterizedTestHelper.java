@@ -2,10 +2,6 @@ package com.github.onsdigital.perkin.test;
 
 import com.github.onsdigital.perkin.json.Survey;
 import com.github.onsdigital.perkin.json.SurveyParser;
-import com.github.onsdigital.perkin.transform.NumberService;
-import com.github.onsdigital.perkin.transform.TemplateNotFoundException;
-import com.github.onsdigital.perkin.transform.TransformContext;
-import com.github.onsdigital.perkin.transform.TransformEngine;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,17 +33,6 @@ public abstract class ParameterizedTestHelper {
         }
 
         return objects;
-    }
-
-    public static TransformContext createTransformContext(Survey survey, long batch, long sequence, long scan) throws TemplateNotFoundException {
-        TransformContext context = TransformEngine.getInstance().createTransformContext(survey);
-        //override
-        context.setBatch(batch);
-        context.setSequence(sequence);
-        NumberService numberService = new NumberService("scan", scan, 999999999);
-        numberService.reset();
-        context.setScanNumberService(numberService);
-        return context;
     }
 
     public static Survey loadSurvey(File survey) throws IOException {
