@@ -4,7 +4,7 @@
 
 # sdx-collect
 sdx-collect is part of the Questionnaire data transformer written in Java. It is a component of the Office of National Statistics (ONS) Survey Data Exchange (SDX) project which listens to a JMS queue for survey data.
-On receipt it hands off to sdx-decrypt to decrypt the survey data, then stores the json by calling sdx-store it is later converted into downstream formats and sends the data via ftp for processing by the ONS.
+On receipt it hands off to sdx-decrypt to decrypt the survey data, then stores the json by calling sdx-store.
 
 ## Installation
 
@@ -30,6 +30,6 @@ sdx-collect exposes the following endpoints:
 
 ## Lombok
 
-Perkin uses Lombok, so to see method documentation, you'll need to install the lombok plugin into eclipse, intellij etc
+sdx-collect uses Lombok, so to see method documentation, you'll need to install the lombok plugin into eclipse, intellij etc
 https://projectlombok.org/download.html
 
