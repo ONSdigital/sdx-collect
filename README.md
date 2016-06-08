@@ -1,10 +1,10 @@
-[![Build Status](https://travis-ci.org/ONSdigital/perkin.svg?branch=master)](https://travis-ci.org/ONSdigital/perkin)
+[![Build Status](https://travis-ci.org/ONSdigital/sdx-collect.svg?branch=master)](https://travis-ci.org/ONSdigital/sdx-collect)
 
 ![Logo](http://www.80snostalgia.com/files/fluperkins.jpg)
 
-# perkin
-Perkin is a Questionnaire data transformer written in Java. It is a component of the Office of National Statistics (ONS) Survey Data Exchange (SDE) project which listens to a JMS queue for survey data.
-On receipt it hands off to sdx-decrypt to decrypt the survey data, then transforms it into downstream formats and sends the data via ftp for processing by the ONS.
+# sdx-collect
+sdx-collect is part of the Questionnaire data transformer written in Java. It is a component of the Office of National Statistics (ONS) Survey Data Exchange (SDX) project which listens to a JMS queue for survey data.
+On receipt it hands off to sdx-decrypt to decrypt the survey data, then stores the json by calling sdx-store.
 
 ## Installation
 
@@ -14,11 +14,11 @@ Using java 8 and maven
 
 ## Usage
 
-To start perkin, just run the server:
+To start sdx-collect, just run the server:
 
-    $ java -jar target/Perkin*-dependencies.jar
+    $ java -jar target/sdx-collect*-dependencies.jar
 
-perkin exposes the following endpoints:
+sdx-collect exposes the following endpoints:
 
 | endpoint                      | purpose                                                |
 |-------------------------------|--------------------------------------------------------|
@@ -30,6 +30,6 @@ perkin exposes the following endpoints:
 
 ## Lombok
 
-Perkin uses Lombok, so to see method documentation, you'll need to install the lombok plugin into eclipse, intellij etc
+sdx-collect uses Lombok, so to see method documentation, you'll need to install the lombok plugin into eclipse, intellij etc
 https://projectlombok.org/download.html
 
