@@ -69,5 +69,5 @@ Here is an example of survey data to encrypt and place onto the queue
 ```
 
 Other components (sdx-transform-cs) generate the downstream files.
-Examples of the files produced are in te src/test/resources folder
+Examples of the files produced are in the src/test/resources folder
 
