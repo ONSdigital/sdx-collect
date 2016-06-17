@@ -34,7 +34,9 @@ public abstract class Configuration {
 
     public static boolean getBoolean(String key, boolean defaultValue) {
         boolean b = defaultValue;
-        String value = System.getProperty(key);
+        String value = get(key);
+        log.info("***** CONFIGURATION|System.getProperty(key) key: {} value: {}", key, value);
+
         if (value != null) {
             b = Boolean.parseBoolean(value);
         }
