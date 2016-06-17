@@ -1,10 +1,7 @@
 package com.github.onsdigital.perkin.test;
 
-import com.github.onsdigital.perkin.json.Survey;
-import com.github.onsdigital.perkin.json.SurveyParser;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -33,11 +30,5 @@ public abstract class ParameterizedTestHelper {
         }
 
         return objects;
-    }
-
-    public static Survey loadSurvey(File survey) throws IOException {
-        String json = FileHelper.loadFile(survey);
-        SurveyParser parser = new SurveyParser();
-        return parser.parse(json);
     }
 }

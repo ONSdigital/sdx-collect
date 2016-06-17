@@ -1,6 +1,5 @@
 package com.github.onsdigital.perkin.transform;
 
-import com.github.onsdigital.perkin.json.SurveyParser;
 import com.github.onsdigital.perkin.helper.Timer;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +12,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Slf4j
 public class Audit {
+
+    public static final String ISO8601 = "yyyy-MM-dd'T'HH:mm:ssX";
 
     private static final Audit INSTANCE = new Audit();
     private static final int MAX_SIZE = 500;
@@ -106,11 +107,11 @@ public class Audit {
     }
 
     private String createMessage(String key) {
-        return new SimpleDateFormat(SurveyParser.ISO8601).format(new Date()) + " " + key;
+        return new SimpleDateFormat(ISO8601).format(new Date()) + " " + key;
     }
 
     private String createMessage(Timer timer) {
-        return new SimpleDateFormat(SurveyParser.ISO8601).format(new Date()) + " " + timer;
+        return new SimpleDateFormat(ISO8601).format(new Date()) + " " + timer;
     }
 
     public List<String> getMessages() {

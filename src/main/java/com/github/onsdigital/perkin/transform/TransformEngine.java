@@ -1,10 +1,12 @@
 package com.github.onsdigital.perkin.transform;
 
+import com.github.davidcarboni.httpino.Response;
 import com.github.onsdigital.perkin.decrypt.Decrypt;
+import com.github.onsdigital.perkin.helper.SdxValidate;
 import com.github.onsdigital.perkin.helper.Timer;
 import com.github.onsdigital.perkin.json.*;
 
-import com.github.onsdigital.perkin.store.StoreJson;
+import com.github.onsdigital.perkin.helper.SdxStore;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -18,8 +20,8 @@ public class TransformEngine {
 
     private static TransformEngine INSTANCE = new TransformEngine();
 
-    private SurveyParser parser = new SurveyParser();
-    private StoreJson store = new StoreJson();
+    private SdxValidate validate = new SdxValidate();
+    private SdxStore store = new SdxStore();
     private Decrypt decrypt;
 
     private Audit audit = Audit.getInstance();
@@ -36,23 +38,24 @@ public class TransformEngine {
 
         Timer timer = new Timer("survey.process.");
 
-        ExecutorService taskExecutor = Executors.newFixedThreadPool(4);
-        CountDownLatch latch = new CountDownLatch(4);
-
         try {
             decrypt = new Decrypt(data);
             String json = decrypt.getDecrypted();
 
-            Survey survey = parser.parse(json);
+            //TODO will this throw an Exception or use a return value?
+            //{"valid": True} 200
+            //{"valid": False} 400?
+            Response<Result> response = validate.validate(json);
+            //TODO check the result of the validation
 
-            store.store(survey);
+            Survey survey = Survey.deserialize(json);
+
+            store.store(json);
+
             survey.sendReceipt();
 
             timer.stopStatus(200);
 
-        } catch (SurveyParserException e) {
-            timer.stopStatus(400, e);
-            throw e;
         } catch (TransformException e) {
             timer.stopStatus(500, e);
             throw e;

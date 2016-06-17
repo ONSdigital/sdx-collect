@@ -1,8 +1,5 @@
 package com.github.onsdigital.perkin.helper;
 
-import com.github.davidcarboni.httpino.Serialiser;
-import com.github.onsdigital.perkin.json.Survey;
-import com.github.onsdigital.perkin.json.SurveyTemplate;
 import com.github.onsdigital.perkin.transform.Audit;
 import com.github.onsdigital.perkin.transform.TemplateNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -31,19 +28,6 @@ public class TemplateLoader {
 
     public static TemplateLoader getInstance() {
         return INSTANCE;
-    }
-
-    public String getPdfTemplate(Survey survey) throws TemplateNotFoundException {
-        return this.getTemplate("templates/" + survey.getId() + "."
-                + survey.getCollection().getInstrumentId() + ".pdf.fo");
-    }
-
-    public SurveyTemplate getSurveyTemplate(Survey survey) throws TemplateNotFoundException {
-
-        String json = this.getTemplate("templates/" + survey.getId() + "."
-                + survey.getCollection().getInstrumentId() + ".survey.json");
-
-        return Serialiser.deserialise(json, SurveyTemplate.class);
     }
 
     public String getTemplate(String templateFilename) throws TemplateNotFoundException {

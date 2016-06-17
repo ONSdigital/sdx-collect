@@ -8,9 +8,7 @@ import com.github.onsdigital.HttpManager;
 import com.github.onsdigital.perkin.helper.FileHelper;
 import com.github.onsdigital.perkin.helper.Http;
 import com.github.onsdigital.perkin.json.Survey;
-import com.github.onsdigital.perkin.json.SurveyParser;
 import com.github.onsdigital.perkin.transform.TemplateNotFoundException;
-import com.github.onsdigital.perkin.transform.TransformException;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -56,7 +54,7 @@ public class ReceiptTest {
         ConfigurationManager.set("RECEIPT_USER", RECEIPT_USER);
         ConfigurationManager.set("RECEIPT_PASS", RECEIPT_PASS);
 
-        testSurvey = new SurveyParser().parse(FileHelper.loadFile("survey.ftp.json"));
+        testSurvey = Survey.deserialize(FileHelper.loadFile("survey.ftp.json"));
 
         mockedHttp = mock(Http.class);
         HttpManager.setInstance(mockedHttp);
