@@ -12,8 +12,8 @@
                 <!-- layout is configurable - can display thread id, class name, method
                         name, line number, the message etc -->
 
-                <layout class="org.apache.log4j.PatternLayout">
-                        <param name="ConversionPattern" value="%d{ISO8601}|%p|thread:%t|userId:%X{userId},statUnitId:%X{statUnitId},exerciseSid:%X{exerciseSid}|%m|%l%n" />
+                <layout class="org.apache.log4j.EnhancedPatternLayout">
+                        <param name="ConversionPattern" value="%d{ISO8601}{GMT+1}|%p|thread:%t|userId:%X{userId},statUnitId:%X{statUnitId},exerciseSid:%X{exerciseSid}|%m|%l%n" />
                 </layout>
         </appender>
 
@@ -22,13 +22,13 @@
 
         <appender name="FILE" class="org.apache.log4j.DailyRollingFileAppender">
                 <!-- defines the name of the log file produced -->
-                <param name="file" value="logs/perkin.log" />
+                <param name="file" value="logs/sdx-collect.log" />
                 <param name="datePattern" value="'.'yyyy-MM" />
                 <param name="append" value="true" />
 
                 <!-- defines the format of each log message -->
-                <layout class="org.apache.log4j.PatternLayout">
-                        <param name="ConversionPattern" value="%d{ISO8601}|%p|thread:%t|userId:%X{userId},statUnitId:%X{statUnitId},exerciseSid:%X{exerciseSid}|%m|%l%n" />
+                <layout class="org.apache.log4j.EnhancedPatternLayout">
+                        <param name="ConversionPattern" value="%d{ISO8601}{GMT+1}|%p|thread:%t|userId:%X{userId},statUnitId:%X{statUnitId},exerciseSid:%X{exerciseSid}|%m|%l%n" />
                 </layout>
         </appender>
 
