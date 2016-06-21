@@ -1,10 +1,8 @@
-package com.github.onsdigital.perkin.services;
+package com.github.onsdigital.perkin.decrypt;
 
 import com.github.davidcarboni.httpino.Response;
 import com.github.onsdigital.ConfigurationManager;
 import com.github.onsdigital.HttpManager;
-import com.github.onsdigital.perkin.decrypt.Decrypt;
-import com.github.onsdigital.perkin.helper.FileHelper;
 import com.github.onsdigital.perkin.helper.Http;
 import com.github.onsdigital.perkin.transform.TransformException;
 import org.eclipse.jetty.http.HttpStatus;
@@ -14,7 +12,6 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 /**

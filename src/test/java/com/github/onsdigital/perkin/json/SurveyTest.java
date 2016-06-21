@@ -1,10 +1,11 @@
-package com.github.onsdigital.perkin.services;
+package com.github.onsdigital.perkin.json;
 
 import com.github.davidcarboni.httpino.Endpoint;
 import com.github.davidcarboni.httpino.Host;
 import com.github.davidcarboni.httpino.Response;
 import com.github.onsdigital.ConfigurationManager;
 import com.github.onsdigital.HttpManager;
+import com.github.onsdigital.perkin.decrypt.MockedResponse;
 import com.github.onsdigital.perkin.helper.FileHelper;
 import com.github.onsdigital.perkin.helper.Http;
 import com.github.onsdigital.perkin.json.Survey;
@@ -34,7 +35,7 @@ import static org.mockito.Mockito.*;
 /**
  * Created by ian on 01/04/2016.
  */
-public class ReceiptTest {
+public class SurveyTest {
 
     private Survey testSurvey;
     private Http mockedHttp;
