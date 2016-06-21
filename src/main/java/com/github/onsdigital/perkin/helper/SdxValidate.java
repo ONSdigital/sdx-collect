@@ -2,10 +2,9 @@ package com.github.onsdigital.perkin.helper;
 
 import com.github.davidcarboni.httpino.Endpoint;
 import com.github.davidcarboni.httpino.Host;
-import com.github.davidcarboni.httpino.Http;
 import com.github.davidcarboni.httpino.Response;
 import com.github.onsdigital.ConfigurationManager;
-import com.github.onsdigital.perkin.json.Result;
+import com.github.onsdigital.HttpManager;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -24,11 +23,11 @@ public class SdxValidate {
         path = ConfigurationManager.get("VALIDATE_PATH");
     }
 
-    public Response<Result> validate(final String json) throws IOException {
+    public Response<String> validate(final String json) throws IOException {
 
         Endpoint endpoint = new Endpoint(new Host(host), path);
         log.info("VALIDATE|validating survey to endpoint: {}", endpoint);
 
-        return new Http().postJson(endpoint, json, Result.class);
+        return HttpManager.getInstance().postString(endpoint, json);
     }
 }

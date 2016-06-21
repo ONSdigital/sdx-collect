@@ -42,11 +42,13 @@ public class TransformEngine {
             decrypt = new Decrypt(data);
             String json = decrypt.getDecrypted();
 
-            //TODO will this throw an Exception or use a return value?
-            //{"valid": True} 200
-            //{"valid": False} 400?
-            Response<Result> response = validate.validate(json);
-            //TODO check the result of the validation
+            Response<String> response = validate.validate(json);
+            switch (response.statusLine.getStatusCode()) {
+                case 400:
+                    //TODO: do we want to store this on another failed queue?
+                case 500:
+                    throw new TransformException("Problem validating json: " + response.toString());
+            }
 
             Survey survey = Survey.deserialize(json);
 
