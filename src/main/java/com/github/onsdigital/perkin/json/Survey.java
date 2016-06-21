@@ -11,6 +11,8 @@ import com.github.onsdigital.perkin.helper.Timer;
 import com.github.onsdigital.perkin.transform.Audit;
 import com.github.onsdigital.perkin.transform.TemplateNotFoundException;
 import com.github.onsdigital.perkin.transform.TransformException;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 import lombok.Builder;
 import lombok.Data;
@@ -32,38 +34,8 @@ import java.io.IOException;
 @Slf4j
 public class Survey {
 
-    private String type;
-    private String version;
-    private String origin;
-    @SerializedName("survey_id")
-    private String id;
-
     private Collection collection;
-
-    @SerializedName("submitted_at")
-    private Date date;
-
     private Metadata metadata;
-
-    @Singular("answer")
-    @SerializedName("data")
-    private Map<String, String> answers;
-
-    public String getAnswer(String key) {
-        if (answers == null) {
-            return null;
-        }
-
-        return answers.get(key);
-    }
-
-    public Set<String> getKeys() {
-        if (answers == null) {
-            return Collections.emptySet();
-        }
-
-        return answers.keySet();
-    }
 
     public NameValuePair[] getReceiptHeaders() {
         String receiptUser = ConfigurationManager.get("RECEIPT_USER");
@@ -132,5 +104,13 @@ public class Survey {
         }
 
         return status == HttpStatus.CREATED_201;
+    }
+
+    public static Survey deserialize(String json) {
+        Gson gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .create();
+
+        return gson.fromJson(json, Survey.class);
     }
 }
