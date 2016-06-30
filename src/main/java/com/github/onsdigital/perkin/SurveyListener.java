@@ -149,7 +149,7 @@ public class SurveyListener implements Runnable, RecoveryListener {
 
     @Override
     public void handleRecovery(Recoverable recoverable) {
-        log.warn("QUEUE|CONNECTION|END|queue connection was recovered: {}", recoverable);
+        log.warn("QUEUE|CONNECTION|END|queue connection was recovered");
         log.info("QUEUE|CONNECTION|START|queue connection was recovered");
     }
 
