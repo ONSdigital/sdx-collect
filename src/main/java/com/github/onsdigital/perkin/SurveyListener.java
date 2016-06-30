@@ -122,7 +122,7 @@ public class SurveyListener implements Runnable, RecoveryListener {
 
             @Override
             public void handleShutdownSignal(String consumerTag, ShutdownSignalException e) {
-                log.warn("QUEUE|CONNECTION|END|shutdown on queue: {} on host: {}", queue, host, e);
+                log.warn("QUEUE|CONNECTION|END|shutdown on queue: {} on host: {}", queue, server, e);
             }
         };
 
