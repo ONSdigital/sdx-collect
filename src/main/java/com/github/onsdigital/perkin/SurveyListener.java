@@ -12,7 +12,9 @@ import java.io.IOException;
 public class SurveyListener implements Runnable, RecoveryListener {
 
     private String host;
+    private int port;
     private String host2;
+    private int port2;
     private String queue;
     private String username;
     private String password;
@@ -21,7 +23,9 @@ public class SurveyListener implements Runnable, RecoveryListener {
 
     public SurveyListener() {
         host = ConfigurationManager.get("RABBITMQ_HOST");
+        port = ConfigurationManager.getInt("RABBITMQ_PORT");
         host2 = ConfigurationManager.get("RABBITMQ_HOST2");
+        port2 = ConfigurationManager.getInt("RABBITMQ_PORT2");
         queue = ConfigurationManager.get("RABBITMQ_QUEUE");
         username = ConfigurationManager.get("RABBITMQ_DEFAULT_USER");
         password = ConfigurationManager.get("RABBITMQ_DEFAULT_PASS");
@@ -67,7 +71,7 @@ public class SurveyListener implements Runnable, RecoveryListener {
 
         ConnectionFactory factory = new ConnectionFactory();
         factory.setConnectionTimeout(10 * 1000); //10 seconds
-        Address[] addresses = {new Address(host), new Address(host2)};
+        Address[] addresses = {new Address(host, port), new Address(host2, port2)};
         factory.setAutomaticRecoveryEnabled(true);
 
         if (StringUtils.isNotBlank(username)) factory.setUsername(username);
@@ -78,7 +82,9 @@ public class SurveyListener implements Runnable, RecoveryListener {
 
         channel.queueDeclare(queue, false, false, false, null);
 
-        log.info("QUEUE|CONNECTION|START|listening to queue: {} on host: {} host2: {} username: {} password: {}", queue, host, host2, username, ConfigurationManager.getSafe("RABBITMQ_DEFAULT_PASS"));
+        String server = getQueueInfo(connection);
+        log.info("QUEUE|CONNECTION|START|listening to queue: {} on server: {} username: {} password: {}", queue, server, username, ConfigurationManager.getSafe("RABBITMQ_DEFAULT_PASS"));
+
 
         Consumer consumer = new DefaultConsumer(channel) {
             public static final boolean REQUEUE = true;
@@ -90,7 +96,9 @@ public class SurveyListener implements Runnable, RecoveryListener {
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                 String message = new String(body, "UTF-8");
-                log.info("QUEUE|MESSAGE|RECV|got message: {}", message);
+
+                String server = getQueueInfo(channel.getConnection());
+                log.info("QUEUE|MESSAGE|RECV|server: {} got message: {}", server, message);
 
                 try {
                     transformer.transform(message);
@@ -114,7 +122,7 @@ public class SurveyListener implements Runnable, RecoveryListener {
 
             @Override
             public void handleShutdownSignal(String consumerTag, ShutdownSignalException e) {
-                log.warn("QUEUE|CONNECTION|END|shutdown on queue: {} on host: {}", queue, host, e);
+                log.warn("QUEUE|CONNECTION|END|shutdown on queue: {} on host: {}", queue, server, e);
             }
         };
 
@@ -143,5 +151,9 @@ public class SurveyListener implements Runnable, RecoveryListener {
     public void handleRecovery(Recoverable recoverable) {
         log.warn("QUEUE|CONNECTION|END|queue connection was recovered");
         log.info("QUEUE|CONNECTION|START|queue connection was recovered");
+    }
+
+    private String getQueueInfo(Connection connection) {
+        return connection.getAddress().getHostName() + ":" + connection.getPort();
     }
 }
