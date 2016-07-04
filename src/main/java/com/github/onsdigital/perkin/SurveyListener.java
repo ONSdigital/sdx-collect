@@ -5,6 +5,7 @@ import com.github.onsdigital.perkin.transform.TransformEngine;
 import com.rabbitmq.client.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import java.util.Map;
 
 import java.io.IOException;
 
@@ -16,6 +17,11 @@ public class SurveyListener implements Runnable, RecoveryListener {
     private String queue;
     private String username;
     private String password;
+
+    private Boolean durable = true;
+    private Boolean exclusive = false;
+    private Boolean autoDelete = false;
+    private Map arguments = null;
 
     private TransformEngine transformer = TransformEngine.getInstance();
 
@@ -76,7 +82,7 @@ public class SurveyListener implements Runnable, RecoveryListener {
         Channel channel = connection.createChannel();
         ((Recoverable) channel).addRecoveryListener(this);
 
-        channel.queueDeclare(queue, false, true, false, null);
+        channel.queueDeclare(queue, durable, exclusive, autoDelete, arguments);
 
         log.info("QUEUE|CONNECTION|START|listening to queue: {} on host: {} host2: {} username: {} password: {}", queue, host, host2, username, ConfigurationManager.getSafe("RABBITMQ_DEFAULT_PASS"));
 
@@ -131,7 +137,7 @@ public class SurveyListener implements Runnable, RecoveryListener {
         Connection connection = factory.newConnection(addresses);
         Channel channel = connection.createChannel();
 
-        channel.queueDeclare(queue, false, false, false, null);
+        channel.queueDeclare(queue, durable, exclusive, autoDelete, arguments);
 
         String version = channel.getConnection().getServerProperties().get("version").toString();
         connection.close();
