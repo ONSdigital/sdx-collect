@@ -76,7 +76,7 @@ public class SurveyListener implements Runnable, RecoveryListener {
         Channel channel = connection.createChannel();
         ((Recoverable) channel).addRecoveryListener(this);
 
-        channel.queueDeclare(queue, false, false, false, null);
+        channel.queueDeclare(queue, false, true, false, null);
 
         log.info("QUEUE|CONNECTION|START|listening to queue: {} on host: {} host2: {} username: {} password: {}", queue, host, host2, username, ConfigurationManager.getSafe("RABBITMQ_DEFAULT_PASS"));
 
