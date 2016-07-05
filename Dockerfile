@@ -1,6 +1,7 @@
 FROM onsdigital/flask-crypto
 
 ADD consumer.py /app/consumer.py
+ADD receipt.py /app/receipt.py
 ADD settings.py /app/settings.py
 ADD requirements.txt /app/requirements.txt
 
