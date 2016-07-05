@@ -1,4 +1,0 @@
-language: java
-jdk:
-  - oraclejdk8
-script: mvn -Droot.log.level=INFO -Dlog.level=DEBUG test

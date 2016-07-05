@@ -1,19 +1,16 @@
-FROM java
+FROM onsdigital/flask-crypto
 
-# Add the build artifacts
-WORKDIR /usr/src
-#ADD git_commit_id /usr/src/
-ADD ./target/*-jar-with-dependencies.jar /usr/src/target/
-ADD ./src/main/resources/ons-root.cer /usr/src/
-ADD ./src/main/resources/ons-intermediate-01.cer /usr/src/
-ADD ./startup.sh /usr/src
+ADD server.py /app/server.py
+ADD settings.py /app/settings.py
+ADD requirements.txt /app/requirements.txt
 
-EXPOSE 8080
+RUN mkdir -p /app/logs
 
-RUN keytool -import -noprompt -trustcacerts -file /usr/src/ons-root.cer -alias ons-root -storepass changeit \
-      -keystore $JAVA_HOME/jre/lib/security/cacerts
-RUN keytool -import -noprompt -trustcacerts -file /usr/src/ons-intermediate-01.cer -alias ons-intermediate-01 -storepass changeit \
-      -keystore $JAVA_HOME/jre/lib/security/cacerts
+# set working directory to /app/
+WORKDIR /app/
 
-# Set the entry point
-ENTRYPOINT ./startup.sh
+EXPOSE 5001
+
+RUN pip3 install --no-cache-dir -U -I -r /app/requirements.txt
+
+ENTRYPOINT python3 server.py

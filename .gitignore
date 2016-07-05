@@ -1,8 +1,5 @@
-*.iml
-.idea
-target
-*.class
-*.jar
-*.DS_Store
-*.sequence
+.DS_Store
+tests/__pycache__/
+__pycache__
 logs/
+*.pyc
