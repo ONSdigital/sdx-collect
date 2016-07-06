@@ -1,4 +1,7 @@
 # sdx-collect
+
+[![Build Status](https://travis-ci.org/ONSdigital/sdx-collect.svg?branch=python-consumer)](https://travis-ci.org/ONSdigital/sdx-collect)
+
 The sdx-collect app is a component of the Office of National Statistics (ONS) Survey Data Exchange (SDX) project which listens to a queue for survey data.
 On receipt it hands off to sdx-decrypt to decrypt the survey data, validates the result with sdx-validate and then stores the json by calling sdx-store.
 
