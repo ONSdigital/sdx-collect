@@ -3,9 +3,11 @@ from structlog import wrap_logger
 import settings
 import requests
 import base64
-from jinja2 import Environment, PackageLoader
+import os
+from jinja2 import Environment, FileSystemLoader
 
-env = Environment(loader=PackageLoader('transform', 'templates'))
+
+env = Environment(loader=FileSystemLoader('%s/templates/' % os.path.dirname(__file__)))
 
 logger = wrap_logger(
     logging.getLogger(__name__)
