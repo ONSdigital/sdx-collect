@@ -6,7 +6,7 @@ import settings
 import requests
 import receipt
 
-logging.basicConfig(stream=sys.stdout, level=settings.logger_LEVEL, format=settings.LOGGING_FORMAT)
+logging.basicConfig(stream=sys.stdout, level=settings.LOGGING_LEVEL, format=settings.LOGGING_FORMAT)
 
 logger = wrap_logger(
     logging.getLogger(__name__)
