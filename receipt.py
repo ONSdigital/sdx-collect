@@ -1,18 +1,22 @@
-import io
 import logging
-import sys
 import settings
 import requests
 import base64
+from jinja2 import Environment, PackageLoader
+
+
+env = Environment(loader=PackageLoader('transform', 'templates'))
+
 
 def get_receipt_endpoint(decrypted_json):
     statistical_unit_id = decrypted_json['metadata']['ru_ref']
     exercise_sid = decrypted_json['collection']['exercise_sid']
     host = settings.RECEIPT_HOST
-    path = settings.RECEIPT_PATH 
+    path = settings.RECEIPT_PATH
     logging.debug("RECEIPT|HOST/PATH: %s/%s" % (host, path))
     uri = path + "/" + statistical_unit_id + "/collectionexercises/" + exercise_sid + "/receipts"
     return host + uri
+
 
 def get_receipt_headers():
     headers = {}
@@ -22,9 +26,11 @@ def get_receipt_headers():
     headers['Content-Type'] = "application/vnd.collections+xml"
     return headers
 
+
 def get_receipt_xml(decrypted_json):
     template = env.get_template('receipt.tmpl')
     return template.render(survey=decrypted_json)
+
 
 def send(decrypted_json):
     if settings.RECEIPT_HOST == "skip":
@@ -38,6 +44,6 @@ def send(decrypted_json):
 
     if result.status_code != 201:
         logging.debug("RECEIPT|RESPONSE|ERROR: Receipt failed for respondent_id=%s" % (respondent_id))
-    else: 
+    else:
         logging.debug("RECEIPT|RESPONSE|SUCCESS: Receipt success for respondent_id=%s" % (respondent_id))
     return result.status_code == 201
