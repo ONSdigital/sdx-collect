@@ -30,7 +30,7 @@ def store_survey(decrypted_json):
 def process(encrypted_survey):
     decrypted_result = decrypt_survey(encrypted_survey)
     if decrypted_result.status_code != 200:
-        logging.error("Decrypt survey failed", request_url=settings.SDX_DECRYPT_URL)
+        logger.error("Decrypt survey failed", request_url=settings.SDX_DECRYPT_URL)
         return
 
     decrypted_json = decrypted_result.json()
