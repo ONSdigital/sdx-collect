@@ -49,6 +49,10 @@ def process(encrypted_survey):
         bound_logger.error("Unable to store survey", request_url=settings.SDX_STORE_URL)
         return
 
+    if settings.RECEIPT_HOST == "skip":
+        bound_logger.debug("RECEIPT|SKIP|skipping sending receipt to RM")
+        return
+
     receipt_result = receipt.send(decrypted_json)
     if receipt_result.status_code != 201:
         bound_logger.error("RECEIPT|RESPONSE|ERROR: Receipt failed")

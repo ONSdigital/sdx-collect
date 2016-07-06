@@ -39,10 +39,6 @@ def get_receipt_xml(decrypted_json):
 
 
 def send(decrypted_json):
-    if settings.RECEIPT_HOST == "skip":
-        logger.debug("RECEIPT|SKIP|skipping sending receipt to RM")
-        return True
-
     endpoint = get_receipt_endpoint(decrypted_json)
     xml = get_receipt_xml(decrypted_json)
     return requests.post(endpoint, data=xml, headers=get_receipt_headers())
