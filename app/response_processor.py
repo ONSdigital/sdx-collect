@@ -3,7 +3,6 @@ from app import settings
 from app.settings import session
 import logging
 from structlog import wrap_logger
-import json
 from requests.packages.urllib3.exceptions import MaxRetryError
 
 logger = wrap_logger(logging.getLogger(__name__))
@@ -44,12 +43,11 @@ class ResponseProcessor:
 
     def process(self, encrypted_survey):
         # decrypt
-        decrypt_ok, decrypt_response = self.decrypt_survey(encrypted_survey)
+        decrypt_ok, decrypted_json = self.decrypt_survey(encrypted_survey)
         if not decrypt_ok:
             self.logger.error("Unable to decrypt survey")
             return False
 
-        decrypted_json = json.loads(decrypt_response)
         metadata = decrypted_json['metadata']
         bound_logger = self.logger.bind(user_id=metadata['user_id'], ru_ref=metadata['ru_ref'])
 
@@ -82,7 +80,7 @@ class ResponseProcessor:
         response = remote_call(settings.SDX_DECRYPT_URL, data=encrypted_survey)
         decrypt_ok = response_ok(response)
         if decrypt_ok:
-            return (True, response)
+            return (True, response.json())
         else:
             return (False, None)
 

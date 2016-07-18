@@ -21,9 +21,10 @@ def get_receipt_endpoint(decrypted_json):
 
     host = settings.RECEIPT_HOST
     path = settings.RECEIPT_PATH
-    logger.debug("RECEIPT|HOST/PATH: %s%s" % (host, path))
+    logger.debug("RECEIPT|HOST/PATH: %s/%s" % (host, path))
     uri = path + "/" + statistical_unit_id + "/collectionexercises/" + exercise_sid + "/receipts"
-    endpoint = host + uri
+    endpoint = host + "/" + uri
+    logger.debug("RECEIPT|ENDPOINT: %s" % endpoint)
     return (True, endpoint)
 
 
@@ -57,5 +58,5 @@ def send(decrypted_json):
         return False
 
     headers = get_receipt_headers()
-    response = requests.post(endpoint, data=xml, headers=headers)
+    response = requests.post(endpoint, data=xml.encode("utf-8"), headers=headers)
     return True if response.status_code == 201 else False

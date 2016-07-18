@@ -7,6 +7,7 @@ from app.response_processor import ResponseProcessor
 from tests.test_data import fake_encrypted, valid_decrypted
 
 logger = wrap_logger(logging.getLogger(__name__))
+valid_json = json.loads(valid_decrypted)
 
 
 class TestResponseProcessor(unittest.TestCase):
@@ -21,7 +22,7 @@ class TestResponseProcessor(unittest.TestCase):
 
     def test_decrypt_success_validate_failure(self):
         rp = ResponseProcessor(logger)
-        rp.decrypt_survey = MagicMock(return_value=(True, valid_decrypted))
+        rp.decrypt_survey = MagicMock(return_value=(True, valid_json))
         rp.validate_survey = MagicMock(return_value=False)
         response = rp.process(fake_encrypted)
 
@@ -30,46 +31,42 @@ class TestResponseProcessor(unittest.TestCase):
 
     def test_validate_success_store_failure(self):
         rp = ResponseProcessor(logger)
-        rp.decrypt_survey = MagicMock(return_value=(True, valid_decrypted))
+        rp.decrypt_survey = MagicMock(return_value=(True, valid_json))
         rp.validate_survey = MagicMock(return_value=True)
         rp.store_survey = MagicMock(return_value=False)
         response = rp.process(fake_encrypted)
 
-        survey_json = json.loads(valid_decrypted)
-        rp.store_survey.assert_called_with(survey_json)
+        rp.store_survey.assert_called_with(valid_json)
         self.assertFalse(response)
 
     def test_skip_receipt(self):
         rp = ResponseProcessor(logger)
-        rp.decrypt_survey = MagicMock(return_value=(True, valid_decrypted))
+        rp.decrypt_survey = MagicMock(return_value=(True, valid_json))
         rp.validate_survey = MagicMock(return_value=True)
         rp.store_survey = MagicMock(return_value=True)
         response = rp.process(fake_encrypted)
 
-        survey_json = json.loads(valid_decrypted)
-        rp.store_survey.assert_called_with(survey_json)
+        rp.store_survey.assert_called_with(valid_json)
         self.assertTrue(response)
 
     def test_receipt_send_failue(self):
         rp = ResponseProcessor(logger, False)
-        rp.decrypt_survey = MagicMock(return_value=(True, valid_decrypted))
+        rp.decrypt_survey = MagicMock(return_value=(True, valid_json))
         rp.validate_survey = MagicMock(return_value=True)
         rp.store_survey = MagicMock(return_value=True)
         rp.send_receipt = MagicMock(return_value=False)
         response = rp.process(fake_encrypted)
 
-        survey_json = json.loads(valid_decrypted)
-        rp.send_receipt.assert_called_with(survey_json)
+        rp.send_receipt.assert_called_with(valid_json)
         self.assertFalse(response)
 
     def test_receipt_send_success(self):
         rp = ResponseProcessor(logger, False)
-        rp.decrypt_survey = MagicMock(return_value=(True, valid_decrypted))
+        rp.decrypt_survey = MagicMock(return_value=(True, valid_json))
         rp.validate_survey = MagicMock(return_value=True)
         rp.store_survey = MagicMock(return_value=True)
         rp.send_receipt = MagicMock(return_value=True)
         response = rp.process(fake_encrypted)
 
-        survey_json = json.loads(valid_decrypted)
-        rp.send_receipt.assert_called_with(survey_json)
+        rp.send_receipt.assert_called_with(valid_json)
         self.assertTrue(response)
