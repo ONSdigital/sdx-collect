@@ -1,15 +1,11 @@
 FROM onsdigital/flask-crypto
 
-ADD consumer.py /app/consumer.py
-ADD receipt.py /app/receipt.py
-ADD settings.py /app/settings.py
-ADD requirements.txt /app/requirements.txt
+ADD app /app
+ADD requirements.txt /requirements.txt
+ADD startup.sh /startup.sh
 
 RUN mkdir -p /app/logs
 
-# set working directory to /app/
-WORKDIR /app/
+RUN pip3 install --no-cache-dir -U -I -r /requirements.txt
 
-RUN pip3 install --no-cache-dir -U -I -r /app/requirements.txt
-
-ENTRYPOINT python3 consumer.py
+ENTRYPOINT ./startup.sh

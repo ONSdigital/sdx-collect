@@ -1,5 +1,6 @@
-from consumer import logger
-import settings
+from app import settings
+import logging
+from structlog import wrap_logger
 import requests
 import base64
 import os
@@ -7,6 +8,7 @@ from jinja2 import Environment, FileSystemLoader
 
 env = Environment(loader=FileSystemLoader('%s/templates/' % os.path.dirname(__file__)))
 
+logger = wrap_logger(logging.getLogger(__name__))
 
 def get_receipt_endpoint(decrypted_json):
     statistical_unit_id = decrypted_json['metadata']['ru_ref']
