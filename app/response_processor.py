@@ -44,12 +44,12 @@ class ResponseProcessor:
 
     def process(self, encrypted_survey):
         # decrypt
-        decrypt_result = self.decrypt_survey(encrypted_survey)
-        if not decrypt_result[0]:
+        decrypt_ok, decrypt_response = self.decrypt_survey(encrypted_survey)
+        if not decrypt_ok:
             self.logger.error("Unable to decrypt survey")
             return False
 
-        decrypted_json = json.loads(decrypt_result[1])
+        decrypted_json = json.loads(decrypt_response)
         metadata = decrypted_json['metadata']
         bound_logger = self.logger.bind(user_id=metadata['user_id'], ru_ref=metadata['ru_ref'])
 
@@ -95,5 +95,4 @@ class ResponseProcessor:
         return response_ok(response)
 
     def send_receipt(self, decrypted_json):
-        receipt_result = receipt.send(decrypted_json)
-        return True if receipt_result.status_code == 201 else False
+        return receipt.send(decrypted_json)

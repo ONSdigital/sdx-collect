@@ -24,3 +24,9 @@ valid_decrypted = '''
   }
 }
 '''
+
+invalid_decrypted = '''
+{
+  "abc": "def"
+}
+'''
