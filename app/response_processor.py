@@ -3,6 +3,7 @@ from app import settings
 from app.settings import session
 import logging
 from structlog import wrap_logger
+import json
 from requests.packages.urllib3.exceptions import MaxRetryError
 
 logger = wrap_logger(logging.getLogger(__name__))
@@ -37,49 +38,62 @@ def response_ok(res):
 
 
 class ResponseProcessor:
-    def __init__(self, logger):
+    def __init__(self, logger, skip_receipt=True):
         self.logger = logger
+        self.skip_receipt = skip_receipt
 
     def process(self, encrypted_survey):
         # decrypt
         decrypt_result = self.decrypt_survey(encrypted_survey)
-        decrypt_ok = response_ok(decrypt_result)
-        if not decrypt_ok:
+        if not decrypt_result[0]:
+            self.logger.error("Unable to decrypt survey")
             return False
 
-        decrypted_json = decrypt_result.json()
+        decrypted_json = json.loads(decrypt_result[1])
         metadata = decrypted_json['metadata']
-        bound_logger = logger.bind(user_id=metadata['user_id'], ru_ref=metadata['ru_ref'])
+        bound_logger = self.logger.bind(user_id=metadata['user_id'], ru_ref=metadata['ru_ref'])
 
         # validate
         validate_ok = self.validate_survey(decrypted_json)
         if not validate_ok:
+            bound_logger.error("Unable to validate survey")
             return False
 
         # store
         store_ok = self.store_survey(decrypted_json)
         if not store_ok:
+            bound_logger.error("Unable to store survey")
             return False
 
         # receipt
-        if settings.RECEIPT_HOST == "skip":
-            bound_logger.debug("RECEIPT|SKIP|skipping sending receipt to RM")
+        if self.skip_receipt:
+            bound_logger.debug("RECEIPT|SKIP: Skipping sending receipt to RM")
             return True
 
-        receipt_result = receipt.send(decrypted_json)
-        if receipt_result.status_code != 201:
+        receipt_ok = self.send_receipt(decrypted_json)
+        if not receipt_ok:
             bound_logger.error("RECEIPT|RESPONSE|ERROR: Receipt failed")
-            return False
-
         else:
             bound_logger.debug("RECEIPT|RESPONSE|SUCCESS: Receipt success")
-            return True
+
+        return receipt_ok
 
     def decrypt_survey(self, encrypted_survey):
-        return remote_call(settings.SDX_DECRYPT_URL, data=encrypted_survey)
+        response = remote_call(settings.SDX_DECRYPT_URL, data=encrypted_survey)
+        decrypt_ok = response_ok(response)
+        if decrypt_ok:
+            return (True, response)
+        else:
+            return (False, None)
 
     def validate_survey(self, decrypted_json):
-        return remote_call(settings.SDX_VALIDATE_URL, json=decrypted_json)
+        response = remote_call(settings.SDX_VALIDATE_URL, json=decrypted_json)
+        return response_ok(response)
 
     def store_survey(self, decrypted_json):
-        return remote_call(settings.SDX_STORE_URL, json=decrypted_json)
+        response = remote_call(settings.SDX_STORE_URL, json=decrypted_json)
+        return response_ok(response)
+
+    def send_receipt(self, decrypted_json):
+        receipt_result = receipt.send(decrypted_json)
+        return True if receipt_result.status_code == 201 else False
