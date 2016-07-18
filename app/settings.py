@@ -14,7 +14,7 @@ SDX_STORE_URL = os.getenv("SDX_STORE_URL", "http://sdx-store:5000/responses")
 SDX_DECRYPT_URL = os.getenv("SDX_DECRYPT_URL", "http://sdx-decrypt:5000/decrypt")
 SDX_VALIDATE_URL = os.getenv("SDX_VALIDATE_URL", "http://sdx-validate:5000/validate")
 
-RECEIPT_HOST = os.getenv("RECEIPT_HOST", "http://sdx-mock-receipt:5000/")
+RECEIPT_HOST = os.getenv("RECEIPT_HOST", "http://sdx-mock-receipt:5000")
 RECEIPT_PATH = os.getenv("RECEIPT_PATH", "reportingunits")
 RECEIPT_USER = os.getenv("RECEIPT_USER", "")
 RECEIPT_PASS = os.getenv("RECEIPT_PASS", "")
