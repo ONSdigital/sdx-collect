@@ -18,6 +18,9 @@ class ResponseProcessor:
         metadata = decrypted_json['metadata']
         self.logger = self.logger.bind(user_id=metadata['user_id'], ru_ref=metadata['ru_ref'])
 
+        if 'tx_id' in decrypted_json:
+            self.logger = self.logger.bind(tx_id=decrypted_json['tx_id'])
+
         # validate
         validate_ok = self.validate_survey(decrypted_json)
         if not validate_ok:
