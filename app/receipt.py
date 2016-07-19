@@ -28,15 +28,6 @@ def get_receipt_endpoint(decrypted_json):
     return (True, endpoint)
 
 
-def get_receipt_headers():
-    headers = {}
-    auth = settings.RECEIPT_USER + ":" + settings.RECEIPT_PASS
-    encoded = base64.b64encode(bytes(auth, 'utf-8'))
-    headers['Authorization'] = "Basic " + str(encoded)
-    headers['Content-Type'] = "application/vnd.collections+xml"
-    return headers
-
-
 def get_receipt_xml(decrypted_json):
     try:
         template = env.get_template('receipt.xml.tmpl')
@@ -48,15 +39,16 @@ def get_receipt_xml(decrypted_json):
         return (False, None)
 
 
-def send(decrypted_json):
-    endpoint_success, endpoint = get_receipt_endpoint(decrypted_json)
-    if not endpoint_success:
-        return False
+def get_receipt_headers():
+    headers = {}
+    auth = settings.RECEIPT_USER + ":" + settings.RECEIPT_PASS
+    encoded = base64.b64encode(bytes(auth, 'utf-8'))
+    headers['Authorization'] = "Basic " + str(encoded)
+    headers['Content-Type'] = "application/vnd.collections+xml"
+    return headers
 
-    render_success, xml = get_receipt_xml(decrypted_json)
-    if not render_success:
-        return False
 
+def send(endpoint, xml):
     headers = get_receipt_headers()
-    response = requests.post(endpoint, data=xml.encode("utf-8"), headers=headers)
+    response = requests.post(endpoint, data=xml, headers=headers)
     return True if response.status_code == 201 else False
