@@ -5,9 +5,8 @@ from requests.packages.urllib3.exceptions import MaxRetryError
 
 
 class ResponseProcessor:
-    def __init__(self, logger, skip_receipt=True):
+    def __init__(self, logger):
         self.logger = logger
-        self.skip_receipt = skip_receipt
         self.tx_id = ""
 
     def process(self, encrypted_survey):
@@ -34,7 +33,7 @@ class ResponseProcessor:
             return False
 
         # receipt
-        if self.skip_receipt:
+        if settings.RECEIPT_HOST == "skip":
             self.logger.debug("RECEIPT|SKIP: Skipping sending receipt to RM")
             return True
 

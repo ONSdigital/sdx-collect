@@ -222,14 +222,14 @@ class AsyncConsumer(object):
         if self._channel:
             self._channel.close()
 
-    def acknowledge_message(self, delivery_tag):
+    def acknowledge_message(self, delivery_tag, **kwargs):
         """Acknowledge the message delivery from RabbitMQ by sending a
         Basic.Ack RPC method for the delivery tag.
 
         :param int delivery_tag: The delivery tag from the Basic.Deliver frame
 
         """
-        logger.info('Acknowledging message', d_tag=delivery_tag)
+        logger.info('Acknowledging message', delivery_tag=delivery_tag, **kwargs)
         self._channel.basic_ack(delivery_tag)
 
     def on_message(self, unused_channel, basic_deliver, properties, body):
@@ -247,7 +247,7 @@ class AsyncConsumer(object):
 
         """
         logger.info('Received message',
-                    d_tag=basic_deliver.delivery_tag, app_id=properties.app_id, msg=body)
+                    delivery_tag=basic_deliver.delivery_tag, app_id=properties.app_id, msg=body)
         self.acknowledge_message(basic_deliver.delivery_tag)
 
     def on_cancelok(self, unused_frame):
