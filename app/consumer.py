@@ -13,8 +13,7 @@ class Consumer(AsyncConsumer):
         processor = ResponseProcessor(logger)
 
         try:
-            response_str = body.decode("utf-8")
-            processed_ok = processor.process(response_str)
+            processed_ok = processor.process(body.decode("utf-8"))
 
             if processed_ok:
                 self.acknowledge_message(basic_deliver.delivery_tag, tx_id=processor.tx_id)
