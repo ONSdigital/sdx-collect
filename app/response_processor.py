@@ -8,6 +8,7 @@ class ResponseProcessor:
     def __init__(self, logger, skip_receipt=True):
         self.logger = logger
         self.skip_receipt = skip_receipt
+        self.tx_id = ""
 
     def process(self, encrypted_survey):
         # decrypt
@@ -19,7 +20,8 @@ class ResponseProcessor:
         self.logger = self.logger.bind(user_id=metadata['user_id'], ru_ref=metadata['ru_ref'])
 
         if 'tx_id' in decrypted_json:
-            self.logger = self.logger.bind(tx_id=decrypted_json['tx_id'])
+            self.tx_id = decrypted_json['tx_id']
+            self.logger = self.logger.bind(tx_id=self.tx_id)
 
         # validate
         validate_ok = self.validate_survey(decrypted_json)
