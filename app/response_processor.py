@@ -75,7 +75,7 @@ class ResponseProcessor:
 
         headers = receipt.get_receipt_headers()
 
-        response = self.remote_call(endpoint, data=xml, headers=headers)
+        response = self.remote_call(endpoint, data=xml.encode("utf-8"), headers=headers)
         return self.response_ok(response)
 
     def remote_call(self, request_url, json=None, data=None, headers=None):

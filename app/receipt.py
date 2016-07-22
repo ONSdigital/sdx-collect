@@ -31,7 +31,7 @@ def get_receipt_xml(decrypted_json):
     try:
         template = env.get_template('receipt.xml.tmpl')
         output = template.render(survey=decrypted_json)
-        return output.encode("utf-8")
+        return output
 
     except Exception as e:
         logger.error("Unable to render xml receipt", exception=repr(e))
