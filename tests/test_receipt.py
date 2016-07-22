@@ -4,7 +4,7 @@ from app import receipt
 from tests.test_data import valid_decrypted, invalid_decrypted
 import logging
 
-logger = logging.getLogger(__name__)
+logging.disable(logging.CRITICAL)
 
 
 def get_file_as_string(filename):
