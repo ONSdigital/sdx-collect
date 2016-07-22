@@ -18,17 +18,15 @@ class TestReceipt(unittest.TestCase):
 
     def test_receipt_endpoint_valid_json(self):
         decrypted_json = json.loads(valid_decrypted)
-        endpoint_success, endpoint = receipt.get_receipt_endpoint(decrypted_json)
+        endpoint = receipt.get_receipt_endpoint(decrypted_json)
         expected = "http://sdx-mock-receipt:5000/reportingunits/1234570071A/collectionexercises/hfjdskf/receipts"
 
-        self.assertTrue(endpoint_success)
         self.assertEqual(endpoint, expected)
 
     def test_receipt_endpoint_invalid_json(self):
         decrypted_json = json.loads(invalid_decrypted)
-        endpoint_success, endpoint = receipt.get_receipt_endpoint(decrypted_json)
+        endpoint = receipt.get_receipt_endpoint(decrypted_json)
 
-        self.assertFalse(endpoint_success)
         self.assertEqual(endpoint, None)
 
     def test_get_receipt_headers(self):
@@ -39,15 +37,13 @@ class TestReceipt(unittest.TestCase):
 
     def test_render_xml_valid_json(self):
         decrypted_json = json.loads(valid_decrypted)
-        success, output_xml = receipt.get_receipt_xml(decrypted_json)
+        output_xml = receipt.get_receipt_xml(decrypted_json)
         expected_xml = get_file_as_string("./tests/xml/valid_receipt.xml")
 
-        self.assertTrue(success)
         self.assertEqual(output_xml, expected_xml)
 
     def test_render_xml_invalid_json(self):
         decrypted_json = json.loads(invalid_decrypted)
-        success, output_xml = receipt.get_receipt_xml(decrypted_json)
+        output_xml = receipt.get_receipt_xml(decrypted_json)
 
-        self.assertFalse(success)
         self.assertEqual(output_xml, None)
