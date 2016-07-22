@@ -10,12 +10,6 @@ env = Environment(loader=FileSystemLoader('%s/templates/' % os.path.dirname(__fi
 logger = wrap_logger(logging.getLogger(__name__))
 
 
-def skip_receipt():
-    if settings.RECEIPT_HOST is "skip":
-        return True
-    else:
-        return False
-
 def get_receipt_endpoint(decrypted_json):
     try:
         statistical_unit_id = decrypted_json['metadata']['ru_ref']
