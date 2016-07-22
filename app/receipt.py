@@ -1,7 +1,6 @@
 from app import settings
 import logging
 from structlog import wrap_logger
-import requests
 import base64
 import os
 from jinja2 import Environment, FileSystemLoader
@@ -17,7 +16,7 @@ def get_receipt_endpoint(decrypted_json):
         exercise_sid = decrypted_json['collection']['exercise_sid']
     except KeyError as e:
         logger.error("Unable to get required data from json", exception=repr(e))
-        return (False, None)
+        return None
 
     host = settings.RECEIPT_HOST
     path = settings.RECEIPT_PATH
@@ -25,18 +24,18 @@ def get_receipt_endpoint(decrypted_json):
     uri = path + "/" + statistical_unit_id + "/collectionexercises/" + exercise_sid + "/receipts"
     endpoint = host + "/" + uri
     logger.debug("RECEIPT|ENDPOINT: %s" % endpoint)
-    return (True, endpoint)
+    return endpoint
 
 
 def get_receipt_xml(decrypted_json):
     try:
         template = env.get_template('receipt.xml.tmpl')
         output = template.render(survey=decrypted_json)
-        return (True, output)
+        return output
 
     except Exception as e:
         logger.error("Unable to render xml receipt", exception=repr(e))
-        return (False, None)
+        return None
 
 
 def get_receipt_headers():
@@ -46,9 +45,3 @@ def get_receipt_headers():
     headers['Authorization'] = "Basic " + str(encoded)
     headers['Content-Type'] = "application/vnd.collections+xml"
     return headers
-
-
-def send(endpoint, xml):
-    headers = get_receipt_headers()
-    response = requests.post(endpoint, data=xml, headers=headers)
-    return True if response.status_code == 201 else False

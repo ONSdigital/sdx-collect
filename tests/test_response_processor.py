@@ -44,13 +44,14 @@ class TestResponseProcessor(unittest.TestCase):
         rp.decrypt_survey = MagicMock(return_value=(True, valid_json))
         rp.validate_survey = MagicMock(return_value=True)
         rp.store_survey = MagicMock(return_value=True)
+        rp.skip_receipt = True
         response = rp.process(fake_encrypted)
 
         rp.store_survey.assert_called_with(valid_json)
         self.assertTrue(response)
 
     def test_receipt_send_failue(self):
-        rp = ResponseProcessor(logger, False)
+        rp = ResponseProcessor(logger)
         rp.decrypt_survey = MagicMock(return_value=(True, valid_json))
         rp.validate_survey = MagicMock(return_value=True)
         rp.store_survey = MagicMock(return_value=True)
@@ -61,7 +62,7 @@ class TestResponseProcessor(unittest.TestCase):
         self.assertFalse(response)
 
     def test_receipt_send_success(self):
-        rp = ResponseProcessor(logger, False)
+        rp = ResponseProcessor(logger)
         rp.decrypt_survey = MagicMock(return_value=(True, valid_json))
         rp.validate_survey = MagicMock(return_value=True)
         rp.store_survey = MagicMock(return_value=True)
