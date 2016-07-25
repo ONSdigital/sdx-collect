@@ -1,4 +1,9 @@
-language: java
-jdk:
-  - oraclejdk8
-script: mvn -Droot.log.level=INFO -Dlog.level=DEBUG test
+language: python
+python:
+    - "3.5"
+install:
+- "pip install -r requirements.txt"
+- "pip install -r test_requirements.txt"
+script:
+- flake8
+- python -m unittest tests/*.py
