@@ -19,7 +19,7 @@ class TestReceipt(unittest.TestCase):
     def test_receipt_endpoint_valid_json(self):
         decrypted_json = json.loads(valid_decrypted)
         endpoint = receipt.get_receipt_endpoint(decrypted_json)
-        expected = "http://sdx-mock-receipt:5000/reportingunits/1234570071A/collectionexercises/hfjdskf/receipts"
+        expected = "http://sdx-mock-receipt:5000/reportingunits/12345678901A/collectionexercises/hfjdskf/receipts"
 
         self.assertEqual(endpoint, expected)
 
