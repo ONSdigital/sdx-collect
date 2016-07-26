@@ -90,8 +90,8 @@ class AsyncConsumer(object):
         if self._closing:
             self._connection.ioloop.stop()
         else:
-            logger.warning('Connection closed, reopening in 5 seconds: (%s) %s',
-                           reply_code, reply_text)
+            logger.warning('Connection closed, reopening in 5 seconds',
+                           reply_code=reply_code, reply_text=reply_text)
             self._connection.add_timeout(5, self.reconnect)
 
     def on_connection_open(self, unused_connection):
