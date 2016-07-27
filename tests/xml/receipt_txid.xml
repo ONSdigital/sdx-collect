@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <receipt xmlns="http://ns.ons.gov.uk/namespaces/resources/receipt">
   <receipt_type>Completed</receipt_type>
-  <respondent_id>{{survey.metadata.user_id}}</respondent_id>
-  {%- if survey.tx_id %}
-  <tx_id>{{survey.tx_id}}</tx_id>
-  {%- endif %}
+  <respondent_id>789473423</respondent_id>
+  <tx_id>0f534ffc-9442-414c-b39f-a756b4adc6cb</tx_id>
 </receipt>
