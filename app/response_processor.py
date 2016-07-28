@@ -75,20 +75,20 @@ class ResponseProcessor:
 
         headers = receipt.get_receipt_headers()
 
-        response = self.remote_call(endpoint, data=xml.encode("utf-8"), headers=headers, verify=False)
+        response = self.remote_call(endpoint, data=xml.encode("utf-8"), headers=headers, verify=False, auth=(settings.RECEIPT_USER, settings.RECEIPT_PASS))
         return self.response_ok(response)
 
-    def remote_call(self, request_url, json=None, data=None, headers=None, verify=True):
+    def remote_call(self, request_url, json=None, data=None, headers=None, verify=True, auth=None):
         try:
             self.logger.info("Calling service", request_url=request_url)
             r = None
 
             if json:
-                r = session.post(request_url, json=json, headers=headers, verify=verify)
+                r = session.post(request_url, json=json, headers=headers, verify=verify, auth=auth)
             elif data:
-                r = session.post(request_url, data=data, headers=headers, verify=verify)
+                r = session.post(request_url, data=data, headers=headers, verify=verify, auth=auth)
             else:
-                r = session.get(request_url, headers=headers, verify=verify)
+                r = session.get(request_url, headers=headers, verify=verify, auth=auth)
 
             return r
 
