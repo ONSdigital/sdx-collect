@@ -11,7 +11,7 @@ def get_file_as_string(filename):
     f = open(filename)
     contents = f.read()
     f.close()
-    return contents
+    return contents.rstrip("\n")
 
 
 class TestReceipt(unittest.TestCase):
