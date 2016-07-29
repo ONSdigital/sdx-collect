@@ -40,8 +40,5 @@ def get_receipt_xml(decrypted_json):
 
 def get_receipt_headers():
     headers = {}
-    auth = settings.RECEIPT_USER + ":" + settings.RECEIPT_PASS
-    encoded = base64.b64encode(bytes(auth, 'utf-8'))
-    headers['Authorization'] = "Basic " + str(encoded)
     headers['Content-Type'] = "application/vnd.collections+xml"
     return headers
