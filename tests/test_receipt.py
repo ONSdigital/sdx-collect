@@ -32,7 +32,6 @@ class TestReceipt(unittest.TestCase):
     def test_get_receipt_headers(self):
         headers = receipt.get_receipt_headers()
 
-        self.assertTrue("Basic " in headers['Authorization'])
         self.assertEqual(headers['Content-Type'], "application/vnd.collections+xml")
 
     def test_render_xml_valid_json_txid(self):
