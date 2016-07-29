@@ -10,9 +10,24 @@ env = Environment(loader=FileSystemLoader('%s/templates/' % os.path.dirname(__fi
 logger = wrap_logger(logging.getLogger(__name__))
 
 
+def get_statistical_unit_id(ru_ref):
+    if ru_ref is None:
+        return ''
+
+    length = len(ru_ref)
+    if length < 12:
+        return ru_ref
+
+    if length == 12 and ru_ref[-1:].isalpha():
+        return ru_ref[0:11]
+
+    return ru_ref
+
+
 def get_receipt_endpoint(decrypted_json):
     try:
-        statistical_unit_id = decrypted_json['metadata']['ru_ref']
+        ru_ref = decrypted_json['metadata']['ru_ref']
+        statistical_unit_id = get_statistical_unit_id(ru_ref)
         exercise_sid = decrypted_json['collection']['exercise_sid']
     except KeyError as e:
         logger.error("Unable to get required data from json", exception=repr(e))
