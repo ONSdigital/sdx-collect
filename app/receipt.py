@@ -1,7 +1,6 @@
 from app import settings
 import logging
 from structlog import wrap_logger
-import base64
 import os
 from jinja2 import Environment, FileSystemLoader
 
