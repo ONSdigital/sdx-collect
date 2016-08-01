@@ -1,7 +1,6 @@
 from app import settings
 import logging
 from structlog import wrap_logger
-import base64
 import os
 from jinja2 import Environment, FileSystemLoader
 
@@ -10,9 +9,24 @@ env = Environment(loader=FileSystemLoader('%s/templates/' % os.path.dirname(__fi
 logger = wrap_logger(logging.getLogger(__name__))
 
 
+def get_statistical_unit_id(ru_ref):
+    if ru_ref is None:
+        return ''
+
+    length = len(ru_ref)
+    if length < 12:
+        return ru_ref
+
+    if length == 12 and ru_ref[-1:].isalpha():
+        return ru_ref[0:11]
+
+    return ru_ref
+
+
 def get_receipt_endpoint(decrypted_json):
     try:
-        statistical_unit_id = decrypted_json['metadata']['ru_ref']
+        ru_ref = decrypted_json['metadata']['ru_ref']
+        statistical_unit_id = get_statistical_unit_id(ru_ref)
         exercise_sid = decrypted_json['collection']['exercise_sid']
     except KeyError as e:
         logger.error("Unable to get required data from json", exception=repr(e))
@@ -40,8 +54,5 @@ def get_receipt_xml(decrypted_json):
 
 def get_receipt_headers():
     headers = {}
-    auth = settings.RECEIPT_USER + ":" + settings.RECEIPT_PASS
-    encoded = base64.b64encode(bytes(auth, 'utf-8'))
-    headers['Authorization'] = "Basic " + str(encoded)
     headers['Content-Type'] = "application/vnd.collections+xml"
     return headers
