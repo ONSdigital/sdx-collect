@@ -5,7 +5,7 @@ from requests.packages.urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
 
 LOGGING_FORMAT = "%(asctime)s|%(levelname)s: sdx-collect: %(message)s"
-LOGGING_LEVEL = logging.DEBUG
+LOGGING_LEVEL = logging.getLevelName(os.getenv('LOGGING_LEVEL', 'DEBUG'))
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 APP_TMP = os.path.join(APP_ROOT, 'tmp')
@@ -20,6 +20,10 @@ RECEIPT_USER = os.getenv("RECEIPT_USER", "")
 RECEIPT_PASS = os.getenv("RECEIPT_PASS", "")
 
 RABBIT_QUEUE = os.getenv('RABBITMQ_QUEUE', 'survey')
+RABBIT_DELAY_QUEUE = os.getenv('RABBITMQ_QUEUE', 'survey_delay')
+RABBIT_EXCHANGE = os.getenv('RABBITMQ_EXCHANGE', 'message')
+QUEUE_RETRY_DELAY_IN_MS = 20000
+QUEUE_MAX_MESSAGE_DELIVERIES = 3
 
 RABBIT_URL = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
     hostname=os.getenv('RABBITMQ_HOST', 'rabbit'),
