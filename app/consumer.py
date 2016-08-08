@@ -37,13 +37,14 @@ class Consumer(AsyncConsumer):
         processor = ResponseProcessor(logger)
 
         try:
-            processed_ok = processor.process(body.decode("utf-8"))
+            message = body.decode("utf-8")
+            processed_ok = processor.process(message)
 
             if processed_ok:
                 self.acknowledge_message(basic_deliver.delivery_tag, tx_id=processor.tx_id)
             else:
                 if delivery_count == settings.QUEUE_MAX_MESSAGE_DELIVERIES:
-                    logger.error("Reached maximum number of retries", tx_id=processor.tx_id, delivery_count=delivery_count)
+                    logger.error("Reached maximum number of retries", tx_id=processor.tx_id, delivery_count=delivery_count, message=message)
                     self.reject_message(basic_deliver.delivery_tag, tx_id=processor.tx_id)
                 else:
                     if publish_to_retry_queue(body, delivery_count):
