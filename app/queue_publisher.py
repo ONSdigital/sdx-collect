@@ -2,7 +2,11 @@ import pika
 
 
 def get_host(url):
-    return url.split("@")[1]
+    try:
+        scheme = url.split('://')[0]
+        return scheme + '://' + url.split("@")[1]
+    except IndexError:
+        return url
 
 
 class QueuePublisher(object):
