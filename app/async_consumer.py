@@ -52,12 +52,12 @@ class AsyncConsumer(object):
             self._url = settings.RABBIT_URLS[server_choice]
 
             try:
-                logger.info('Connecting', amqp_url=self._url, attempt=count)
+                logger.info('Connecting to queue', attempt=count)
                 return pika.SelectConnection(pika.URLParameters(self._url),
                                              self.on_connection_open,
                                              stop_ioloop_on_close=False)
             except pika.exceptions.AMQPConnectionError as e:
-                logger.error("Connection error", exception=e, amqp_url=self._url)
+                logger.error("Connection error", exception=e)
                 count += 1
                 logger.error("Connection sleep", no_of_seconds=count)
                 time.sleep(count)
