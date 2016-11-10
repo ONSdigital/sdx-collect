@@ -52,7 +52,7 @@ class AsyncConsumer(object):
             self._url = settings.RABBIT_URLS[server_choice]
 
             try:
-                logger.info('Connecting to rabbit', attempt=count)
+                logger.info('Connecting to queue', attempt=count)
                 return pika.SelectConnection(pika.URLParameters(self._url),
                                              self.on_connection_open,
                                              stop_ioloop_on_close=False)
