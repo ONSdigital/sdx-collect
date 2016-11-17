@@ -23,7 +23,7 @@ class AsyncConsumer(object):
     EXCHANGE = settings.RABBIT_EXCHANGE
     EXCHANGE_TYPE = 'topic'
     DURABLE_QUEUE = True
-    QUEUE = settings.RABBIT_QUEUE
+    QUEUE = settings.RABBIT_SURVEY_QUEUE
 
     def __init__(self):
         """Create a new instance of the consumer class

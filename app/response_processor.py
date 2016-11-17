@@ -1,17 +1,18 @@
-from app import receipt
 from app import settings
+from app.queue_publisher import QueuePublisher
 from app.settings import session
 from requests.packages.urllib3.exceptions import MaxRetryError
+
+
+def queue_receipt(logger, payload):
+    publisher = QueuePublisher(logger, settings.RABBIT_URLS, settings.RABBIT_RRM_RECEIPT_QUEUE)
+    return publisher.publish_message(payload)
 
 
 class ResponseProcessor:
     def __init__(self, logger):
         self.logger = logger
         self.tx_id = ""
-        if settings.RECEIPT_HOST == "skip":
-            self.skip_receipt = True
-        else:
-            self.skip_receipt = False
 
     def process(self, encrypted_survey):
         # decrypt
@@ -36,11 +37,18 @@ class ResponseProcessor:
         if not store_ok:
             return False
 
-        receipt_ok = self.send_receipt(decrypted_json)
-        if not receipt_ok:
+        receipt_json = {
+            'tx_id': decrypted_json['tx_id'],
+            'collection': {'exercise_sid': decrypted_json['collection']['exercise_sid']},
+            'metadata': {
+                'ru_ref': decrypted_json['metadata']['ru_ref'],
+                'user_id': decrypted_json['metadata']['user_id']}
+        }
+
+        queued = queue_receipt(self.logger, receipt_json)
+
+        if not queued:
             return False
-        else:
-            return True
 
     def decrypt_survey(self, encrypted_survey):
         response = self.remote_call(settings.SDX_DECRYPT_URL, data=encrypted_survey)
@@ -56,26 +64,6 @@ class ResponseProcessor:
 
     def store_survey(self, decrypted_json):
         response = self.remote_call(settings.SDX_STORE_URL, json=decrypted_json)
-        return self.response_ok(response)
-
-    def send_receipt(self, decrypted_json):
-        if self.skip_receipt:
-            self.logger.debug("Skipping sending receipt to RRM")
-            return True
-        else:
-            self.logger.debug("Sending receipt to RRM")
-
-        endpoint = receipt.get_receipt_endpoint(decrypted_json)
-        if endpoint is None:
-            return False
-
-        xml = receipt.get_receipt_xml(decrypted_json)
-        if xml is None:
-            return False
-
-        headers = receipt.get_receipt_headers()
-
-        response = self.remote_call(endpoint, data=xml.encode("utf-8"), headers=headers, verify=False, auth=(settings.RECEIPT_USER, settings.RECEIPT_PASS))
         return self.response_ok(response)
 
     def remote_call(self, request_url, json=None, data=None, headers=None, verify=True, auth=None):

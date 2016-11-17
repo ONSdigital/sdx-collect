@@ -14,16 +14,14 @@ SDX_STORE_URL = os.getenv("SDX_STORE_URL", "http://sdx-store:5000/responses")
 SDX_DECRYPT_URL = os.getenv("SDX_DECRYPT_URL", "http://sdx-decrypt:5000/decrypt")
 SDX_VALIDATE_URL = os.getenv("SDX_VALIDATE_URL", "http://sdx-validate:5000/validate")
 
-RECEIPT_HOST = os.getenv("RECEIPT_HOST", "http://sdx-mock-receipt:5000")
-RECEIPT_PATH = os.getenv("RECEIPT_PATH", "reportingunits")
-RECEIPT_USER = os.getenv("RECEIPT_USER", "")
-RECEIPT_PASS = os.getenv("RECEIPT_PASS", "")
-
-RABBIT_QUEUE = os.getenv('RABBITMQ_QUEUE', 'survey')
-RABBIT_DELAY_QUEUE = os.getenv('RABBIT_DELAY_QUEUE', 'survey_delay')
+RABBIT_SURVEY_QUEUE = os.getenv('RABBIT_SURVEY_QUEUE', 'survey')
+RABBIT_SURVEY_DELAY_QUEUE = os.getenv('RABBIT_SURVEY_DELAY_QUEUE', 'survey_delay')
 RABBIT_EXCHANGE = os.getenv('RABBITMQ_EXCHANGE', 'message')
 QUEUE_RETRY_DELAY_IN_MS = 20000
 QUEUE_MAX_MESSAGE_DELIVERIES = 3
+
+RABBIT_RRM_RECEIPT_QUEUE = os.getenv('RABBIT_RRM_RECEIPT_QUEUE', 'rrm_receipt')
+RABBIT_RRM_RECEIPT_DELAY_QUEUE = os.getenv('RABBIT_RRM_RECEIPT_DELAY_QUEUE', 'rrm_receipt_delay')
 
 RABBIT_URL = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
     hostname=os.getenv('RABBITMQ_HOST', 'rabbit'),

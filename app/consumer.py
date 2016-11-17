@@ -10,10 +10,10 @@ logger = wrap_logger(logging.getLogger(__name__))
 
 
 def publish_to_retry_queue(message, count):
-    publisher = QueuePublisher(logger, settings.RABBIT_URLS, settings.RABBIT_DELAY_QUEUE, arguments={
+    publisher = QueuePublisher(logger, settings.RABBIT_URLS, settings.RABBIT_SURVEY_DELAY_QUEUE, arguments={
         'x-message-ttl': settings.QUEUE_RETRY_DELAY_IN_MS,
         'x-dead-letter-exchange': settings.RABBIT_EXCHANGE,
-        'x-dead-letter-routing-key': settings.RABBIT_QUEUE,
+        'x-dead-letter-routing-key': settings.RABBIT_SURVEY_QUEUE,
 
     })
     return publisher.publish_message(message, headers={'x-delivery-count': count})
@@ -48,10 +48,10 @@ class Consumer(AsyncConsumer):
                     self.reject_message(basic_deliver.delivery_tag, tx_id=processor.tx_id)
                 else:
                     if publish_to_retry_queue(body, delivery_count):
-                        logger.info("Published to retry queue", tx_id=processor.tx_id, queue=settings.RABBIT_DELAY_QUEUE, delivery_count=delivery_count)
+                        logger.info("Published to retry queue", tx_id=processor.tx_id, queue=settings.RABBIT_SURVEY_DELAY_QUEUE, delivery_count=delivery_count)
                         self.reject_message(basic_deliver.delivery_tag, tx_id=processor.tx_id)
                     else:
-                        logger.error("Failed to publish to retry queue", tx_id=processor.tx_id, queue=settings.RABBIT_DELAY_QUEUE)
+                        logger.error("Failed to publish to retry queue", tx_id=processor.tx_id, queue=settings.RABBIT_SURVEY_DELAY_QUEUE)
 
         except Exception as e:
             logger.error("ResponseProcessor failed", exception=e, tx_id=processor.tx_id)
