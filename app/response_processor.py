@@ -1,6 +1,7 @@
 from app import settings
 from app.queue_publisher import QueuePublisher
 from app.settings import session
+from json import dumps
 from requests.packages.urllib3.exceptions import MaxRetryError
 
 
@@ -45,9 +46,9 @@ class ResponseProcessor:
                 'user_id': decrypted_json['metadata']['user_id']}
         }
 
-        queued = queue_receipt(self.logger, receipt_json)
+        queue_ok = queue_receipt(self.logger, dumps(receipt_json))
 
-        if not queued:
+        if not queue_ok:
             return False
 
     def decrypt_survey(self, encrypted_survey):
