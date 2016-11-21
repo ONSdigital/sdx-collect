@@ -50,6 +50,8 @@ class ResponseProcessor:
 
         if not queue_ok:
             return False
+        else:
+            return True
 
     def decrypt_survey(self, encrypted_survey):
         response = self.remote_call(settings.SDX_DECRYPT_URL, data=encrypted_survey)
