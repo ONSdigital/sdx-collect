@@ -5,15 +5,11 @@ from json import dumps
 from requests.packages.urllib3.exceptions import MaxRetryError
 
 
-def queue_receipt(logger, payload):
-    publisher = QueuePublisher(logger, settings.RABBIT_URLS, settings.RABBIT_RRM_RECEIPT_QUEUE)
-    return publisher.publish_message(payload)
-
-
 class ResponseProcessor:
     def __init__(self, logger):
         self.logger = logger
         self.tx_id = ""
+        self.publisher = QueuePublisher(logger, settings.RABBIT_URLS, settings.RABBIT_RRM_RECEIPT_QUEUE)
 
     def process(self, encrypted_survey):
         # decrypt
@@ -46,7 +42,7 @@ class ResponseProcessor:
                 'user_id': decrypted_json['metadata']['user_id']}
         }
 
-        queue_ok = queue_receipt(self.logger, dumps(receipt_json))
+        queue_ok = self.publisher.publish_message(dumps(receipt_json))
 
         if not queue_ok:
             return False
