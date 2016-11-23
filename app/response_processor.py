@@ -36,10 +36,13 @@ class ResponseProcessor:
 
         receipt_json = {
             'tx_id': decrypted_json['tx_id'],
-            'collection': {'exercise_sid': decrypted_json['collection']['exercise_sid']},
+            'collection': {
+                'exercise_sid': decrypted_json['collection']['exercise_sid']
+            },
             'metadata': {
                 'ru_ref': decrypted_json['metadata']['ru_ref'],
-                'user_id': decrypted_json['metadata']['user_id']}
+                'user_id': decrypted_json['metadata']['user_id']
+            }
         }
 
         queue_ok = self.publisher.publish_message(dumps(receipt_json))
