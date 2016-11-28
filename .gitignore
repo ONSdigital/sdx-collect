@@ -3,3 +3,8 @@ tests/__pycache__/
 __pycache__
 logs/
 *.pyc
+.Python
+pip-selfcheck.json
+lib/
+bin/
+include/
