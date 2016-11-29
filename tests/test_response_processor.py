@@ -25,6 +25,7 @@ class TestResponseProcessor(unittest.TestCase):
         rp.decrypt_survey = MagicMock(return_value=(True, valid_json))
         rp.validate_survey = MagicMock(return_value=False)
         rp.store_survey = MagicMock(return_value=True)
+        rp.publisher.publish_message = MagicMock(return_value=True)
         rp.skip_receipt = True
         response = rp.process(fake_encrypted)
 
