@@ -27,7 +27,7 @@ class ResponseProcessor:
         # validate
         validate_ok = self.validate_survey(decrypted_json)
         if not validate_ok:
-            return False
+            decrypted_json['invalid'] = True
 
         # store
         store_ok = self.store_survey(decrypted_json)
