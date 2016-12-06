@@ -46,7 +46,7 @@ class ResponseProcessor:
             }
         }
 
-        if decrypted_json.get("survey_id") and decrypted_json["survey_id"] == "0":
+        if decrypted_json.get("survey_id") and decrypted_json["survey_id"] == "census":
             queue_ok = self.ctp_publisher.publish_message(dumps(receipt_json))
         else:
             queue_ok = self.rrm_publisher.publish_message(dumps(receipt_json))
