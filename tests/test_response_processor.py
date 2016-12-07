@@ -24,10 +24,16 @@ class TestResponseProcessor(unittest.TestCase):
         rp = ResponseProcessor(logger)
         rp.decrypt_survey = MagicMock(return_value=(True, valid_json))
         rp.validate_survey = MagicMock(return_value=False)
+        rp.store_survey = MagicMock(return_value=True)
+        rp.publisher.publish_message = MagicMock(return_value=True)
+        rp.skip_receipt = True
         response = rp.process(fake_encrypted)
 
         rp.decrypt_survey.assert_called_with(fake_encrypted)
-        self.assertFalse(response)
+        # When validate returns a failure, the process still actually is meant
+        # to continue, store and return successfully. So even though it's a
+        # "failure" we still expect True
+        self.assertTrue(response)
 
     def test_validate_success_store_failure(self):
         rp = ResponseProcessor(logger)
@@ -38,36 +44,3 @@ class TestResponseProcessor(unittest.TestCase):
 
         rp.store_survey.assert_called_with(valid_json)
         self.assertFalse(response)
-
-    def test_skip_receipt(self):
-        rp = ResponseProcessor(logger)
-        rp.decrypt_survey = MagicMock(return_value=(True, valid_json))
-        rp.validate_survey = MagicMock(return_value=True)
-        rp.store_survey = MagicMock(return_value=True)
-        rp.skip_receipt = True
-        response = rp.process(fake_encrypted)
-
-        rp.store_survey.assert_called_with(valid_json)
-        self.assertTrue(response)
-
-    def test_receipt_send_failue(self):
-        rp = ResponseProcessor(logger)
-        rp.decrypt_survey = MagicMock(return_value=(True, valid_json))
-        rp.validate_survey = MagicMock(return_value=True)
-        rp.store_survey = MagicMock(return_value=True)
-        rp.send_receipt = MagicMock(return_value=False)
-        response = rp.process(fake_encrypted)
-
-        rp.send_receipt.assert_called_with(valid_json)
-        self.assertFalse(response)
-
-    def test_receipt_send_success(self):
-        rp = ResponseProcessor(logger)
-        rp.decrypt_survey = MagicMock(return_value=(True, valid_json))
-        rp.validate_survey = MagicMock(return_value=True)
-        rp.store_survey = MagicMock(return_value=True)
-        rp.send_receipt = MagicMock(return_value=True)
-        response = rp.process(fake_encrypted)
-
-        rp.send_receipt.assert_called_with(valid_json)
-        self.assertTrue(response)
