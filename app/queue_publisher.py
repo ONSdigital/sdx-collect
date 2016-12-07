@@ -1,6 +1,14 @@
 import pika
 
 
+def get_host(url):
+    try:
+        scheme = url.split('://')[0]
+        return scheme + '://' + url.split("@")[1]
+    except IndexError:
+        return url
+
+
 class QueuePublisher(object):
 
     DURABLE_QUEUE = True
