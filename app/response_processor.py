@@ -9,7 +9,8 @@ class ResponseProcessor:
     def __init__(self, logger):
         self.logger = logger
         self.tx_id = ""
-        self.publisher = QueuePublisher(logger, settings.RABBIT_URLS, settings.RABBIT_RRM_RECEIPT_QUEUE)
+        self.rrm_publisher = QueuePublisher(logger, settings.RABBIT_URLS, settings.RABBIT_RRM_RECEIPT_QUEUE)
+        self.ctp_publisher = QueuePublisher(logger, settings.RABBIT_URLS, settings.RABBIT_CTP_RECEIPT_QUEUE)
 
     def process(self, encrypted_survey):
         # decrypt
@@ -45,7 +46,10 @@ class ResponseProcessor:
             }
         }
 
-        queue_ok = self.publisher.publish_message(dumps(receipt_json))
+        if decrypted_json.get("survey_id") and decrypted_json["survey_id"] == "census":
+            queue_ok = self.ctp_publisher.publish_message(dumps(receipt_json))
+        else:
+            queue_ok = self.rrm_publisher.publish_message(dumps(receipt_json))
 
         if not queue_ok:
             return False
