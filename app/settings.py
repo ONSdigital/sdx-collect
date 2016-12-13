@@ -23,6 +23,9 @@ QUEUE_MAX_MESSAGE_DELIVERIES = 3
 RABBIT_RRM_RECEIPT_QUEUE = os.getenv('RABBIT_RRM_RECEIPT_QUEUE', 'rrm_receipt')
 RABBIT_RRM_RECEIPT_DELAY_QUEUE = os.getenv('RABBIT_RRM_RECEIPT_DELAY_QUEUE', 'rrm_receipt_delay')
 
+RABBIT_CTP_RECEIPT_QUEUE = os.getenv('RABBIT_CTP_RECEIPT_QUEUE', 'ctp_receipt')
+RABBIT_CTP_RECEIPT_DELAY_QUEUE = os.getenv('RABBIT_CTP_RECEIPT_DELAY_QUEUE', 'ctp_receipt_delay')
+
 RABBIT_URL = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
     hostname=os.getenv('RABBITMQ_HOST', 'rabbit'),
     port=os.getenv('RABBITMQ_PORT', 5672),
