@@ -6,7 +6,7 @@ import unittest
 from app.common.config import check_safe_value
 
 
-class ConfigTests(unittest.TestCase):
+class CheckSafeValueTests(unittest.TestCase):
 
     secretBytes = b"SKbH0bRYIa9irkLYxPkAi68JSt0_M1x3lci4nCIK7Ec="
     secretBytesWithDollar = b"SKbH0bRYIa9irkLYxPkAi68J$t0_M1x3lci4nCIK7Ec="
@@ -26,6 +26,9 @@ class ConfigTests(unittest.TestCase):
         self.assertIn(b"#", ConfigTests.secretBytesWithHash)
         self.assertFalse(check_safe_value(ConfigTests.secretBytesWithHash))
 
+    def test_none(self):
+        self.assertFalse(check_safe_value(None))
+
     def test_string(self):
         self.assertTrue(check_safe_value(ConfigTests.secretString))
 
@@ -36,3 +39,6 @@ class ConfigTests(unittest.TestCase):
     def test_string_with_hash(self):
         self.assertIn("#", ConfigTests.secretStringWithHash)
         self.assertFalse(check_safe_value(ConfigTests.secretStringWithHash))
+
+class ConfigTests(unittest.TestCase):
+    pass

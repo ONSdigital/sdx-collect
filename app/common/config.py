@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #   coding: UTF-8
 
+import itertools
 import re
 
 configTemplate = """
@@ -22,6 +23,11 @@ def check_safe_value(val):
 if __name__ == "__main__":
     import symmetric
 
-    data = {"secret": symmetric.generate_key().decode("utf-8")}
+    data = {
+        "secret": next(
+            i for i in itertools.repeat(symmetric.generate_key().decode("utf-8"))
+            if check_safe_value(i)
+        )
+    }
     output = configTemplate.format(**data)
     print(output)
