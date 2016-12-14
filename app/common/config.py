@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #   coding: UTF-8
 
+import configparser
 import itertools
 import re
 import sys
@@ -25,7 +26,15 @@ def generate_config(secret=None):
     if not isinstance(secret, str):
         raise ValueError("secret string is required")
     return configTemplate.format(secret=secret)
-    
+
+def config_parser(content=None):
+    rv = configparser.ConfigParser(
+        interpolation=configparser.ExtendedInterpolation()
+    )
+    if content is not None:
+        rv.read_string(content)
+    return rv
+ 
 if __name__ == "__main__":
     from cryptography.fernet import Fernet
 
