@@ -1,6 +1,16 @@
 import logging
+import os.path
+import sys
+
+# Transitional until this package is installed with pip
+try:
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+except Exception as e:
+    print(e, file=sys.stderr)
+
 from structlog import wrap_logger
 from app.async_consumer import AsyncConsumer
+import app.common.cli
 from app.response_processor import ResponseProcessor
 from app.queue_publisher import QueuePublisher
 from app import settings
@@ -28,6 +38,11 @@ def get_delivery_count_from_properties(properties):
 
 
 class Consumer(AsyncConsumer):
+
+    def __init__(self, args):
+        self._args = args
+        super().__init__()
+
     def on_message(self, unused_channel, basic_deliver, properties, body):
         logger.info('Received message', delivery_tag=basic_deliver.delivery_tag, app_id=properties.app_id)
 
@@ -57,7 +72,7 @@ class Consumer(AsyncConsumer):
             logger.error("ResponseProcessor failed", exception=e, tx_id=processor.tx_id)
 
 
-def main():
+def main(args):
     logger.debug("Starting consumer")
     consumer = Consumer()
     try:
@@ -65,5 +80,12 @@ def main():
     except KeyboardInterrupt:
         consumer.stop()
 
+
+def run():
+    p = app.common.cli.parser()
+    args = p.parse_args()
+    rv = main(args)
+    sys.exit(rv)
+
 if __name__ == '__main__':
-    main()
+    run()

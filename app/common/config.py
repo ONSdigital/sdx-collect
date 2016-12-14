@@ -22,10 +22,12 @@ def check_safe_value(val):
     r = re.compile("[$#]")
     return isinstance(val, str) and r.search(val) is None
 
+
 def generate_config(secret=None):
     if not isinstance(secret, str):
         raise ValueError("secret string is required")
     return configTemplate.format(secret=secret)
+
 
 def config_parser(content=None):
     rv = configparser.ConfigParser(
@@ -34,7 +36,8 @@ def config_parser(content=None):
     if content is not None:
         rv.read_string(content)
     return rv
- 
+
+
 if __name__ == "__main__":
     from cryptography.fernet import Fernet
 

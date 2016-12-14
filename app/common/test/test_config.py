@@ -43,6 +43,7 @@ class CheckSafeValueTests(unittest.TestCase):
         self.assertIn("#", CheckSafeValueTests.secretStringWithHash)
         self.assertFalse(check_safe_value(CheckSafeValueTests.secretStringWithHash))
 
+
 class ConfigTests(unittest.TestCase):
 
     @staticmethod
