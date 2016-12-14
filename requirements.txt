@@ -1,3 +1,4 @@
+cryptography>=1.6
 requests==2.10.0
 pika==0.10.0
 Jinja2==2.8
