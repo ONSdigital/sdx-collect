@@ -4,6 +4,7 @@
 import unittest
 
 from app.common.config import check_safe_value
+from app.common.config import generate_config
 
 
 class CheckSafeValueTests(unittest.TestCase):
@@ -16,29 +17,32 @@ class CheckSafeValueTests(unittest.TestCase):
     secretStringWithHash = "xr37-bYBRm1#YsJXuoq1X-gkt3WUxqgiSALpzuvtlSc="
 
     def test_bytes(self):
-        self.assertFalse(check_safe_value(ConfigTests.secretBytes))
+        self.assertFalse(check_safe_value(CheckSafeValueTests.secretBytes))
 
     def test_bytes_with_dollar(self):
-        self.assertIn(b"$", ConfigTests.secretBytesWithDollar)
-        self.assertFalse(check_safe_value(ConfigTests.secretBytesWithDollar))
+        self.assertIn(b"$", CheckSafeValueTests.secretBytesWithDollar)
+        self.assertFalse(check_safe_value(CheckSafeValueTests.secretBytesWithDollar))
 
     def test_bytes_with_hash(self):
-        self.assertIn(b"#", ConfigTests.secretBytesWithHash)
-        self.assertFalse(check_safe_value(ConfigTests.secretBytesWithHash))
+        self.assertIn(b"#", CheckSafeValueTests.secretBytesWithHash)
+        self.assertFalse(check_safe_value(CheckSafeValueTests.secretBytesWithHash))
 
     def test_none(self):
         self.assertFalse(check_safe_value(None))
 
     def test_string(self):
-        self.assertTrue(check_safe_value(ConfigTests.secretString))
+        self.assertTrue(check_safe_value(CheckSafeValueTests.secretString))
 
     def test_string_with_dollar(self):
-        self.assertIn("$", ConfigTests.secretStringWithDollar)
-        self.assertFalse(check_safe_value(ConfigTests.secretStringWithDollar))
+        self.assertIn("$", CheckSafeValueTests.secretStringWithDollar)
+        self.assertFalse(check_safe_value(CheckSafeValueTests.secretStringWithDollar))
 
     def test_string_with_hash(self):
-        self.assertIn("#", ConfigTests.secretStringWithHash)
-        self.assertFalse(check_safe_value(ConfigTests.secretStringWithHash))
+        self.assertIn("#", CheckSafeValueTests.secretStringWithHash)
+        self.assertFalse(check_safe_value(CheckSafeValueTests.secretStringWithHash))
 
 class ConfigTests(unittest.TestCase):
-    pass
+
+    def test_config_needs_secret(self):
+        self.assertRaises(ValueError, generate_config)
+        self.assertRaises(ValueError, generate_config, None)

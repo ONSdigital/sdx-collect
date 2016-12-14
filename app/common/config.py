@@ -20,12 +20,17 @@ def check_safe_value(val):
     r = re.compile("[$#]")
     return isinstance(val, str) and r.search(val) is None
 
+def generate_config(secret=None):
+    if not isinstance(secret, str):
+        raise ValueError("secret string is required")
+    return configTemplate.format(secret=secret)
+    
 if __name__ == "__main__":
-    import symmetric
+    from cryptography.fernet import Fernet
 
     data = {
         "secret": next(
-            i for i in itertools.repeat(symmetric.generate_key().decode("utf-8"))
+            i for i in itertools.repeat(Fernet.generate_key().decode("utf-8"))
             if check_safe_value(i)
         )
     }
