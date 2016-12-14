@@ -3,9 +3,15 @@ from app.queue_publisher import QueuePublisher
 from app.settings import session
 from json import dumps
 from requests.packages.urllib3.exceptions import MaxRetryError
+import sys
 
 
 class ResponseProcessor:
+
+    @staticmethod
+    def options(cfg):
+        return None
+        
     def __init__(self, logger):
         self.logger = logger
         self.tx_id = ""

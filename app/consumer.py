@@ -6,11 +6,12 @@ import sys
 try:
     sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 except Exception as e:
-    print(e, file=sys.stderr)
+    print("Error: ", e, file=sys.stderr)
 
 from structlog import wrap_logger
 from app.async_consumer import AsyncConsumer
 import app.common.cli
+import app.common.config
 from app.response_processor import ResponseProcessor
 from app.queue_publisher import QueuePublisher
 from app import settings
@@ -39,9 +40,11 @@ def get_delivery_count_from_properties(properties):
 
 class Consumer(AsyncConsumer):
 
-    def __init__(self, args):
+    def __init__(self, args, cfg):
         self._args = args
+        print("Work: ", args.work, file=sys.stderr)
         super().__init__()
+        print(ResponseProcessor.options(args))
 
     def on_message(self, unused_channel, basic_deliver, properties, body):
         logger.info('Received message', delivery_tag=basic_deliver.delivery_tag, app_id=properties.app_id)
@@ -74,7 +77,17 @@ class Consumer(AsyncConsumer):
 
 def main(args):
     logger.debug("Starting consumer")
-    consumer = Consumer()
+    cfgPath = os.path.join(args.work, "sdx.cfg")
+    if os.path.isfile(cfgPath):
+        logger.info("Found config at {0}.".format(cfgPath))
+        with open(cfgPath, "r") as fObj:
+            content = fObj.read()
+    else:
+        logger.warning("No config found.")
+        content = None
+
+    cfg = app.common.config.config_parser(content)
+    consumer = Consumer(args, cfg)
     try:
         consumer.run()
     except KeyboardInterrupt:
