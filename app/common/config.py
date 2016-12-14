@@ -3,6 +3,7 @@
 
 import itertools
 import re
+import sys
 
 configTemplate = """
 [sdx.collect]
@@ -13,7 +14,7 @@ secret = ${{sdx.collect:secret}}
 
 [sdx.receipt.rrm]
 secret = ${{sdx.collect:secret}}
-"""
+""".lstrip()
 
 
 def check_safe_value(val):
@@ -28,6 +29,7 @@ def generate_config(secret=None):
 if __name__ == "__main__":
     from cryptography.fernet import Fernet
 
+    print("Generating fresh config file...", file=sys.stderr)
     data = {
         "secret": next(
             i for i in itertools.repeat(Fernet.generate_key().decode("utf-8"))
@@ -35,4 +37,5 @@ if __name__ == "__main__":
         )
     }
     output = configTemplate.format(**data)
-    print(output)
+    print(output, file=sys.stdout)
+    print("... Done.", file=sys.stderr)
