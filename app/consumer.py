@@ -42,9 +42,7 @@ class Consumer(AsyncConsumer):
 
     def __init__(self, args, cfg):
         self._args = args
-        print("Work: ", args.work, file=sys.stderr)
         super().__init__()
-        print(ResponseProcessor.options(args))
 
     def on_message(self, unused_channel, basic_deliver, properties, body):
         logger.info('Received message', delivery_tag=basic_deliver.delivery_tag, app_id=properties.app_id)
@@ -52,11 +50,12 @@ class Consumer(AsyncConsumer):
         delivery_count = get_delivery_count_from_properties(properties)
         delivery_count += 1
 
+        options = ResponseProcessor.options(cfg)
         processor = ResponseProcessor(logger)
 
         try:
             message = body.decode("utf-8")
-            processed_ok = processor.process(message)
+            processed_ok = processor.process(message, **options)
 
             if processed_ok:
                 self.acknowledge_message(basic_deliver.delivery_tag, tx_id=processor.tx_id)
