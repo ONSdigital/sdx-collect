@@ -9,9 +9,9 @@ import sys
 class ResponseProcessor:
 
     @staticmethod
-    def options(cfg):
+    def options(cfg, name="default"):
         try:
-            return {"secret", cfg["sdx.collect"]["secret"]}
+            return {"secret", cfg[name]["secret"]}
         except KeyError:
             return {}
         

@@ -3,12 +3,22 @@ import logging
 from structlog import wrap_logger
 import json
 from unittest.mock import MagicMock
+import app.common.config
 from app.response_processor import ResponseProcessor
 from tests.test_data import fake_encrypted, valid_decrypted
 
 logger = wrap_logger(logging.getLogger(__name__))
 valid_json = json.loads(valid_decrypted)
 
+
+class TestResponseProcessorSettings(unittest.TestCase):
+
+    def test_settings_from_config(self):
+        cfg = app.common.config.config_parser(
+            content=app.common.config.generate_config(secret="x" * 44)
+        )
+        rv = ResponseProcessor.options(cfg, name="sdx.collect")
+        self.assertEqual({"secret", "x" * 44}, rv)
 
 class TestResponseProcessor(unittest.TestCase):
 
