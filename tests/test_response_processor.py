@@ -21,7 +21,7 @@ class TestResponseProcessorSettings(unittest.TestCase):
             content=app.common.config.generate_config(secret="x" * 44)
         )
         rv = ResponseProcessor.options(cfg, name="sdx.collect")
-        self.assertEqual({"secret", "x" * 44}, rv)
+        self.assertEqual({"secret": "x" * 44}, rv)
 
     def test_settings_from_env(self):
         os.environ["SDX_COLLECT_SECRET"] = "y" * 44
@@ -31,7 +31,7 @@ class TestResponseProcessorSettings(unittest.TestCase):
                 content=app.common.config.generate_config(secret="x" * 44)
             )
             rv = ResponseProcessor.options(cfg, name="sdx.collect")
-            self.assertEqual({"secret", "y" * 44}, rv)
+            self.assertEqual({"secret": "y" * 44}, rv)
         finally:
             del os.environ["SDX_COLLECT_SECRET"]
 

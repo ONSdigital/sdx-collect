@@ -2,6 +2,7 @@ from app import settings
 from app.queue_publisher import QueuePublisher
 from app.settings import session
 from json import dumps
+import os
 from requests.packages.urllib3.exceptions import MaxRetryError
 import sys
 
@@ -10,10 +11,20 @@ class ResponseProcessor:
 
     @staticmethod
     def options(cfg, name="default"):
-        try:
-            return {"secret", cfg[name]["secret"]}
-        except KeyError:
-            return {}
+        keys = ("secret",)
+        if cfg.has_section(name):
+            data = ((k, cfg.get(name, k)) for k in keys)
+            rv = dict(pair for pair in data if pair[1] is not None)
+        else:
+            rv = {}
+
+        variables = {
+            k: "{0}_{1}".format(name.replace(".", "_").upper(), k.replace(".", "_").upper())
+            for k in keys
+        }
+        overlay = ((key, os.getenv(var)) or rv[key] for key, var in variables.items())
+        rv.update(pair for pair in overlay if pair[1] is not None)
+        return rv
         
     def __init__(self, logger):
         self.logger = logger
