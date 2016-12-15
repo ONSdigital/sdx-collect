@@ -42,6 +42,7 @@ class Consumer(AsyncConsumer):
 
     def __init__(self, args, cfg):
         self._args = args
+        self._cfg = cfg
         super().__init__()
 
     def on_message(self, unused_channel, basic_deliver, properties, body):
