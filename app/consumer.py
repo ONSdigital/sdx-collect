@@ -51,7 +51,7 @@ class Consumer(AsyncConsumer):
         delivery_count = get_delivery_count_from_properties(properties)
         delivery_count += 1
 
-        options = ResponseProcessor.options(self._cfg, name="sdx.collect"))
+        options = ResponseProcessor.options(self._cfg, name="sdx.collect")
         processor = ResponseProcessor(logger)
 
         try:

@@ -1,12 +1,49 @@
 #!/usr/bin/env python
 #   coding: UTF-8
 
+import os
 import re
 import unittest
 
+from app.common.config import aggregate_options
 from app.common.config import check_safe_value
 from app.common.config import config_parser
 from app.common.config import generate_config
+
+
+class AggregateOptionTests(unittest.TestCase):
+
+    def test_settings_from_config(self):
+        cfg = config_parser(content=generate_config(secret="x" * 44))
+        rv = aggregate_options(cfg, name="sdx.collect", keys=["secret"])
+        self.assertEqual({"secret": "x" * 44}, rv)
+
+    @unittest.skipIf("SDX_COLLECT_SECRET" in os.environ, "variables match live environment")
+    def test_no_settings_only_env(self):
+        try:
+            os.environ["SDX_COLLECT_SECRET"] = "y" * 44
+            self.assertTrue(os.getenv("SDX_COLLECT_SECRET"))
+            cfg = config_parser()
+            rv = aggregate_options(cfg, name="sdx.collect", keys=["secret"])
+            self.assertEqual({"secret": "y" * 44}, rv)
+        finally:
+            del os.environ["SDX_COLLECT_SECRET"]
+
+    @unittest.skipIf("SDX_COLLECT_SECRET" in os.environ, "variables match live environment")
+    def test_env_overrides_settings(self):
+        try:
+            os.environ["SDX_COLLECT_SECRET"] = "y" * 44
+            self.assertTrue(os.getenv("SDX_COLLECT_SECRET"))
+            cfg = config_parser(content=generate_config(secret="x" * 44))
+            rv = aggregate_options(cfg, name="sdx.collect", keys=["secret"])
+            self.assertEqual({"secret": "y" * 44}, rv)
+        finally:
+            del os.environ["SDX_COLLECT_SECRET"]
+
+    def test_no_settings(self):
+        cfg = config_parser()
+        rv = aggregate_options(cfg, name="sdx.collect", keys=["secret"])
+        self.assertEqual({}, rv)
 
 
 class CheckSafeValueTests(unittest.TestCase):
