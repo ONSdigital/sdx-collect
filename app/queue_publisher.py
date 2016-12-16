@@ -56,7 +56,7 @@ class QueuePublisher(object):
             self._logger.error("Unable to publish message", exception=repr(e))
             return False
 
-    def publish_message(self, message, content_type=None, headers=None):
+    def publish_message(self, message, content_type=None, headers=None, **kwargs):
         self._logger.debug("Sending message")
         if not self._connect():
             return False

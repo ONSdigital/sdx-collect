@@ -1,6 +1,17 @@
 import logging
+import os.path
+import sys
+
+# Transitional until this package is installed with pip
+try:
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+except Exception as e:
+    print("Error: ", e, file=sys.stderr)
+
 from structlog import wrap_logger
 from app.async_consumer import AsyncConsumer
+import app.common.cli
+import app.common.config
 from app.response_processor import ResponseProcessor
 from app.queue_publisher import QueuePublisher
 from app import settings
@@ -28,17 +39,24 @@ def get_delivery_count_from_properties(properties):
 
 
 class Consumer(AsyncConsumer):
+
+    def __init__(self, args, cfg):
+        self._args = args
+        self._cfg = cfg
+        super().__init__()
+
     def on_message(self, unused_channel, basic_deliver, properties, body):
         logger.info('Received message', delivery_tag=basic_deliver.delivery_tag, app_id=properties.app_id)
 
         delivery_count = get_delivery_count_from_properties(properties)
         delivery_count += 1
 
+        options = ResponseProcessor.options(self._cfg, name="sdx.collect")
         processor = ResponseProcessor(logger)
 
         try:
             message = body.decode("utf-8")
-            processed_ok = processor.process(message)
+            processed_ok = processor.process(message, **options)
 
             if processed_ok:
                 self.acknowledge_message(basic_deliver.delivery_tag, tx_id=processor.tx_id)
@@ -57,13 +75,30 @@ class Consumer(AsyncConsumer):
             logger.error("ResponseProcessor failed", exception=e, tx_id=processor.tx_id)
 
 
-def main():
+def main(args):
     logger.debug("Starting consumer")
-    consumer = Consumer()
+    cfgPath = os.path.join(args.work, "sdx.cfg")
+    if os.path.isfile(cfgPath):
+        logger.info("Found config at {0}.".format(cfgPath))
+        with open(cfgPath, "r") as fObj:
+            content = fObj.read()
+    else:
+        logger.warning("No config found.")
+        content = None
+
+    cfg = app.common.config.config_parser(content)
+    consumer = Consumer(args, cfg)
     try:
         consumer.run()
     except KeyboardInterrupt:
         consumer.stop()
 
+
+def run():
+    p = app.common.cli.parser()
+    args = p.parse_args()
+    rv = main(args)
+    sys.exit(rv)
+
 if __name__ == '__main__':
-    main()
+    run()

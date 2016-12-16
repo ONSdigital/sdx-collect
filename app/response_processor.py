@@ -1,4 +1,5 @@
 from app import settings
+import app.common.config
 from app.queue_publisher import QueuePublisher
 from app.settings import session
 from json import dumps
@@ -6,13 +7,19 @@ from requests.packages.urllib3.exceptions import MaxRetryError
 
 
 class ResponseProcessor:
+
+    @staticmethod
+    def options(cfg, name="default"):
+        return app.common.config.aggregate_options(cfg, name, keys=("secret",))
+
     def __init__(self, logger):
         self.logger = logger
         self.tx_id = ""
+
         self.rrm_publisher = QueuePublisher(logger, settings.RABBIT_URLS, settings.RABBIT_RRM_RECEIPT_QUEUE)
         self.ctp_publisher = QueuePublisher(logger, settings.RABBIT_URLS, settings.RABBIT_CTP_RECEIPT_QUEUE)
 
-    def process(self, encrypted_survey):
+    def process(self, encrypted_survey, **kwargs):
         # decrypt
         decrypt_ok, decrypted_json = self.decrypt_survey(encrypted_survey)
         if not decrypt_ok:
@@ -47,9 +54,13 @@ class ResponseProcessor:
         }
 
         if decrypted_json.get("survey_id") and decrypted_json["survey_id"] == "census":
-            queue_ok = self.ctp_publisher.publish_message(dumps(receipt_json))
+            queue_ok = self.ctp_publisher.publish_message(
+                dumps(receipt_json), kwargs.get("secret")
+            )
         else:
-            queue_ok = self.rrm_publisher.publish_message(dumps(receipt_json))
+            queue_ok = self.rrm_publisher.publish_message(
+                dumps(receipt_json), kwargs.get("secret")
+            )
 
         if not queue_ok:
             return False

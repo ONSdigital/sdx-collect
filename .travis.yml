@@ -7,3 +7,4 @@ install:
 script:
 - flake8
 - python -m unittest tests/*.py
+- python -m unittest app/common/test/*.py
