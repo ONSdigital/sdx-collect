@@ -34,16 +34,13 @@ class PrivatePublisher(QueuePublisher):
         """
         try:
             f = Fernet(secret)
-            message = f.decrypt(token)
         except ValueError:
             return None
+        message = f.decrypt(token)
         return message.decode("utf-8")
 
     def publish_message(self, message, content_type=None, headers=None, secret=None):
-        if isinstance(secret, str):
-            f = Fernet(secret.encode("utf-8"))
-            token = f.encrypt(message.encode("utf-8"))
-            message = token.decode("utf-8")
+        token = PrivatePublisher.encrypt(message, secret=secret)
         return super().publish_message(
-            message, content_type=content_type, headers=headers
+            token, content_type=content_type, headers=headers
         )

@@ -1,6 +1,6 @@
 from app import settings
 import app.common.config
-from app.queue_publisher import QueuePublisher
+from app.private_publisher import PrivatePublisher
 from app.settings import session
 from json import dumps
 from requests.packages.urllib3.exceptions import MaxRetryError
@@ -16,8 +16,12 @@ class ResponseProcessor:
         self.logger = logger
         self.tx_id = ""
 
-        self.rrm_publisher = QueuePublisher(logger, settings.RABBIT_URLS, settings.RABBIT_RRM_RECEIPT_QUEUE)
-        self.ctp_publisher = QueuePublisher(logger, settings.RABBIT_URLS, settings.RABBIT_CTP_RECEIPT_QUEUE)
+        self.rrm_publisher = PrivatePublisher(
+            logger, settings.RABBIT_URLS, settings.RABBIT_RRM_RECEIPT_QUEUE
+        )
+        self.ctp_publisher = PrivatePublisher(
+            logger, settings.RABBIT_URLS, settings.RABBIT_CTP_RECEIPT_QUEUE
+        )
 
     def process(self, encrypted_survey, **kwargs):
         # decrypt
