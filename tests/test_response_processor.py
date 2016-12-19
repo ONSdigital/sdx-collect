@@ -17,31 +17,35 @@ valid_json = json.loads(valid_decrypted)
 class TestResponseProcessorSettings(unittest.TestCase):
 
     def test_settings_from_config(self):
-        cfg = app.common.config.config_parser(
-            content=app.common.config.generate_config(secret="x" * 44)
-        )
+        cfg = app.common.config.config_parser()
+        cfg["sdx.collect"] = {"secret": "x" * 44}
         rv = ResponseProcessor.options(cfg, name="sdx.collect")
         self.assertEqual({"secret": "x" * 44}, rv)
 
-    @unittest.skipIf("SDX_COLLECT_SECRET" in os.environ, "variables match live environment")
+    @unittest.skipIf(
+        "SDX_COLLECT_SECRET" in os.environ,
+        "variables match live environment"
+    )
     def test_no_settings_only_env(self):
-        os.environ["SDX_COLLECT_SECRET"] = "y" * 44
-        self.assertTrue(os.getenv("SDX_COLLECT_SECRET"))
         try:
+            os.environ["SDX_COLLECT_SECRET"] = "y" * 44
+            self.assertTrue(os.getenv("SDX_COLLECT_SECRET"))
             cfg = app.common.config.config_parser()
             rv = ResponseProcessor.options(cfg, name="sdx.collect")
             self.assertEqual({"secret": "y" * 44}, rv)
         finally:
             del os.environ["SDX_COLLECT_SECRET"]
 
-    @unittest.skipIf("SDX_COLLECT_SECRET" in os.environ, "variables match live environment")
+    @unittest.skipIf(
+        "SDX_COLLECT_SECRET" in os.environ,
+        "variables match live environment"
+    )
     def test_env_overrides_settings(self):
-        os.environ["SDX_COLLECT_SECRET"] = "y" * 44
-        self.assertTrue(os.getenv("SDX_COLLECT_SECRET"))
         try:
-            cfg = app.common.config.config_parser(
-                content=app.common.config.generate_config(secret="x" * 44)
-            )
+            os.environ["SDX_COLLECT_SECRET"] = "y" * 44
+            self.assertTrue(os.getenv("SDX_COLLECT_SECRET"))
+            cfg = app.common.config.config_parser()
+            cfg["sdx.collect"] = {"secret": "x" * 44}
             rv = ResponseProcessor.options(cfg, name="sdx.collect")
             self.assertEqual({"secret": "y" * 44}, rv)
         finally:

@@ -2,23 +2,25 @@
 #   coding: UTF-8
 
 import os
-import re
 import unittest
 
 from app.common.config import aggregate_options
 from app.common.config import check_safe_value
 from app.common.config import config_parser
-from app.common.config import generate_config
 
 
 class AggregateOptionTests(unittest.TestCase):
 
     def test_settings_from_config(self):
-        cfg = config_parser(content=generate_config(secret="x" * 44))
+        cfg = config_parser()
+        cfg["sdx.collect"] = {"secret": "x" * 44}
         rv = aggregate_options(cfg, name="sdx.collect", keys=["secret"])
         self.assertEqual({"secret": "x" * 44}, rv)
 
-    @unittest.skipIf("SDX_COLLECT_SECRET" in os.environ, "variables match live environment")
+    @unittest.skipIf(
+        "SDX_COLLECT_SECRET" in os.environ,
+        "variables match live environment"
+    )
     def test_no_settings_only_env(self):
         try:
             os.environ["SDX_COLLECT_SECRET"] = "y" * 44
@@ -29,12 +31,16 @@ class AggregateOptionTests(unittest.TestCase):
         finally:
             del os.environ["SDX_COLLECT_SECRET"]
 
-    @unittest.skipIf("SDX_COLLECT_SECRET" in os.environ, "variables match live environment")
+    @unittest.skipIf(
+        "SDX_COLLECT_SECRET" in os.environ,
+        "variables match live environment"
+    )
     def test_env_overrides_settings(self):
         try:
             os.environ["SDX_COLLECT_SECRET"] = "y" * 44
             self.assertTrue(os.getenv("SDX_COLLECT_SECRET"))
-            cfg = config_parser(content=generate_config(secret="x" * 44))
+            cfg = config_parser()
+            cfg["sdx.collect"] = {"secret": "x" * 44}
             rv = aggregate_options(cfg, name="sdx.collect", keys=["secret"])
             self.assertEqual({"secret": "y" * 44}, rv)
         finally:
@@ -60,11 +66,15 @@ class CheckSafeValueTests(unittest.TestCase):
 
     def test_bytes_with_dollar(self):
         self.assertIn(b"$", CheckSafeValueTests.secretBytesWithDollar)
-        self.assertFalse(check_safe_value(CheckSafeValueTests.secretBytesWithDollar))
+        self.assertFalse(
+            check_safe_value(CheckSafeValueTests.secretBytesWithDollar)
+        )
 
     def test_bytes_with_hash(self):
         self.assertIn(b"#", CheckSafeValueTests.secretBytesWithHash)
-        self.assertFalse(check_safe_value(CheckSafeValueTests.secretBytesWithHash))
+        self.assertFalse(
+            check_safe_value(CheckSafeValueTests.secretBytesWithHash)
+        )
 
     def test_none(self):
         self.assertFalse(check_safe_value(None))
@@ -74,54 +84,12 @@ class CheckSafeValueTests(unittest.TestCase):
 
     def test_string_with_dollar(self):
         self.assertIn("$", CheckSafeValueTests.secretStringWithDollar)
-        self.assertFalse(check_safe_value(CheckSafeValueTests.secretStringWithDollar))
+        self.assertFalse(
+            check_safe_value(CheckSafeValueTests.secretStringWithDollar)
+        )
 
     def test_string_with_hash(self):
         self.assertIn("#", CheckSafeValueTests.secretStringWithHash)
-        self.assertFalse(check_safe_value(CheckSafeValueTests.secretStringWithHash))
-
-
-class ConfigTests(unittest.TestCase):
-
-    @staticmethod
-    def check_secret(val):
-        r = re.compile("[0-9a-zA-Z-=]{44}")
-        return r.match(val)
-
-    def setUp(self):
-        content = generate_config(secret=CheckSafeValueTests.secretString)
-        self.cfg = config_parser(content)
-
-    def test_config_needs_secret(self):
-        self.assertRaises(ValueError, generate_config)
-        self.assertRaises(ValueError, generate_config, None)
-
-    def test_sdx_collect_secret(self):
-        self.assertTrue(
-            ConfigTests.check_secret(self.cfg["sdx.collect"]["secret"]),
-            self.cfg["sdx.collect"]["secret"]
-        )
-        self.assertEqual(
-            self.cfg["sdx.collect"]["secret"],
-            CheckSafeValueTests.secretString
-        )
-
-    def test_sdx_receipt_ctp_secret(self):
-        self.assertTrue(
-            ConfigTests.check_secret(self.cfg["sdx.receipt.ctp"]["secret"]),
-            self.cfg["sdx.receipt.ctp"]["secret"]
-        )
-        self.assertEqual(
-            self.cfg["sdx.receipt.ctp"]["secret"],
-            CheckSafeValueTests.secretString
-        )
-
-    def test_sdx_receipt_rrm_secret(self):
-        self.assertTrue(
-            ConfigTests.check_secret(self.cfg["sdx.receipt.rrm"]["secret"]),
-            self.cfg["sdx.receipt.rrm"]["secret"]
-        )
-        self.assertEqual(
-            self.cfg["sdx.receipt.rrm"]["secret"],
-            CheckSafeValueTests.secretString
+        self.assertFalse(
+            check_safe_value(CheckSafeValueTests.secretStringWithHash)
         )
