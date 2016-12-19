@@ -11,7 +11,7 @@ from app.settings import session
 class ResponseProcessor:
 
     @staticmethod
-    def options(cfg, name="default"):
+    def options():
         rv = {}
         try:
             rv["secret"] = os.getenv("SDX_COLLECT_SECRET").encode("ascii")

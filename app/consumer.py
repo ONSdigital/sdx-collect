@@ -1,7 +1,12 @@
+import argparse
 import logging
 import os.path
 import sys
 
+__doc__ = """
+SDX collection processor.
+
+"""
 # Transitional until this package is installed with pip
 try:
     sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -10,8 +15,6 @@ except Exception as e:
 
 from structlog import wrap_logger
 from app.async_consumer import AsyncConsumer
-import app.common.cli
-import app.common.config
 from app.response_processor import ResponseProcessor
 from app.queue_publisher import QueuePublisher
 from app import settings
@@ -40,7 +43,7 @@ def get_delivery_count_from_properties(properties):
 
 class Consumer(AsyncConsumer):
 
-    def __init__(self, args, cfg):
+    def __init__(self, args=None, cfg=None):
         self._args = args
         self._cfg = cfg
         super().__init__()
@@ -51,7 +54,7 @@ class Consumer(AsyncConsumer):
         delivery_count = get_delivery_count_from_properties(properties)
         delivery_count += 1
 
-        options = ResponseProcessor.options(self._cfg, name="sdx.collect")
+        options = ResponseProcessor.options()
         processor = ResponseProcessor(logger)
 
         try:
@@ -78,8 +81,7 @@ class Consumer(AsyncConsumer):
 def main(args):
     logger.debug("Starting consumer")
 
-    cfg = app.common.config.config_parser()
-    consumer = Consumer(args, cfg)
+    consumer = Consumer(args)
     try:
         consumer.run()
     except KeyboardInterrupt:
@@ -87,7 +89,7 @@ def main(args):
 
 
 def run():
-    p = app.common.cli.parser()
+    p = argparse.ArgumentParser(description=__doc__)
     args = p.parse_args()
     rv = main(args)
     sys.exit(rv)
