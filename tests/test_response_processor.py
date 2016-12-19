@@ -26,7 +26,7 @@ class TestResponseProcessorSettings(unittest.TestCase):
             self.assertTrue(os.getenv("SDX_COLLECT_SECRET"))
             cfg = app.common.config.config_parser()
             rv = ResponseProcessor.options(cfg, name="sdx.collect")
-            self.assertEqual({"secret": "y" * 44}, rv)
+            self.assertEqual({"secret": b"y" * 44}, rv)
         finally:
             del os.environ["SDX_COLLECT_SECRET"]
 
@@ -41,14 +41,14 @@ class TestResponseProcessorSettings(unittest.TestCase):
             cfg = app.common.config.config_parser()
             cfg["sdx.collect"] = {"secret": "x" * 44}
             rv = ResponseProcessor.options(cfg, name="sdx.collect")
-            self.assertEqual({"secret": "y" * 44}, rv)
+            self.assertEqual({"secret": b"y" * 44}, rv)
         finally:
             del os.environ["SDX_COLLECT_SECRET"]
 
     def test_no_settings(self):
         cfg = app.common.config.config_parser()
         rv = ResponseProcessor.options(cfg, name="sdx.collect")
-        self.assertEqual({"secret": None}, rv)
+        self.assertEqual({}, rv)
 
 
 class TestResponseProcessor(unittest.TestCase):

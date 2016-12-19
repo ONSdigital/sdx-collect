@@ -11,8 +11,14 @@ from app.settings import session
 class ResponseProcessor:
 
     @staticmethod
-    def options(cfg=None, name="default"):
-        return {"secret": os.getenv("SDX_COLLECT_SECRET")}
+    def options(cfg, name="default"):
+        rv = {}
+        try:
+            rv["secret"] = os.getenv("SDX_COLLECT_SECRET").encode("ascii")
+        except:
+            # No secret in env
+            pass
+        return rv
 
     def __init__(self, logger):
         self.logger = logger
