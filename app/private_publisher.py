@@ -40,6 +40,8 @@ class PrivatePublisher(QueuePublisher):
         return message.decode("utf-8")
 
     def publish_message(self, message, content_type=None, headers=None, secret=None):
+        if not isinstance(secret, bytes):
+            secret = secret.encode("ascii")
         token = PrivatePublisher.encrypt(message, secret=secret)
         return super().publish_message(
             token, content_type=content_type, headers=headers

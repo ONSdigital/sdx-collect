@@ -83,7 +83,7 @@ def main(args):
         with open(cfgPath, "r") as fObj:
             content = fObj.read()
     else:
-        logger.warning("No config found.")
+        logger.info("No config file found.")
         content = None
 
     cfg = app.common.config.config_parser(content)

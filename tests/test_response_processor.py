@@ -16,12 +16,6 @@ valid_json = json.loads(valid_decrypted)
 
 class TestResponseProcessorSettings(unittest.TestCase):
 
-    def test_settings_from_config(self):
-        cfg = app.common.config.config_parser()
-        cfg["sdx.collect"] = {"secret": "x" * 44}
-        rv = ResponseProcessor.options(cfg, name="sdx.collect")
-        self.assertEqual({"secret": "x" * 44}, rv)
-
     @unittest.skipIf(
         "SDX_COLLECT_SECRET" in os.environ,
         "variables match live environment"
@@ -54,7 +48,7 @@ class TestResponseProcessorSettings(unittest.TestCase):
     def test_no_settings(self):
         cfg = app.common.config.config_parser()
         rv = ResponseProcessor.options(cfg, name="sdx.collect")
-        self.assertEqual({}, rv)
+        self.assertEqual({"secret": None}, rv)
 
 
 class TestResponseProcessor(unittest.TestCase):

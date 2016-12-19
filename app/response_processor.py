@@ -1,16 +1,18 @@
+from json import dumps
+import os
+
+from requests.packages.urllib3.exceptions import MaxRetryError
+
 from app import settings
-import app.common.config
 from app.private_publisher import PrivatePublisher
 from app.settings import session
-from json import dumps
-from requests.packages.urllib3.exceptions import MaxRetryError
 
 
 class ResponseProcessor:
 
     @staticmethod
-    def options(cfg, name="default"):
-        return app.common.config.aggregate_options(cfg, name, keys=("secret",))
+    def options(cfg=None, name="default"):
+        return {"secret": os.getenv("SDX_COLLECT_SECRET")}
 
     def __init__(self, logger):
         self.logger = logger

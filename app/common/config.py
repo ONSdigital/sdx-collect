@@ -25,7 +25,7 @@ def aggregate_options(cfg, name="default", keys=[]):
         for k in keys
     }
     overlay = (
-        (key, os.getenv(var)) or rv[key]
+        (key, os.getenv(var))
         for key, var in variables.items()
     )
     rv.update(pair for pair in overlay if pair[1] is not None)
