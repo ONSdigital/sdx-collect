@@ -77,16 +77,8 @@ class Consumer(AsyncConsumer):
 
 def main(args):
     logger.debug("Starting consumer")
-    cfgPath = os.path.join(args.work, "sdx.cfg")
-    if os.path.isfile(cfgPath):
-        logger.info("Found config at {0}.".format(cfgPath))
-        with open(cfgPath, "r") as fObj:
-            content = fObj.read()
-    else:
-        logger.info("No config file found.")
-        content = None
 
-    cfg = app.common.config.config_parser(content)
+    cfg = app.common.config.config_parser()
     consumer = Consumer(args, cfg)
     try:
         consumer.run()
