@@ -1,5 +1,6 @@
 import argparse
 import logging
+import os
 import os.path
 import sys
 
@@ -44,6 +45,7 @@ def get_delivery_count_from_properties(properties):
 class Consumer(AsyncConsumer):
 
     def __init__(self, args=None, cfg=None):
+        logger.info(os.environ)
         self._args = args
         self._cfg = cfg
         super().__init__()

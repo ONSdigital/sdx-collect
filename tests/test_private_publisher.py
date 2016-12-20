@@ -38,3 +38,10 @@ class PrivatePublisherTests(unittest.TestCase):
         token = PrivatePublisher.encrypt(message, secret=secret)
         rv = PrivatePublisher.decrypt(token, secret=secret)
         self.assertEqual(message, rv)
+
+    def test_decrypt_with_string_token(self):
+        secret = base64.b64encode(b"x" * 32)
+        message = "Test string"
+        token = PrivatePublisher.encrypt(message.encode("utf-8"), secret=secret)
+        rv = PrivatePublisher.decrypt(token.decode("utf-8"), secret=secret)
+        self.assertEqual(message, rv)
