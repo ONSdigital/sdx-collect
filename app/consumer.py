@@ -79,7 +79,7 @@ class Consumer(AsyncConsumer):
             logger.error("ResponseProcessor failed", exception=e, tx_id=processor.tx_id)
 
 
-def main(args):
+def main(args=None):
     logger.debug("Starting consumer")
 
     consumer = Consumer(args)
@@ -88,12 +88,5 @@ def main(args):
     except KeyboardInterrupt:
         consumer.stop()
 
-
-def run():
-    p = argparse.ArgumentParser(description=__doc__)
-    args = p.parse_args()
-    rv = main(args)
-    sys.exit(rv)
-
 if __name__ == '__main__':
-    run()
+    main()
