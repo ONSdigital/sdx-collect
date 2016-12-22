@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-#   coding: UTF-8
-
 from app.queue_publisher import QueuePublisher
 
 from cryptography.fernet import Fernet
