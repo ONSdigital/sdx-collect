@@ -31,6 +31,7 @@ class PrivatePublisher(QueuePublisher):
         Secret key must be 32 url-safe base64-encoded bytes or string.
 
         Returned value is a string.
+
         """
         try:
             f = Fernet(secret)
