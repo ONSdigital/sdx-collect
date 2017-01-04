@@ -1,18 +1,37 @@
-from app import settings
-from app.queue_publisher import QueuePublisher
-from app.settings import session
 from json import dumps
+import os
+
 from requests.packages.urllib3.exceptions import MaxRetryError
+
+from app import settings
+from app.private_publisher import PrivatePublisher
+from app.settings import session
 
 
 class ResponseProcessor:
+
+    @staticmethod
+    def options():
+        rv = {}
+        try:
+            rv["secret"] = os.getenv("SDX_COLLECT_SECRET").encode("ascii")
+        except:
+            # No secret in env
+            pass
+        return rv
+
     def __init__(self, logger):
         self.logger = logger
         self.tx_id = ""
-        self.rrm_publisher = QueuePublisher(logger, settings.RABBIT_URLS, settings.RABBIT_RRM_RECEIPT_QUEUE)
-        self.ctp_publisher = QueuePublisher(logger, settings.RABBIT_URLS, settings.RABBIT_CTP_RECEIPT_QUEUE)
 
-    def process(self, encrypted_survey):
+        self.rrm_publisher = PrivatePublisher(
+            logger, settings.RABBIT_URLS, settings.RABBIT_RRM_RECEIPT_QUEUE
+        )
+        self.ctp_publisher = PrivatePublisher(
+            logger, settings.RABBIT_URLS, settings.RABBIT_CTP_RECEIPT_QUEUE
+        )
+
+    def process(self, encrypted_survey, **kwargs):
         # decrypt
         decrypt_ok, decrypted_json = self.decrypt_survey(encrypted_survey)
         if not decrypt_ok:
@@ -47,9 +66,9 @@ class ResponseProcessor:
         }
 
         if decrypted_json.get("survey_id") and decrypted_json["survey_id"] == "census":
-            queue_ok = self.ctp_publisher.publish_message(dumps(receipt_json))
+            queue_ok = self.ctp_publisher.publish_message(dumps(receipt_json), **kwargs)
         else:
-            queue_ok = self.rrm_publisher.publish_message(dumps(receipt_json))
+            queue_ok = self.rrm_publisher.publish_message(dumps(receipt_json), **kwargs)
 
         if not queue_ok:
             return False

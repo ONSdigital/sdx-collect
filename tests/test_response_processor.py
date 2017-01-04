@@ -1,13 +1,36 @@
-import unittest
-import logging
-from structlog import wrap_logger
 import json
+import logging
+import os
+import unittest
 from unittest.mock import MagicMock
+
+from structlog import wrap_logger
+
 from app.response_processor import ResponseProcessor
 from tests.test_data import fake_encrypted, valid_decrypted
 
 logger = wrap_logger(logging.getLogger(__name__))
 valid_json = json.loads(valid_decrypted)
+
+
+class TestResponseProcessorSettings(unittest.TestCase):
+
+    @unittest.skipIf(
+        "SDX_COLLECT_SECRET" in os.environ,
+        "variables match live environment"
+    )
+    def test_no_settings_only_env(self):
+        try:
+            os.environ["SDX_COLLECT_SECRET"] = "y" * 44
+            self.assertTrue(os.getenv("SDX_COLLECT_SECRET"))
+            rv = ResponseProcessor.options()
+            self.assertEqual({"secret": b"y" * 44}, rv)
+        finally:
+            del os.environ["SDX_COLLECT_SECRET"]
+
+    def test_no_settings(self):
+        rv = ResponseProcessor.options()
+        self.assertEqual({}, rv)
 
 
 class TestResponseProcessor(unittest.TestCase):
