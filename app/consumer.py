@@ -55,5 +55,6 @@ def main(args=None):
     except KeyboardInterrupt:
         consumer.stop()
 
+
 if __name__ == '__main__':
     main()
