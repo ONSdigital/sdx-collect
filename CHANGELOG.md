@@ -1,6 +1,7 @@
 ### Unreleased
   - Add change log
   - Remove reject on max retries. Stops message being rejected if endpoint is down for prolonged period
+  - Update logging
 
 ### 1.2.0 2016-12-13
   - Add new queues for rrm and ctp receipting services

@@ -30,7 +30,7 @@ class Consumer(AsyncConsumer):
         super().__init__()
 
     def on_message(self, unused_channel, basic_deliver, properties, body):
-        logger.info('Received message', delivery_tag=basic_deliver.delivery_tag, app_id=properties.app_id)
+        logger.info('Received message', queue=self.QUEUE, delivery_tag=basic_deliver.delivery_tag, app_id=properties.app_id)
 
         options = ResponseProcessor.options()
         processor = ResponseProcessor(logger)
