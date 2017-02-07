@@ -17,9 +17,9 @@ SDX_VALIDATE_URL = os.getenv("SDX_VALIDATE_URL", "http://sdx-validate:5000/valid
 RABBIT_SURVEY_QUEUE = os.getenv('RABBIT_SURVEY_QUEUE', 'survey')
 RABBIT_EXCHANGE = os.getenv('RABBITMQ_EXCHANGE', 'message')
 
-RABBIT_RRM_RECEIPT_QUEUE = os.getenv('RABBIT_RRM_RECEIPT_QUEUE', 'rrm_receipt')
+RABBIT_RRM_RECEIPT_QUEUE = os.getenv('RECEIPT_RRM_QUEUE', 'rrm_receipt')
 
-RABBIT_CTP_RECEIPT_QUEUE = os.getenv('RABBIT_CTP_RECEIPT_QUEUE', 'ctp_receipt')
+RABBIT_CTP_RECEIPT_QUEUE = os.getenv('RECEIPT_CTP_QUEUE', 'ctp_receipt')
 
 RABBIT_URL = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
     hostname=os.getenv('RABBITMQ_HOST', 'rabbit'),
