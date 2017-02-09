@@ -15,11 +15,15 @@ SDX_DECRYPT_URL = os.getenv("SDX_DECRYPT_URL", "http://sdx-decrypt:5000/decrypt"
 SDX_VALIDATE_URL = os.getenv("SDX_VALIDATE_URL", "http://sdx-validate:5000/validate")
 
 RABBIT_SURVEY_QUEUE = os.getenv('RABBIT_SURVEY_QUEUE', 'survey')
+RABBIT_QUARANTINE_QUEUE = os.getenv('RABBIT_QUARANTINE_QUEUE', 'survey_quarantine')
 RABBIT_EXCHANGE = os.getenv('RABBITMQ_EXCHANGE', 'message')
 
 RABBIT_RRM_RECEIPT_QUEUE = os.getenv('RECEIPT_RRM_QUEUE', 'rrm_receipt')
-
 RABBIT_CTP_RECEIPT_QUEUE = os.getenv('RECEIPT_CTP_QUEUE', 'ctp_receipt')
+
+SDX_COLLECT_SECRET = os.getenv("SDX_COLLECT_SECRET")
+if SDX_COLLECT_SECRET is not None:
+    SDX_COLLECT_SECRET = SDX_COLLECT_SECRET.encode("ascii")
 
 RABBIT_URL = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
     hostname=os.getenv('RABBITMQ_HOST', 'rabbit'),
