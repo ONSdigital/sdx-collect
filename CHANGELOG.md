@@ -1,4 +1,6 @@
 ### Unreleased
+  - Add explicit message ack/nack
+  - Add quarantine queue for bad decrypt messages
   - Add change log
   - Remove reject on max retries. Stops message being rejected if endpoint is down for prolonged period
   - Add queue name to log message
