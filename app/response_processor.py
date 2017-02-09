@@ -43,7 +43,13 @@ class ResponseProcessor:
             self.tx_id = decrypted_json['tx_id']
             self.logger = self.logger.bind(tx_id=self.tx_id)
 
-        self.validate_survey(decrypted_json)
+        try:
+            self.validate_survey(decrypted_json)
+        except BadMessageError:
+            # If the validation fails, the message is to be marked "invalid"
+            # and then stored. We don't then want to stop processing at this point.
+            decrypted_json['invalid'] = True
+
         self.store_survey(decrypted_json)
         self.send_receipt(decrypted_json)
         return

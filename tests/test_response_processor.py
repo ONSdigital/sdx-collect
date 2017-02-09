@@ -96,9 +96,9 @@ class TestResponseProcessor(unittest.TestCase):
                 self._process()
 
             # 400 - bad
+            # Is allowed to continue so that it may be stored
             r.status_code = 400
-            with self.assertRaises(BadMessageError):
-                self._process()
+            self._process()
 
             # 200 - ok
             r.status_code = 200
