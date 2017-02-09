@@ -56,7 +56,6 @@ class Consumer(AsyncConsumer):
             app_id=properties.app_id
         )
 
-        # options = ResponseProcessor.options()
         processor = ResponseProcessor(logger)
 
         try:
