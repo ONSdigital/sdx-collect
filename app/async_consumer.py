@@ -233,6 +233,15 @@ class AsyncConsumer(object):
         logger.info('Acknowledging message', delivery_tag=delivery_tag, **kwargs)
         self._channel.basic_ack(delivery_tag)
 
+    def nack_message(self, delivery_tag, **kwargs):
+        """Negative acknowledge a message
+
+        :param int delivery_tag: The deliver tag from the Basic.Deliver frame
+
+        """
+        logger.info('Nacking message', delivery_tag=delivery_tag, **kwargs)
+        self._channel.basic_nack(delivery_tag)
+
     def reject_message(self, delivery_tag, **kwargs):
         """Reject the message delivery from RabbitMQ by sending a
         Basic.Reject RPC method for the delivery tag.
