@@ -10,7 +10,7 @@ LOGGING_LEVEL = logging.getLevelName(os.getenv('LOGGING_LEVEL', 'DEBUG'))
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 APP_TMP = os.path.join(APP_ROOT, 'tmp')
 
-SDX_STORE_URL = os.getenv("SDX_STORE_URL", "http://sdx-store:5000/responses")
+SDX_RESPONSES_URL = os.getenv("SDX_RESPONSES_URL", "http://sdx-store:5000/responses")
 SDX_DECRYPT_URL = os.getenv("SDX_DECRYPT_URL", "http://sdx-decrypt:5000/decrypt")
 SDX_VALIDATE_URL = os.getenv("SDX_VALIDATE_URL", "http://sdx-validate:5000/validate")
 

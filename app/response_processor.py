@@ -90,7 +90,7 @@ class ResponseProcessor:
 
     def store_survey(self, decrypted_json):
         self.logger.debug("Storing survey")
-        self.response_ok(self.remote_call(settings.SDX_STORE_URL, json=decrypted_json))
+        self.response_ok(self.remote_call(settings.SDX_RESPONSES_URL, json=decrypted_json))
 
     def remote_call(self, request_url, json=None, data=None, headers=None, verify=True, auth=None):
         try:
