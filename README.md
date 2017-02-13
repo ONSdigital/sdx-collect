@@ -15,7 +15,7 @@ The following envioronment variables can be set:
 |---------------------------|---------------------------------------|---------------
 | SDX_DECRYPT_URL           | ``http://sdx-decrypt:5000/decrypt``   | URL of the ``sdx-decrypt`` service
 | SDX_VALIDATE_URL          | ``http://sdx-validate:5000/validate`` | URL of the ``sdx-validate`` service
-| SDX_STORE_URL             | ``http://sdx-store:5000/responses``   | URL of the ``sdx-store`` service
+| SDX_RESPONSES_URL         | ``http://sdx-store:5000/responses``   | URL of the ``sdx-store`` service
 | SDX_COLLECT_SECRET        | _none_                                | Key for decrypting messages from queue, must be the same as used for ``sdx-receipt``
 | RABBIT_SURVEY_QUEUE       | ``survey``                            | Name of incoming queue
 | RABBIT_QUARANTINE_QUEUE   | ``survey_quarantine``                 | Name of queue to quarantine bad decrypt messages to
