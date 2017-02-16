@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 1.3.0 2017-02-16
   - Add explicit message ack/nack
   - Add quarantine queue for bad decrypt messages
   - Add change log
