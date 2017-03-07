@@ -111,7 +111,7 @@ class ResponseProcessor:
 
     def response_ok(self, res):
         res_logger = self.logger
-        res_logger.bind(request_url=res.url, status_code=res.status_code)
+        res_logger.bind(request_url=res.url, status=res.status_code)
 
         if res.status_code == 200 or res.status_code == 201:
             res_logger.info("Returned from service", response="ok")
