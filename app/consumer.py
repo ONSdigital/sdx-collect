@@ -80,8 +80,7 @@ class Consumer(AsyncConsumer):
 
 
 def main(args=None):
-    logger.debug("Starting consumer")
-    logger.info("Current version: {}".format(__version__))
+    logger.info("Starting consumer", version=__version__)
 
     if settings.SDX_COLLECT_SECRET is None:
         logger.error("No SDX_COLLECT_SECRET env var supplied")
