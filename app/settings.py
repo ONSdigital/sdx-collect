@@ -10,21 +10,20 @@ LOGGING_LEVEL = logging.getLevelName(os.getenv('LOGGING_LEVEL', 'DEBUG'))
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 APP_TMP = os.path.join(APP_ROOT, 'tmp')
 
-SDX_STORE_URL = os.getenv("SDX_STORE_URL", "http://sdx-store:5000/responses")
+SDX_RESPONSES_URL = os.getenv("SDX_RESPONSES_URL", "http://sdx-store:5000/responses")
 SDX_DECRYPT_URL = os.getenv("SDX_DECRYPT_URL", "http://sdx-decrypt:5000/decrypt")
 SDX_VALIDATE_URL = os.getenv("SDX_VALIDATE_URL", "http://sdx-validate:5000/validate")
 
 RABBIT_SURVEY_QUEUE = os.getenv('RABBIT_SURVEY_QUEUE', 'survey')
-RABBIT_SURVEY_DELAY_QUEUE = os.getenv('RABBIT_SURVEY_DELAY_QUEUE', 'survey_delay')
+RABBIT_QUARANTINE_QUEUE = os.getenv('RABBIT_QUARANTINE_QUEUE', 'survey_quarantine')
 RABBIT_EXCHANGE = os.getenv('RABBITMQ_EXCHANGE', 'message')
-QUEUE_RETRY_DELAY_IN_MS = 20000
-QUEUE_MAX_MESSAGE_DELIVERIES = 3
 
-RABBIT_RRM_RECEIPT_QUEUE = os.getenv('RABBIT_RRM_RECEIPT_QUEUE', 'rrm_receipt')
-RABBIT_RRM_RECEIPT_DELAY_QUEUE = os.getenv('RABBIT_RRM_RECEIPT_DELAY_QUEUE', 'rrm_receipt_delay')
+RABBIT_RRM_RECEIPT_QUEUE = os.getenv('RECEIPT_RRM_QUEUE', 'rrm_receipt')
+RABBIT_CTP_RECEIPT_QUEUE = os.getenv('RECEIPT_CTP_QUEUE', 'ctp_receipt')
 
-RABBIT_CTP_RECEIPT_QUEUE = os.getenv('RABBIT_CTP_RECEIPT_QUEUE', 'ctp_receipt')
-RABBIT_CTP_RECEIPT_DELAY_QUEUE = os.getenv('RABBIT_CTP_RECEIPT_DELAY_QUEUE', 'ctp_receipt_delay')
+SDX_COLLECT_SECRET = os.getenv("SDX_COLLECT_SECRET")
+if SDX_COLLECT_SECRET is not None:
+    SDX_COLLECT_SECRET = SDX_COLLECT_SECRET.encode("ascii")
 
 RABBIT_URL = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
     hostname=os.getenv('RABBITMQ_HOST', 'rabbit'),
