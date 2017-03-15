@@ -164,3 +164,28 @@ class TestResponseProcessor(unittest.TestCase):
 
         with self.assertRaises(CTPQueue):
             self.rp.send_receipt(valid_json)
+
+    def test_url_splitter_return_responses(self):
+        url = "www.testing.test/responses"
+        service = self.rp.url_splitter(url)
+        self.assertEqual(service, 'responses')
+
+    def test_url_splitter_return_decrypt(self):
+        url = "www.testing.test/decrypt"
+        service = self.rp.url_splitter(url)
+        self.assertEqual(service, 'decrypt')
+
+    def test_url_splitter_return_validate(self):
+        url = "www.testing.test/validate"
+        service = self.rp.url_splitter(url)
+        self.assertEqual(service, 'validate')
+
+    def test_url_splitter_return_none(self):
+        url = "www.testing.test/test/12345"
+        service = self.rp.url_splitter(url)
+        self.assertEqual(service, None)
+
+    def test_url_splitter_url_none(self):
+        url = None
+        service = self.rp.url_splitter(url)
+        self.assertEqual(service, None)
