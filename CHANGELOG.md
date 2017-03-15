@@ -1,4 +1,5 @@
 ### Unreleased
+  - Add version number to log
 
 ### 1.3.0 2017-02-16
   - Add explicit message ack/nack
