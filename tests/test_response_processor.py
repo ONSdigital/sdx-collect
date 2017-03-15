@@ -165,27 +165,27 @@ class TestResponseProcessor(unittest.TestCase):
         with self.assertRaises(CTPQueue):
             self.rp.send_receipt(valid_json)
 
-    def test_url_splitter_return_responses(self):
+    def test_service_name_return_responses(self):
         url = "www.testing.test/responses"
-        service = self.rp.url_splitter(url)
-        self.assertEqual(service, 'responses')
+        service = self.rp.service_name(url)
+        self.assertEqual(service, 'SDX-STORE')
 
-    def test_url_splitter_return_decrypt(self):
+    def test_service_name_return_decrypt(self):
         url = "www.testing.test/decrypt"
-        service = self.rp.url_splitter(url)
-        self.assertEqual(service, 'decrypt')
+        service = self.rp.service_name(url)
+        self.assertEqual(service, 'SDX-DECRYPT')
 
-    def test_url_splitter_return_validate(self):
+    def test_service_name_return_validate(self):
         url = "www.testing.test/validate"
-        service = self.rp.url_splitter(url)
-        self.assertEqual(service, 'validate')
+        service = self.rp.service_name(url)
+        self.assertEqual(service, 'SDX-VALIDATE')
 
-    def test_url_splitter_return_none(self):
+    def test_service_name_return_none(self):
         url = "www.testing.test/test/12345"
-        service = self.rp.url_splitter(url)
+        service = self.rp.service_name(url)
         self.assertEqual(service, None)
 
-    def test_url_splitter_url_none(self):
+    def test_url_service_name_none(self):
         url = None
-        service = self.rp.url_splitter(url)
+        service = self.rp.service_name(url)
         self.assertEqual(service, None)

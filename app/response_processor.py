@@ -21,23 +21,6 @@ class ResponseProcessor:
             pass
         return rv
 
-    def url_splitter(self, url=None):
-        if url is not None:
-            parts = url.split('/')
-
-            if 'responses' in parts:
-                service = 'responses'
-            elif 'decrypt' in parts:
-                service = 'decrypt'
-            elif 'validate' in parts:
-                service = 'validate'
-            else:
-                service = None
-        else:
-            service = None
-
-        return service
-
     def __init__(self, logger):
         self.logger = logger
         self.tx_id = ""
@@ -48,6 +31,18 @@ class ResponseProcessor:
         self.ctp_publisher = PrivatePublisher(
             logger, settings.RABBIT_URLS, settings.RABBIT_CTP_RECEIPT_QUEUE
         )
+
+    def service_name(self, url=None):
+        try:
+            parts = url.split('/')
+            if 'responses' in parts:
+                return 'SDX-STORE'
+            elif 'decrypt' in parts:
+                return 'SDX-DECRYPT'
+            elif 'validate' in parts:
+                return 'SDX-VALIDATE'
+        except AttributeError as e:
+            self.logger.error(e)
 
     def process(self, encrypted_survey):
         # decrypt
@@ -110,7 +105,7 @@ class ResponseProcessor:
         self.response_ok(self.remote_call(settings.SDX_RESPONSES_URL, json=decrypted_json))
 
     def remote_call(self, request_url, json=None, data=None, headers=None, verify=True, auth=None):
-        service = self.url_splitter(request_url)
+        service = self.service_name(request_url)
 
         try:
             self.logger.info("Calling service", request_url=request_url, service=service)
@@ -131,7 +126,7 @@ class ResponseProcessor:
     def response_ok(self, res):
         request_url = res.url
 
-        service = self.url_splitter(request_url)
+        service = self.service_name(request_url)
 
         res_logger = self.logger
         res_logger.bind(request_url=res.url, status=res.status_code)
