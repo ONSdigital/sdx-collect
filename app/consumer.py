@@ -14,6 +14,7 @@ except Exception as e:
     print("Error: ", e, file=sys.stderr)
 
 from structlog import wrap_logger
+from app import __version__
 from app.async_consumer import AsyncConsumer
 from app.response_processor import ResponseProcessor
 from app import settings
@@ -79,7 +80,7 @@ class Consumer(AsyncConsumer):
 
 
 def main(args=None):
-    logger.debug("Starting consumer")
+    logger.info("Starting consumer", version=__version__)
 
     if settings.SDX_COLLECT_SECRET is None:
         logger.error("No SDX_COLLECT_SECRET env var supplied")

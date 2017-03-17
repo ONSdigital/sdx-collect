@@ -1,6 +1,9 @@
 ### Unreleased
   - Change logging messages to add the service called or returned from
 
+### 1.3.1 2017-03-15
+  - Add version number to log
+
 ### 1.3.0 2017-02-16
   - Add explicit message ack/nack
   - Add quarantine queue for bad decrypt messages
