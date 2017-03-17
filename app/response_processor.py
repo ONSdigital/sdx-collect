@@ -32,6 +32,18 @@ class ResponseProcessor:
             logger, settings.RABBIT_URLS, settings.RABBIT_CTP_RECEIPT_QUEUE
         )
 
+    def service_name(self, url=None):
+        try:
+            parts = url.split('/')
+            if 'responses' in parts:
+                return 'SDX-STORE'
+            elif 'decrypt' in parts:
+                return 'SDX-DECRYPT'
+            elif 'validate' in parts:
+                return 'SDX-VALIDATE'
+        except AttributeError as e:
+            self.logger.error(e)
+
     def process(self, encrypted_survey):
         # decrypt
         decrypted_json = self.decrypt_survey(encrypted_survey)
@@ -93,8 +105,10 @@ class ResponseProcessor:
         self.response_ok(self.remote_call(settings.SDX_RESPONSES_URL, json=decrypted_json))
 
     def remote_call(self, request_url, json=None, data=None, headers=None, verify=True, auth=None):
+        service = self.service_name(request_url)
+
         try:
-            self.logger.info("Calling service", request_url=request_url)
+            self.logger.info("Calling service", request_url=request_url, service=service)
             r = None
 
             if json:
@@ -110,17 +124,21 @@ class ResponseProcessor:
             self.logger.error("Max retries exceeded (5)", request_url=request_url)
 
     def response_ok(self, res):
+        request_url = res.url
+
+        service = self.service_name(request_url)
+
         res_logger = self.logger
         res_logger.bind(request_url=res.url, status=res.status_code)
 
         if res.status_code == 200 or res.status_code == 201:
-            res_logger.info("Returned from service", response="ok")
+            res_logger.info("Returned from service", response="ok", service=service)
             return
 
         elif res.status_code == 400:
-            res_logger.info("Returned from service", response="client error")
+            res_logger.info("Returned from service", response="client error", service=service)
             raise BadMessageError
 
         else:
-            res_logger.error("Returned from service", response="service error")
+            res_logger.error("Returned from service", response="service error", service=service)
             raise RetryableError
