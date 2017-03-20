@@ -1,3 +1,4 @@
+import copy
 import json
 import logging
 import os
@@ -164,6 +165,12 @@ class TestResponseProcessor(unittest.TestCase):
 
         with self.assertRaises(CTPQueue):
             self.rp.send_receipt(valid_json)
+
+        invalid_json = copy.deepcopy(valid_json)
+        invalid_json['survey_id'] = None
+
+        with self.assertRaises(RetryableError):
+            self.rp.send_receipt(invalid_json)
 
     def test_service_name_return_responses(self):
         url = "www.testing.test/responses"
