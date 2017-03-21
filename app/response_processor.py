@@ -78,7 +78,12 @@ class ResponseProcessor:
             }
         }
 
-        if decrypted_json.get("survey_id") and decrypted_json["survey_id"] == "census":
+        if not decrypted_json.get("survey_id"):
+            self.logger.error("No survey id",
+                              tx_id=decrypted_json['tx_id'],
+                              ru_ref=decrypted_json['metadata']['ru_ref'])
+            queue_ok = False
+        elif decrypted_json.get("survey_id") == "census":
             queue_ok = self.ctp_publisher.publish_message(dumps(receipt_json), secret=settings.SDX_COLLECT_SECRET)
         else:
             queue_ok = self.rrm_publisher.publish_message(dumps(receipt_json), secret=settings.SDX_COLLECT_SECRET)
