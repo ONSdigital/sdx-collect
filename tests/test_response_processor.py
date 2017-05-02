@@ -17,6 +17,24 @@ from app import settings
 logger = wrap_logger(logging.getLogger(__name__))
 valid_json = json.loads(valid_decrypted)
 
+RABBIT_URL = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
+    hostname='rabbit',
+    port=5672,
+    user='rabbit',
+    password='rabbit',
+    vhost='%2f'
+)
+
+RABBIT_URL2 = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
+    hostname='rabbit',
+    port=5672,
+    user='rabbit',
+    password='rabbit',
+    vhost='%2f'
+)
+
+settings.RABBIT_URLS = [RABBIT_URL, RABBIT_URL2]
+
 
 class RRMQueue(Exception):
     # Hacky, but using exception to check something is on the RIGHT queue in the test

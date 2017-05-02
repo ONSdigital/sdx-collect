@@ -37,6 +37,22 @@ def get_delivery_count_from_properties(properties):
     return delivery_count + 1
 
 
+def check_default_env_vars():
+
+    env_vars = ["SDX_DECRYPT_URL", "SDX_VALIDATE_URL", "SDX_RESPONSES_URL", "SDX_COLLECT_SECRET",
+                "RABBIT_SURVEY_QUEUE", "RABBIT_QUARANTINE_QUEUE", "RABBIT_EXCHANGE", "RABBIT_RRM_RECEIPT_QUEUE",
+                "RABBIT_CTP_RECEIPT_QUEUE", "RABBITMQ_HOST", "RABBITMQ_HOST2", "RABBITMQ_PORT",
+                "RABBITMQ_PORT2", "RABBITMQ_DEFAULT_USER", "RABBITMQ_DEFAULT_PASS", "RABBITMQ_DEFAULT_VHOST"]
+
+    for i in env_vars:
+        if os.getenv(i) is None:
+            logger.error("No ", i, "env var supplied")
+            missing_env_var = True
+
+    if missing_env_var is True:
+        sys.exit(1)
+
+
 class Consumer(AsyncConsumer):
 
     def __init__(self, args=None, cfg=None):
