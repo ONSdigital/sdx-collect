@@ -37,6 +37,12 @@ def get_delivery_count_from_properties(properties):
     return delivery_count + 1
 
 
+def _get_value(key):
+    value = os.getenv(key)
+    if not value:
+        raise ValueError("No value set for " + key)
+
+
 def check_default_env_vars():
 
     env_vars = ["SDX_DECRYPT_URL", "SDX_VALIDATE_URL", "SDX_RESPONSES_URL", "SDX_COLLECT_SECRET",
@@ -45,8 +51,10 @@ def check_default_env_vars():
                 "RABBITMQ_PORT2", "RABBITMQ_DEFAULT_USER", "RABBITMQ_DEFAULT_PASS", "RABBITMQ_DEFAULT_VHOST"]
 
     for i in env_vars:
-        if os.getenv(i) is None:
-            logger.error("No ", i, "env var supplied")
+        try:
+            _get_value(i)
+        except ValueError as e:
+            logger.error("Unable to start service", error=e)
             missing_env_var = True
 
     if missing_env_var is True:
