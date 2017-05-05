@@ -26,28 +26,37 @@ logger = wrap_logger(logging.getLogger(__name__))
 from app.helpers.exceptions import BadMessageError, DecryptError, RetryableError
 
 
-def get_delivery_count_from_properties(properties):
-    """
-    Returns the delivery count for a message from the rabbit queue. The
-    value is auto-set by rabbitmq.
-    """
-    delivery_count = 0
-    if properties.headers and 'x-delivery-count' in properties.headers:
-        delivery_count = properties.headers['x-delivery-count']
-    return delivery_count + 1
-
-
 class Consumer(AsyncConsumer):
 
     def __init__(self, args=None, cfg=None):
         self._args = args
         self._cfg = cfg
-        self.quarantine_publisher = QueuePublisher(logger, settings.RABBIT_URLS, settings.RABBIT_QUARANTINE_QUEUE)
+        self.quarantine_publisher = QueuePublisher(logger,
+                                                   settings.RABBIT_URLS,
+                                                   settings.RABBIT_QUARANTINE_QUEUE)
         super().__init__()
+
+    def get_delivery_count_from_properties(self, properties):
+        """
+        Returns the delivery count for a message from the rabbit queue. The
+        value is auto-set by rabbitmq.
+        """
+        delivery_count = 0
+        if properties.headers and 'x-delivery-count' in properties.headers:
+            delivery_count = properties.headers['x-delivery-count']
+        return delivery_count + 1
+
+    def get_tx_id_from_properties(self, properties):
+        """
+        Returns the tx_id for a message from a rabbit queue. The value is
+        auto-set by rabbitmq.
+        """
+        return properties.headers.get('tx_id')
 
     def on_message(self, unused_channel, basic_deliver, properties, body):
 
-        delivery_count = get_delivery_count_from_properties(properties)
+        delivery_count = self.get_delivery_count_from_properties(properties)
+        tx_id = self.get_tx_id_from_properties(properties)
 
         logger.info(
             'Received message',
@@ -61,22 +70,22 @@ class Consumer(AsyncConsumer):
 
         try:
             processor.process(body.decode("utf-8"))
-            self.acknowledge_message(basic_deliver.delivery_tag, tx_id=processor.tx_id)
+            self.acknowledge_message(basic_deliver.delivery_tag, tx_id=tx_id)
 
         except DecryptError as e:
             # Throw it into the quarantine queue to be dealt with
             self.quarantine_publisher.publish_message(body)
             self.reject_message(basic_deliver.delivery_tag, tx_id=processor.tx_id)
-            logger.error("Bad decrypt", action="quarantined", exception=e, tx_id=processor.tx_id, delivery_count=delivery_count)
+            logger.error("Bad decrypt", action="quarantined", exception=e, tx_id=tx_id, delivery_count=delivery_count)
 
         except BadMessageError as e:
             # If it's a bad message then we have to reject it
             self.reject_message(basic_deliver.delivery_tag, tx_id=processor.tx_id)
-            logger.error("Bad message", action="rejected", exception=e, tx_id=processor.tx_id, delivery_count=delivery_count)
+            logger.error("Bad message", action="rejected", exception=e, tx_id=tx_id, delivery_count=delivery_count)
 
         except (RetryableError, Exception) as e:
             self.nack_message(basic_deliver.delivery_tag, tx_id=processor.tx_id)
-            logger.error("Failed to process", action="nack", exception=e, tx_id=processor.tx_id, delivery_count=delivery_count)
+            logger.error("Failed to process", action="nack", exception=e, tx_id=tx_id, delivery_count=delivery_count)
 
 
 def main(args=None):
