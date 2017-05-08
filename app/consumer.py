@@ -63,7 +63,8 @@ class Consumer(AsyncConsumer):
             queue=self.QUEUE,
             delivery_tag=basic_deliver.delivery_tag,
             delivery_count=delivery_count,
-            app_id=properties.app_id
+            app_id=properties.app_id,
+            tx_id=tx_id,
         )
 
         processor = ResponseProcessor(logger)
@@ -75,16 +76,16 @@ class Consumer(AsyncConsumer):
         except DecryptError as e:
             # Throw it into the quarantine queue to be dealt with
             self.quarantine_publisher.publish_message(body)
-            self.reject_message(basic_deliver.delivery_tag, tx_id=processor.tx_id)
+            self.reject_message(basic_deliver.delivery_tag, tx_id=tx_id)
             logger.error("Bad decrypt", action="quarantined", exception=e, tx_id=tx_id, delivery_count=delivery_count)
 
         except BadMessageError as e:
             # If it's a bad message then we have to reject it
-            self.reject_message(basic_deliver.delivery_tag, tx_id=processor.tx_id)
+            self.reject_message(basic_deliver.delivery_tag, tx_id=tx_id)
             logger.error("Bad message", action="rejected", exception=e, tx_id=tx_id, delivery_count=delivery_count)
 
         except (RetryableError, Exception) as e:
-            self.nack_message(basic_deliver.delivery_tag, tx_id=processor.tx_id)
+            self.nack_message(basic_deliver.delivery_tag, tx_id=tx_id)
             logger.error("Failed to process", action="nack", exception=e, tx_id=tx_id, delivery_count=delivery_count)
 
 
