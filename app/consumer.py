@@ -51,7 +51,9 @@ class Consumer(AsyncConsumer):
         Returns the tx_id for a message from a rabbit queue. The value is
         auto-set by rabbitmq.
         """
-        return properties.headers.get('tx_id')
+        tx_id = properties.headers.get('tx_id')
+        logger.info("Retrieved tx_id from message properties", tx_id=tx_id)
+        return tx_id
 
     def on_message(self, unused_channel, basic_deliver, properties, body):
 
