@@ -17,4 +17,6 @@ class ConsumerTests(unittest.TestCase):
 
     def test_get_tx_id_from_properties(self):
         self.assertEqual('test', self.consumer.get_tx_id_from_properties(self.props))
-        self.assertEqual(None, self.consumer.get_tx_id_from_properties(self.props_no_txid))
+
+        with self.assertRaises(KeyError):
+            self.consumer.get_tx_id_from_properties(self.props_no_txid)

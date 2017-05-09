@@ -51,14 +51,26 @@ class Consumer(AsyncConsumer):
         Returns the tx_id for a message from a rabbit queue. The value is
         auto-set by rabbitmq.
         """
-        tx_id = properties.headers.get('tx_id')
-        logger.info("Retrieved tx_id from message properties", tx_id=tx_id)
-        return tx_id
+        try:
+            tx_id = properties.headers['tx_id']
+            logger.info("Retrieved tx_id from message properties", tx_id=tx_id)
+            return tx_id
+        except KeyError as e:
+            logger.error("No tx_id in message properties. Sending message to quarantine")
+            raise e
 
     def on_message(self, unused_channel, basic_deliver, properties, body):
 
         delivery_count = self.get_delivery_count_from_properties(properties)
-        tx_id = self.get_tx_id_from_properties(properties)
+
+        try:
+            tx_id = self.get_tx_id_from_properties(properties)
+        except KeyError as e:
+            self.reject_message(basic_deliver.delivery_tag)
+            logger.error("Bad message properties",
+                         action="quarantined",
+                         exception=e,
+                         delivery_count=delivery_count)
 
         logger.info(
             'Received message',
@@ -77,18 +89,28 @@ class Consumer(AsyncConsumer):
 
         except DecryptError as e:
             # Throw it into the quarantine queue to be dealt with
-            self.quarantine_publisher.publish_message(body)
             self.reject_message(basic_deliver.delivery_tag, tx_id=tx_id)
-            logger.error("Bad decrypt", action="quarantined", exception=e, tx_id=tx_id, delivery_count=delivery_count)
+            logger.error("Bad decrypt",
+                         action="quarantined",
+                         exception=e,
+                         tx_id=tx_id,
+                         delivery_count=delivery_count)
 
         except BadMessageError as e:
             # If it's a bad message then we have to reject it
             self.reject_message(basic_deliver.delivery_tag, tx_id=tx_id)
-            logger.error("Bad message", action="rejected", exception=e, tx_id=tx_id, delivery_count=delivery_count)
+            logger.error("Bad message",
+                         action="rejected",
+                         exception=e, tx_id=tx_id,
+                         delivery_count=delivery_count)
 
         except (RetryableError, Exception) as e:
             self.nack_message(basic_deliver.delivery_tag, tx_id=tx_id)
-            logger.error("Failed to process", action="nack", exception=e, tx_id=tx_id, delivery_count=delivery_count)
+            logger.error("Failed to process",
+                         action="nack",
+                         exception=e,
+                         tx_id=tx_id,
+                         delivery_count=delivery_count)
 
 
 def main(args=None):
