@@ -21,9 +21,13 @@ class ResponseProcessor:
             pass
         return rv
 
-    def __init__(self, logger):
+    def __init__(self, logger, tx_id=None):
         self.logger = logger
-        self.tx_id = ""
+
+        if tx_id:
+            self.tx_id = tx_id
+        else:
+            self.tx_id = None
 
         self.rrm_publisher = PrivatePublisher(
             logger, settings.RABBIT_URLS, settings.RABBIT_RRM_RECEIPT_QUEUE
@@ -51,8 +55,11 @@ class ResponseProcessor:
         metadata = decrypted_json['metadata']
         self.logger = self.logger.bind(user_id=metadata['user_id'], ru_ref=metadata['ru_ref'])
 
-        if 'tx_id' in decrypted_json:
-            self.tx_id = decrypted_json['tx_id']
+        if not self.tx_id:
+            self.tx_id = decrypted_json.get('tx_id')
+        elif self.tx_id != decrypted_json.get('tx_id'):
+            raise BadMessageError
+        else:
             self.logger = self.logger.bind(tx_id=self.tx_id)
 
         try:

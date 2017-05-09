@@ -81,7 +81,7 @@ class Consumer(AsyncConsumer):
             tx_id=tx_id,
         )
 
-        processor = ResponseProcessor(logger)
+        processor = ResponseProcessor(logger, tx_id=tx_id)
 
         try:
             processor.process(body.decode("utf-8"))
@@ -101,7 +101,8 @@ class Consumer(AsyncConsumer):
             self.reject_message(basic_deliver.delivery_tag, tx_id=tx_id)
             logger.error("Bad message",
                          action="rejected",
-                         exception=e, tx_id=tx_id,
+                         exception=e,
+                         tx_id=tx_id,
                          delivery_count=delivery_count)
 
         except (RetryableError, Exception) as e:
