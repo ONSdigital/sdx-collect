@@ -51,15 +51,23 @@ class TestResponseProcessor(unittest.TestCase):
 
     def setUp(self):
         self.rp = ResponseProcessor(logger)
+        self.rp_invalid = ResponseProcessor(logger, tx_id='invalid')
 
     def _process(self):
         self.rp.process("NxjsJBSahBXHSbxHBasx")
+
+    def _process_invalid(self):
+        self.rp_invalid.process("NxjsJBSahBXHSbxHBasx")
 
     def test_decrypt(self):
         # <decrypt>
         self.rp.validate_survey = MagicMock()
         self.rp.store_survey = MagicMock()
         self.rp.send_receipt = MagicMock()
+
+        self.rp_invalid.validate_survey = MagicMock()
+        self.rp_invalid.store_survey = MagicMock()
+        self.rp_invalid.send_receipt = MagicMock()
 
         r = Response()
 
@@ -80,6 +88,9 @@ class TestResponseProcessor(unittest.TestCase):
             # 200 - ok
             r.status_code = 200
             self._process()
+
+            with self.assertRaises(BadMessageError):
+                self._process_invalid()
 
     def test_validate(self):
         self.rp.decrypt_survey = MagicMock(return_value=valid_json)
