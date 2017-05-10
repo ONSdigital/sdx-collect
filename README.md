@@ -23,3 +23,8 @@ The following envioronment variables can be set:
 | RABBIT_RRM_RECEIPT_QUEUE  | ``rrm_receipt``                       | Name of rrm receipt service queue
 | RABBIT_CTP_RECEIPT_QUEUE  | ``ctp_receipt``                       | Name of ctp receipt service queue
 
+### License
+
+Copyright © 2016, Office for National Statistics (https://www.ons.gov.uk)
+
+Released under MIT license, see [LICENSE](LICENSE) for details.
