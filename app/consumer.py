@@ -41,6 +41,7 @@ def check_globals(module):
     g = {k: v for k, v in vars(module).items() if not k.startswith("_") and k.isupper()}
     return all(g.values())
 
+
 class Consumer(AsyncConsumer):
 
     def __init__(self, args=None, cfg=None):
@@ -86,8 +87,8 @@ class Consumer(AsyncConsumer):
 def main(args=None):
     logger.info("Starting consumer", version=__version__)
 
-    if settings.SDX_COLLECT_SECRET is None:
-        logger.error("No SDX_COLLECT_SECRET env var supplied")
+    if not check_globals(settings):
+        logger.error("Variables missing from environment.")
         sys.exit(1)
 
     consumer = Consumer(args)
