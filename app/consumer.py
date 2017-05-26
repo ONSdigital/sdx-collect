@@ -1,29 +1,22 @@
 import logging
-import os
-import os.path
 import sys
+
+from structlog import wrap_logger
+from sdx.common.async_consumer import AsyncConsumer
+
+from app import __version__
+from app import settings
+from app.helpers.exceptions import BadMessageError, DecryptError, RetryableError
+from app.response_processor import ResponseProcessor
+from app.queue_publisher import QueuePublisher
 
 __doc__ = """
 SDX collection processor.
 
 """
-# Transitional until this package is installed with pip
-try:
-    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-except Exception as e:
-    print("Error: ", e, file=sys.stderr)
-
-from structlog import wrap_logger
-from app import __version__
-from app.async_consumer import AsyncConsumer
-from app.response_processor import ResponseProcessor
-from app import settings
-from app.queue_publisher import QueuePublisher
 
 logging.basicConfig(level=settings.LOGGING_LEVEL, format=settings.LOGGING_FORMAT)
 logger = wrap_logger(logging.getLogger(__name__))
-
-from app.helpers.exceptions import BadMessageError, DecryptError, RetryableError
 
 
 class Consumer(AsyncConsumer):
