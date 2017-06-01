@@ -4,7 +4,7 @@ from structlog import wrap_logger
 from app import settings
 import time
 
-from sdx.common import set_pika_log_level
+from sdx.common.set_pika_log_level import set_pika_log_level
 
 logger = wrap_logger(logging.getLogger(__name__))
 
