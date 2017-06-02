@@ -4,12 +4,12 @@ from structlog import wrap_logger
 from app import settings
 import time
 
-from sdx.common.set_pika_log_level import set_pika_log_level
+from sdx.common.log_levels import set_level
 
 logger = wrap_logger(logging.getLogger(__name__))
 
 # defaults to WARNING
-set_pika_log_level()
+set_level()
 
 
 class AsyncConsumer(object):
