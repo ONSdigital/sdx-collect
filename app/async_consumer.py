@@ -7,9 +7,7 @@ import time
 from sdx.common.log_levels import set_level
 
 logger = wrap_logger(logging.getLogger(__name__))
-
-# defaults to WARNING
-set_level()
+set_level(logger='pika', log_level='WARNINGs')
 
 
 class AsyncConsumer(object):
