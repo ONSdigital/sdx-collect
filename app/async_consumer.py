@@ -4,6 +4,7 @@ from structlog import wrap_logger
 from app import settings
 import time
 
+logging.basicConfig(level=settings.LOGGING_LEVEL, format=settings.LOGGING_FORMAT, datefmt=settings.LOGGING_DATE_FORMAT)
 logger = wrap_logger(logging.getLogger(__name__))
 
 
