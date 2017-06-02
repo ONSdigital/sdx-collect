@@ -1,6 +1,8 @@
 build:
-	pip3 install -r requirements.txt
-	pip3 install -I git+git://github.com/ONSdigital/sdx-common.git@feature/pika-log-level
+	pip3 install -I -r requirements.txt
+	git clone https://github.com/ONSdigital/sdx-common.git
+	pip3 install ./sdx-common
+	rm -rf sdx-common
 
 test:
 	pip3 install -r test_requirements.txt
