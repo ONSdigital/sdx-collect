@@ -3,6 +3,7 @@
   - Pre validate survey ids so that invalid/empty strings aren't routed to census
   - Change logging messages to add the service called or returned from
   - Get tx_id from message header before decrypting
+  - Add codacy badge
   - Correct license attribution
 
 ### 1.3.1 2017-03-15
