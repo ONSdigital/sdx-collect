@@ -4,9 +4,10 @@ from structlog import wrap_logger
 from app import settings
 import time
 
-logging.basicConfig(level=settings.LOGGING_LEVEL,
-                    format=settings.LOGGING_FORMAT,
-                    datefmt=settings.LOGGING_DATE_FORMAT)
+from sdx.common.logger_config import logger_initial_config
+
+
+logger_initial_config(service_name='sdx-collect')
 logger = wrap_logger(logging.getLogger(__name__))
 
 
