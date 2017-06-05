@@ -20,7 +20,9 @@ from app.response_processor import ResponseProcessor
 from app import settings
 from app.queue_publisher import QueuePublisher
 
-logging.basicConfig(level=settings.LOGGING_LEVEL, format=settings.LOGGING_FORMAT, datefmt=settings.LOGGING_DATE_FORMAT)
+logging.basicConfig(level=settings.LOGGING_LEVEL,
+                    format=settings.LOGGING_FORMAT,
+                    datefmt=settings.LOGGING_DATE_FORMAT)
 logger = wrap_logger(logging.getLogger(__name__))
 
 from app.helpers.exceptions import BadMessageError, DecryptError, RetryableError

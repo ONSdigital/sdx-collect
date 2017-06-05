@@ -3,6 +3,7 @@
   - Change logging messages to add the service called or returned from
   - Get tx_id from message header before decrypting
   - Correct license attribution
+  - Updating date format in logs
 
 ### 1.3.1 2017-03-15
   - Add version number to log
