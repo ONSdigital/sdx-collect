@@ -1,5 +1,5 @@
 dev: check-env
-	cd .. && pip3 uninstall -y ./sdx-common && pip3 install -I ./sdx-common
+	cd .. && pip3 uninstall -y sdx-common && pip3 install -I ./sdx-common
 	pip3 install -r requirements.txt
 
 build:
