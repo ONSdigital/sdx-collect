@@ -6,6 +6,7 @@
   - Get tx_id from message header before decrypting
   - Add codacy badge
   - Correct license attribution
+  - Updating date format in logs using sdx-common
 
 ### 1.3.1 2017-03-15
   - Add version number to log
