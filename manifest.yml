@@ -1,0 +1,4 @@
+---
+applications:
+- name: sdx-collect
+  buildpack: python_buildpack
