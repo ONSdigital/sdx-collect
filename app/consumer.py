@@ -1,8 +1,9 @@
 import logging
 import sys
 
-from structlog import wrap_logger
 from sdx.common.async_consumer import AsyncConsumer
+from sdx.common.logger_config import logger_initial_config
+from structlog import wrap_logger
 
 from app import __version__
 from app import settings
@@ -10,12 +11,7 @@ from app.helpers.exceptions import BadMessageError, DecryptError, RetryableError
 from app.response_processor import ResponseProcessor
 from app.queue_publisher import QueuePublisher
 
-__doc__ = """
-SDX collection processor.
-
-"""
-
-logging.basicConfig(level=settings.LOGGING_LEVEL, format=settings.LOGGING_FORMAT)
+logger_initial_config(service_name='sdx-collect')
 logger = wrap_logger(logging.getLogger(__name__))
 
 
