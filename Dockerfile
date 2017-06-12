@@ -1,6 +1,5 @@
 FROM onsdigital/flask-crypto-queue
 
-# Install essential packages
 RUN apt-get update -y
 RUN apt-get upgrade -y
 RUN apt-get install -yq git gcc make build-essential python3-dev python3-reportlab
