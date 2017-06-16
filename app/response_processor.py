@@ -70,7 +70,7 @@ class ResponseProcessor:
             decrypted_json['invalid'] = True
 
         self.store_survey(decrypted_json)
-        if decrypted_json["survey_id"] != "feedback":
+        if decrypted_json.get("survey_id") != "feedback":
             self.send_receipt(decrypted_json)
         else:
             self.logger.info("Feedback survey, skipping receipting")
