@@ -10,12 +10,14 @@ from requests import Response
 from structlog import wrap_logger
 
 from app.response_processor import ResponseProcessor
-from tests.test_data import valid_decrypted
+from tests.test_data import feedback_decrypted, valid_decrypted
 from app.helpers.exceptions import DecryptError, RetryableError, BadMessageError
 from app import settings
 
+
 logger = wrap_logger(logging.getLogger(__name__))
 valid_json = json.loads(valid_decrypted)
+feedback = json.loads(feedback_decrypted)
 
 
 class RRMQueue(Exception):
@@ -182,6 +184,15 @@ class TestResponseProcessor(unittest.TestCase):
 
         with self.assertRaises(RetryableError):
             self.rp.send_receipt(invalid_json)
+
+    def test_send_feedback(self):
+        self.rp.decrypt_survey = MagicMock(return_value=feedback)
+        self.rp.validate_survey = MagicMock()
+        self.rp.store_survey = MagicMock()
+
+        self.rp.send_receipt = Mock(side_effect=RRMQueue)
+
+        self._process()
 
     def test_service_name_return_responses(self):
         url = "www.testing.test/responses"

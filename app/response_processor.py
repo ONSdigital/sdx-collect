@@ -16,7 +16,7 @@ class ResponseProcessor:
         rv = {}
         try:
             rv["secret"] = os.getenv("SDX_COLLECT_SECRET").encode("ascii")
-        except:
+        except AttributeError:
             # No secret in env
             pass
         return rv
@@ -70,7 +70,11 @@ class ResponseProcessor:
             decrypted_json['invalid'] = True
 
         self.store_survey(decrypted_json)
-        self.send_receipt(decrypted_json)
+        if decrypted_json.get("survey_id") != "feedback":
+            self.send_receipt(decrypted_json)
+        else:
+            self.logger.info("Feedback survey, skipping receipting")
+
         return
 
     def send_receipt(self, decrypted_json):
