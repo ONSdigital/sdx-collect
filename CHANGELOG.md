@@ -8,6 +8,7 @@
   - Correct license attribution
   - Import async_consumer from sdx-common
   - Updating date format in logs using sdx-common
+  - Add support for codecov to see unit test coverage
 
 ### 1.3.1 2017-03-15
   - Add version number to log
