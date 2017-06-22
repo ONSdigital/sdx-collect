@@ -8,3 +8,5 @@ pip-selfcheck.json
 lib/
 bin/
 include/
+coverage.xml
+.coverage
