@@ -2,6 +2,6 @@ cryptography==1.7.1
 requests==2.12.4
 pika==0.10.0
 Jinja2==2.8
-sdx-common>=0.5.1
+sdx-common==0.7.0
 six==1.10.0
 structlog==16.1.0
