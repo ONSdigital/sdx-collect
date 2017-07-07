@@ -111,7 +111,7 @@ class ResponseProcessor:
             raise RetryableError()
         else:
             self.logger.info(
-                "Receipt Published,
+                "Receipt Published",
                 tx_id=receipt_json['tx_id'],
             )
 
