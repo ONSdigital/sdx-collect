@@ -95,12 +95,25 @@ class ResponseProcessor:
                               ru_ref=decrypted_json['metadata']['ru_ref'])
             queue_ok = False
         elif decrypted_json.get("survey_id") == "census":
+            self.logger.info(
+                "About to publish receipt to ctp queue",
+                tx_id=decrypted_json['tx_id'],
+            )
             queue_ok = self.ctp_publisher.publish_message(dumps(receipt_json), secret=settings.SDX_COLLECT_SECRET)
         else:
+            self.logger.info(
+                "About to publish receipt to rrm queue",
+                tx_id=decrypted_json['tx_id'],
+            )
             queue_ok = self.rrm_publisher.publish_message(dumps(receipt_json), secret=settings.SDX_COLLECT_SECRET)
 
         if not queue_ok:
             raise RetryableError()
+        else:
+            self.logger.info(
+                "Receipt Published,
+                tx_id=receipt_json['tx_id'],
+            )
 
     def decrypt_survey(self, encrypted_survey):
         self.logger.debug("Decrypting survey")
