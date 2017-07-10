@@ -6,8 +6,7 @@ before_install:
     - git clone https://github.com/ONSdigital/sdx-common.git
     - pip3 install ./sdx-common
 install:
-    - "pip install -r requirements.txt"
-    - "pip install -r test_requirements.txt"
+    - make build
     - pip install codecov
 script:
     - flake8
