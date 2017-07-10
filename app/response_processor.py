@@ -89,15 +89,16 @@ class ResponseProcessor:
             }
         }
 
-        self.logger.info("About to publish receipt into queue")
         if not decrypted_json.get("survey_id"):
             self.logger.error("No survey id",
                               tx_id=decrypted_json['tx_id'],
                               ru_ref=decrypted_json['metadata']['ru_ref'])
             queue_ok = False
         elif decrypted_json.get("survey_id") == "census":
+            self.logger.info("About to publish receipt into ctp queue")
             queue_ok = self.ctp_publisher.publish_message(dumps(receipt_json), secret=settings.SDX_COLLECT_SECRET)
         else:
+            self.logger.info("About to publish receipt into rrm queue")
             queue_ok = self.rrm_publisher.publish_message(dumps(receipt_json), secret=settings.SDX_COLLECT_SECRET)
 
         if not queue_ok:
