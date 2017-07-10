@@ -1,3 +1,4 @@
+import copy
 import json
 import logging
 import os
@@ -9,12 +10,14 @@ from requests import Response
 from structlog import wrap_logger
 
 from app.response_processor import ResponseProcessor
-from tests.test_data import valid_decrypted
+from tests.test_data import feedback_decrypted, valid_decrypted
 from app.helpers.exceptions import DecryptError, RetryableError, BadMessageError
 from app import settings
 
+
 logger = wrap_logger(logging.getLogger(__name__))
 valid_json = json.loads(valid_decrypted)
+feedback = json.loads(feedback_decrypted)
 
 
 class RRMQueue(Exception):
@@ -50,15 +53,23 @@ class TestResponseProcessor(unittest.TestCase):
 
     def setUp(self):
         self.rp = ResponseProcessor(logger)
+        self.rp_invalid = ResponseProcessor(logger, tx_id='invalid')
 
     def _process(self):
         self.rp.process("NxjsJBSahBXHSbxHBasx")
+
+    def _process_invalid(self):
+        self.rp_invalid.process("NxjsJBSahBXHSbxHBasx")
 
     def test_decrypt(self):
         # <decrypt>
         self.rp.validate_survey = MagicMock()
         self.rp.store_survey = MagicMock()
         self.rp.send_receipt = MagicMock()
+
+        self.rp_invalid.validate_survey = MagicMock()
+        self.rp_invalid.store_survey = MagicMock()
+        self.rp_invalid.send_receipt = MagicMock()
 
         r = Response()
 
@@ -79,6 +90,9 @@ class TestResponseProcessor(unittest.TestCase):
             # 200 - ok
             r.status_code = 200
             self._process()
+
+            with self.assertRaises(BadMessageError):
+                self._process_invalid()
 
     def test_validate(self):
         self.rp.decrypt_survey = MagicMock(return_value=valid_json)
@@ -164,3 +178,43 @@ class TestResponseProcessor(unittest.TestCase):
 
         with self.assertRaises(CTPQueue):
             self.rp.send_receipt(valid_json)
+
+        invalid_json = copy.deepcopy(valid_json)
+        invalid_json['survey_id'] = None
+
+        with self.assertRaises(RetryableError):
+            self.rp.send_receipt(invalid_json)
+
+    def test_send_feedback(self):
+        self.rp.decrypt_survey = MagicMock(return_value=feedback)
+        self.rp.validate_survey = MagicMock()
+        self.rp.store_survey = MagicMock()
+
+        self.rp.send_receipt = Mock(side_effect=RRMQueue)
+
+        self._process()
+
+    def test_service_name_return_responses(self):
+        url = "www.testing.test/responses"
+        service = self.rp.service_name(url)
+        self.assertEqual(service, 'SDX-STORE')
+
+    def test_service_name_return_decrypt(self):
+        url = "www.testing.test/decrypt"
+        service = self.rp.service_name(url)
+        self.assertEqual(service, 'SDX-DECRYPT')
+
+    def test_service_name_return_validate(self):
+        url = "www.testing.test/validate"
+        service = self.rp.service_name(url)
+        self.assertEqual(service, 'SDX-VALIDATE')
+
+    def test_service_name_return_none(self):
+        url = "www.testing.test/test/12345"
+        service = self.rp.service_name(url)
+        self.assertEqual(service, None)
+
+    def test_url_service_name_none(self):
+        url = None
+        service = self.rp.service_name(url)
+        self.assertEqual(service, None)

@@ -4,7 +4,7 @@ import requests
 from requests.packages.urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
 
-LOGGING_FORMAT = "%(asctime)s|%(levelname)s: sdx-collect: %(message)s"
+
 LOGGING_LEVEL = logging.getLevelName(os.getenv('LOGGING_LEVEL', 'DEBUG'))
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -14,7 +14,7 @@ SDX_RESPONSES_URL = os.getenv("SDX_RESPONSES_URL", "http://sdx-store:5000/respon
 SDX_DECRYPT_URL = os.getenv("SDX_DECRYPT_URL", "http://sdx-decrypt:5000/decrypt")
 SDX_VALIDATE_URL = os.getenv("SDX_VALIDATE_URL", "http://sdx-validate:5000/validate")
 
-RABBIT_SURVEY_QUEUE = os.getenv('RABBIT_SURVEY_QUEUE', 'survey')
+RABBIT_QUEUE = os.getenv('RABBIT_SURVEY_QUEUE', 'survey')
 RABBIT_QUARANTINE_QUEUE = os.getenv('RABBIT_QUARANTINE_QUEUE', 'survey_quarantine')
 RABBIT_EXCHANGE = os.getenv('RABBITMQ_EXCHANGE', 'message')
 
