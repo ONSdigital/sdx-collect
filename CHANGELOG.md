@@ -12,6 +12,19 @@
   - Update and pin version of sdx-common to 0.7.0
   - Remove use of SDX_HOME variable in makefile
 
+### 1.4.0 2017-07-10
+  - Adds a 'dev' build target for local dev work
+  - Use common Pika log level setter
+  - Pre validate survey ids so that invalid/empty strings aren't routed to census
+  - Change logging messages to add the service called or returned from
+  - Get tx_id from message header before decrypting
+  - Add codacy badge
+  - Correct license attribution
+  - Import async_consumer from sdx-common
+  - Updating date format in logs using sdx-common
+  - Add support for codecov to see unit test coverage
+  - Update and pin version of sdx-common to 0.7.0
+
 ### 1.3.1 2017-03-15
   - Add version number to log
 
