@@ -9,8 +9,7 @@ install:
     - make build
     - pip install codecov
 script:
-    - flake8
-    - python -m unittest tests/*.py
+    - make test
     - coverage run -m unittest tests/*.py
 after_success:
     - codecov
