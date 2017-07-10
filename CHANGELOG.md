@@ -9,6 +9,7 @@
   - Import async_consumer from sdx-common
   - Updating date format in logs using sdx-common
   - Add support for codecov to see unit test coverage
+  - Update and pin version of sdx-common to 0.7.0
   - Remove use of SDX_HOME variable in makefile
 
 ### 1.3.1 2017-03-15
