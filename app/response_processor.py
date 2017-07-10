@@ -59,8 +59,8 @@ class ResponseProcessor:
             self.tx_id = decrypted_json.get('tx_id')
         elif self.tx_id != decrypted_json.get('tx_id'):
             raise BadMessageError
-        else:
-            self.logger = self.logger.bind(tx_id=self.tx_id)
+
+        self.logger = self.logger.bind(tx_id=self.tx_id)
 
         try:
             self.validate_survey(decrypted_json)
@@ -95,12 +95,16 @@ class ResponseProcessor:
                               ru_ref=decrypted_json['metadata']['ru_ref'])
             queue_ok = False
         elif decrypted_json.get("survey_id") == "census":
+            self.logger.info("About to publish receipt into ctp queue")
             queue_ok = self.ctp_publisher.publish_message(dumps(receipt_json), secret=settings.SDX_COLLECT_SECRET)
         else:
+            self.logger.info("About to publish receipt into rrm queue")
             queue_ok = self.rrm_publisher.publish_message(dumps(receipt_json), secret=settings.SDX_COLLECT_SECRET)
 
         if not queue_ok:
             raise RetryableError()
+
+        self.logger.info("Receipt published")
 
     def decrypt_survey(self, encrypted_survey):
         self.logger.debug("Decrypting survey")
