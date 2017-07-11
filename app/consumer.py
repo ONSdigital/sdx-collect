@@ -87,7 +87,7 @@ class Consumer(AsyncConsumer):
                          delivery_count=delivery_count)
 
         except BadMessageError as e:
-                # If it's a bad message then we have to reject it
+            # If it's a bad message then we have to reject it
             self.reject_message(basic_deliver.delivery_tag, tx_id=tx_id)
             logger.error("Bad message",
                          action="rejected",
