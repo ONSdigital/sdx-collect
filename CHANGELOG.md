@@ -1,7 +1,7 @@
 ### Unreleased
 
 ### 1.4.1 2017-07-11
-  - Correctly publish to quarantine queue when a DecryptError is raised
+  - Fix issue where message is not quarantined when a DecryptError is raised
 
 ### 1.4.0 2017-07-10
   - Adds a 'dev' build target for local dev work
