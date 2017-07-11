@@ -1,5 +1,8 @@
 ### Unreleased
 
+### 1.4.1 2017-07-11
+  - Fix #180 where message is not quarantined when a DecryptError is raised
+
 ### 1.4.0 2017-07-10
   - Adds a 'dev' build target for local dev work
   - Use common Pika log level setter
