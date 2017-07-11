@@ -78,6 +78,7 @@ class Consumer(AsyncConsumer):
 
         except DecryptError as e:
             # Throw it into the quarantine queue to be dealt with
+            self.quarantine_publisher.publish_message(body)
             self.reject_message(basic_deliver.delivery_tag, tx_id=tx_id)
             logger.error("Bad decrypt",
                          action="quarantined",
