@@ -15,6 +15,7 @@
   - Updating date format in logs using sdx-common
   - Add support for codecov to see unit test coverage
   - Update and pin version of sdx-common to 0.7.0
+  - Change all instances of ADD to COPY in Dockerfile
 
 ### 1.3.1 2017-03-15
   - Add version number to log
