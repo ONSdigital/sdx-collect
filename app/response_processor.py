@@ -107,22 +107,26 @@ class ResponseProcessor:
         self.logger.info("Receipt published")
 
     def decrypt_survey(self, encrypted_survey):
-        self.logger.debug("Decrypting survey")
+        self.logger.info("Decrypting survey")
         response = self.remote_call(settings.SDX_DECRYPT_URL, data=encrypted_survey)
         try:
             self.response_ok(response)
         except BadMessageError:
             # Translate the Bad Message into a Decrypt Error to force quarantine
             raise DecryptError
+
+        self.logger.info("Survey decryption successful")
         return response.json()
 
     def validate_survey(self, decrypted_json):
-        self.logger.debug("Validating survey")
+        self.logger.info("Validating survey")
         self.response_ok(self.remote_call(settings.SDX_VALIDATE_URL, json=decrypted_json))
+        self.logger.info("Survey validation successful")
 
     def store_survey(self, decrypted_json):
-        self.logger.debug("Storing survey")
+        self.logger.info("Storing survey")
         self.response_ok(self.remote_call(settings.SDX_RESPONSES_URL, json=decrypted_json))
+        self.logger.info("Survey storage successful")
 
     def remote_call(self, request_url, json=None, data=None, headers=None, verify=True, auth=None):
         service = self.service_name(request_url)
