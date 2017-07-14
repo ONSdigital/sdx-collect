@@ -25,7 +25,6 @@ The following envioronment variables can be set:
 
 ### License
 
-
 Copyright (c) 2016 Crown Copyright (Office for National Statistics)
 
 Released under MIT license, see [LICENSE](LICENSE) for details.
