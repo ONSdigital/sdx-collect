@@ -8,7 +8,7 @@ RUN mkdir -p /app/logs
 RUN git clone https://github.com/ONSdigital/sdx-common.git
 RUN pip3 install ./sdx-common
 
-ADD app /app
-ADD startup.sh /startup.sh
+COPY app /app
+COPY startup.sh /startup.sh
 
 ENTRYPOINT ./startup.sh
