@@ -1,4 +1,5 @@
 ### Unreleased
+  - Remove SDX_HOME use in makefile and add tag to clone of sdx-common in travis
 
 ### 1.4.1 2017-07-11
   - Fix #180 where message is not quarantined when a DecryptError is raised
