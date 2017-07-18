@@ -7,6 +7,31 @@
 On receipt it hands off to sdx-decrypt to decrypt the survey data, validates the result with sdx-validate and then stores the json by calling sdx-store. Once complete the survey is receipted
 via the appropriate receipting service.
 
+## Vendored dependencies
+
+This repo is using experimental vendored dependencies (installed under the ``/vendor`` folder)
+
+To add a dependency to ``/vendor``:
+```
+$ pip3 download --no-deps --dest ./vendor -e git://github.com/<org>/<repo>@<tag>#egg=<tag>
+```
+
+Then add the dependency into (requirements.txt):
+```
+./vendor/<repo-name>-<tag>.zip
+```
+
+This will cause the dependency to be installed as part of the normal ``pip3 install -r requirements.txt`` step of the build (using the ``build`` target of ``)
+
+(e.g. ``sdx-common`` at version 0.7.0)
+```
+[DOWNLOAD]
+$ pip3 download --no-deps --dest ./vendor -e git://github.com/ONSdigital/sdx-common.git@0.7.0#egg=0.7.0
+
+[REQUIREMENTS]
+./vendor/sdx-common-0.7.0.zip
+```
+
 ## Configuration
 
 The following envioronment variables can be set:
