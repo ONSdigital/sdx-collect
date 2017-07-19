@@ -68,12 +68,14 @@ class ResponseProcessor:
             # If the validation fails, the message is to be marked "invalid"
             # and then stored. We don't then want to stop processing at this point.
             decrypted_json['invalid'] = True
+            self.logger.info("Invalid survey data, skipping receipting", tx_id=self.tx_id)
         else:
             # only send the receipt is the json is valid
             if decrypted_json.get("survey_id") != "feedback":
+                self.logger.info("Receipting survey", tx_id=self.tx_id)
                 self.send_receipt(decrypted_json)
             else:
-                self.logger.info("Feedback survey, skipping receipting")
+                self.logger.info("Feedback survey, skipping receipting", tx_id=self.tx_id)
         finally:
             # store the survey regardless
             self.store_survey(decrypted_json)
