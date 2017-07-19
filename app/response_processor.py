@@ -68,12 +68,15 @@ class ResponseProcessor:
             # If the validation fails, the message is to be marked "invalid"
             # and then stored. We don't then want to stop processing at this point.
             decrypted_json['invalid'] = True
-
-        self.store_survey(decrypted_json)
-        if decrypted_json.get("survey_id") != "feedback":
-            self.send_receipt(decrypted_json)
         else:
-            self.logger.info("Feedback survey, skipping receipting")
+            # only send the receipt is the json is valid
+            if decrypted_json.get("survey_id") != "feedback":
+                self.send_receipt(decrypted_json)
+            else:
+                self.logger.info("Feedback survey, skipping receipting")
+        finally:
+            # store the survey regardless
+            self.store_survey(decrypted_json)
 
         return
 
@@ -94,6 +97,7 @@ class ResponseProcessor:
                               tx_id=decrypted_json['tx_id'],
                               ru_ref=decrypted_json['metadata']['ru_ref'])
             queue_ok = False
+
         elif decrypted_json.get("survey_id") == "census":
             self.logger.info("About to publish receipt into ctp queue")
             queue_ok = self.ctp_publisher.publish_message(dumps(receipt_json), secret=settings.SDX_COLLECT_SECRET)
