@@ -94,7 +94,7 @@ class TestResponseProcessor(unittest.TestCase):
             with self.assertRaises(BadMessageError):
                 self._process_invalid()
 
-    def test_validate(self):
+    def test_validate_returns_500(self):
         self.rp.decrypt_survey = MagicMock(return_value=valid_json)
         # <validate>
         self.rp.store_survey = MagicMock()
@@ -108,15 +108,44 @@ class TestResponseProcessor(unittest.TestCase):
             r.status_code = 500
             with self.assertRaises(RetryableError):
                 self._process()
+            self.assertFalse(self.rp.send_receipt.called)
+            self.assertTrue(self.rp.store_survey.called)
 
+    def test_validate_returns_400(self):
+        self.rp.decrypt_survey = MagicMock(return_value=valid_json)
+        # <validate>
+        self.rp.store_survey = MagicMock()
+        self.rp.send_receipt = MagicMock()
+
+        r = Response()
+        with mock.patch('app.response_processor.ResponseProcessor.remote_call') as call_mock:
+            call_mock.return_value = r
             # 400 - bad
             # Is allowed to continue so that it may be stored
             r.status_code = 400
             self._process()
+            # receipt is not called
+            self.assertFalse(self.rp.send_receipt.called)
+            # but store is
+            self.assertTrue(self.rp.store_survey.called)
+
+    def test_validate_returns_success(self):
+        self.rp.decrypt_survey = MagicMock(return_value=valid_json)
+        # <validate>
+        self.rp.store_survey = MagicMock()
+        self.rp.send_receipt = MagicMock()
+
+        r = Response()
+        with mock.patch('app.response_processor.ResponseProcessor.remote_call') as call_mock:
+            call_mock.return_value = r
 
             # 200 - ok
             r.status_code = 200
             self._process()
+            # receipt is not called
+            self.assertTrue(self.rp.send_receipt.called)
+            # but store is
+            self.assertTrue(self.rp.store_survey.called)
 
     def test_store(self):
         self.rp.decrypt_survey = MagicMock(return_value=valid_json)
