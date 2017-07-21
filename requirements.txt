@@ -5,3 +5,4 @@ Jinja2==2.8
 sdx-common==0.7.0
 six==1.10.0
 structlog==16.1.0
+sdc-rabbit-python==0.1.0
