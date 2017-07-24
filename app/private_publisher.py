@@ -1,4 +1,4 @@
-from app.queue_publisher import QueuePublisher
+from sdc.rabbit.publisher import QueuePublisher
 
 from cryptography.fernet import Fernet
 

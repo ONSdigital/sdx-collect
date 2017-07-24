@@ -1,6 +1,7 @@
 import logging
 import sys
 
+from sdc.rabbit import QueuePublisher
 from sdx.common.async_consumer import AsyncConsumer
 from sdx.common.logger_config import logger_initial_config
 from structlog import wrap_logger
@@ -9,7 +10,6 @@ from app import __version__
 from app import settings
 from app.helpers.exceptions import BadMessageError, DecryptError, RetryableError
 from app.response_processor import ResponseProcessor
-from app.queue_publisher import QueuePublisher
 
 logger_initial_config(service_name='sdx-collect')
 logger = wrap_logger(logging.getLogger(__name__))
@@ -20,9 +20,9 @@ class Consumer(AsyncConsumer):
     def __init__(self, args=None, cfg=None):
         self._args = args
         self._cfg = cfg
-        self.quarantine_publisher = QueuePublisher(logger,
-                                                   settings.RABBIT_URLS,
-                                                   settings.RABBIT_QUARANTINE_QUEUE)
+        self.quarantine_publisher = QueuePublisher(
+            settings.RABBIT_URLS, settings.RABBIT_QUARANTINE_QUEUE
+        )
         super().__init__()
 
     def get_delivery_count_from_properties(self, properties):

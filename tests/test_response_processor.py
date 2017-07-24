@@ -7,6 +7,7 @@ from unittest.mock import MagicMock, Mock
 import mock
 from requests import Response
 
+from sdc.rabbit.exceptions import PublishMessageError
 from structlog import wrap_logger
 
 from app.response_processor import ResponseProcessor
@@ -186,7 +187,7 @@ class TestResponseProcessor(unittest.TestCase):
         settings.SDX_COLLECT_SECRET = "seB388LNHgxcuvAcg1pOV20_VR7uJWNGAznE0fOqKxg=".encode('ascii')
 
         # rrm queue fail
-        with self.assertRaises(RetryableError):
+        with self.assertRaises(PublishMessageError):
             self._process()
 
         # rrm publish ok

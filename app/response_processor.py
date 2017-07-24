@@ -30,10 +30,10 @@ class ResponseProcessor:
             self.tx_id = None
 
         self.rrm_publisher = PrivatePublisher(
-            logger, settings.RABBIT_URLS, settings.RABBIT_RRM_RECEIPT_QUEUE
+            settings.RABBIT_URLS, settings.RABBIT_RRM_RECEIPT_QUEUE
         )
         self.ctp_publisher = PrivatePublisher(
-            logger, settings.RABBIT_URLS, settings.RABBIT_CTP_RECEIPT_QUEUE
+            settings.RABBIT_URLS, settings.RABBIT_CTP_RECEIPT_QUEUE
         )
 
     def service_name(self, url=None):
