@@ -7,12 +7,12 @@ from unittest.mock import MagicMock, Mock
 import mock
 from requests import Response
 
+from sdc.rabbit.exceptions import BadMessageError, RetryableError
 from sdc.rabbit.exceptions import PublishMessageError
 from structlog import wrap_logger
 
 from app.response_processor import ResponseProcessor
 from tests.test_data import feedback_decrypted, valid_decrypted
-from app.helpers.exceptions import DecryptError, RetryableError, BadMessageError
 from app import settings
 
 
@@ -57,10 +57,10 @@ class TestResponseProcessor(unittest.TestCase):
         self.rp_invalid = ResponseProcessor(logger, tx_id='invalid')
 
     def _process(self):
-        self.rp.process("NxjsJBSahBXHSbxHBasx")
+        self.rp._process("NxjsJBSahBXHSbxHBasx")
 
     def _process_invalid(self):
-        self.rp_invalid.process("NxjsJBSahBXHSbxHBasx")
+        self.rp_invalid._process("NxjsJBSahBXHSbxHBasx")
 
     def test_decrypt(self):
         # <decrypt>
@@ -85,7 +85,7 @@ class TestResponseProcessor(unittest.TestCase):
 
             # 400 - bad
             r.status_code = 400
-            with self.assertRaises(DecryptError):
+            with self.assertRaises(BadMessageError):
                 self._process()
 
             # 200 - ok
@@ -122,13 +122,14 @@ class TestResponseProcessor(unittest.TestCase):
         with mock.patch('app.response_processor.ResponseProcessor.remote_call') as call_mock:
             call_mock.return_value = r
             # 400 - bad
-            # Is allowed to continue so that it may be stored
             r.status_code = 400
-            self._process()
+            with self.assertRaises(BadMessageError):
+                self._process()
+
             # receipt is not called
             self.assertFalse(self.rp.send_receipt.called)
-            # but store is
-            self.assertTrue(self.rp.store_survey.called)
+            # store is not called
+            self.assertFalse(self.rp.store_survey.called)
 
     def test_validate_returns_success(self):
         self.rp.decrypt_survey = MagicMock(return_value=valid_json)

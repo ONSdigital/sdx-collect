@@ -3,12 +3,12 @@ import logging
 import os
 
 from requests.packages.urllib3.exceptions import MaxRetryError
+from sdc.rabbit.exceptions import BadMessageError, RetryableError
 from structlog import wrap_logger
 
 from app import settings
 from app.private_publisher import PrivatePublisher
 from app.settings import session
-from app.helpers.exceptions import DecryptError, BadMessageError, RetryableError
 
 
 class ResponseProcessor:
@@ -98,11 +98,7 @@ class ResponseProcessor:
     def decrypt_survey(self, encrypted_survey):
         self.logger.info("Decrypting survey")
         response = self.remote_call(settings.SDX_DECRYPT_URL, data=encrypted_survey)
-        try:
-            self.response_ok(response)
-        except BadMessageError:
-            # Translate the Bad Message into a Decrypt Error to force quarantine
-            raise DecryptError
+        self.response_ok(response)
 
         self.logger.info("Survey decryption successful")
         return response.json()
