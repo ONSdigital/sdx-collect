@@ -1,7 +1,9 @@
 from json import dumps
+import logging
 import os
 
 from requests.packages.urllib3.exceptions import MaxRetryError
+from structlog import wrap_logger
 
 from app import settings
 from app.private_publisher import PrivatePublisher
@@ -10,6 +12,11 @@ from app.helpers.exceptions import DecryptError, BadMessageError, RetryableError
 
 
 class ResponseProcessor:
+
+    @classmethod
+    def process(cls, msg, logger=None, tx_id=None):
+        processor = cls(logger, tx_id)
+        processor._process(msg)
 
     @staticmethod
     def options():
@@ -21,13 +28,9 @@ class ResponseProcessor:
             pass
         return rv
 
-    def __init__(self, logger, tx_id=None):
-        self.logger = logger
-
-        if tx_id:
-            self.tx_id = tx_id
-        else:
-            self.tx_id = None
+    def __init__(self, logger=None, tx_id=None):
+        self.logger = logger or wrap_logger(logging.getLogger(__name__))
+        self.tx_id = tx_id or None
 
         self.rrm_publisher = PrivatePublisher(
             settings.RABBIT_URLS, settings.RABBIT_RRM_RECEIPT_QUEUE
@@ -48,8 +51,7 @@ class ResponseProcessor:
         except AttributeError as e:
             self.logger.error(e)
 
-    def process(self, encrypted_survey):
-        # decrypt
+    def _process(self, encrypted_survey):
         decrypted_json = self.decrypt_survey(encrypted_survey)
 
         metadata = decrypted_json['metadata']
@@ -61,26 +63,7 @@ class ResponseProcessor:
             raise BadMessageError
 
         self.logger = self.logger.bind(tx_id=self.tx_id)
-
-        try:
-            self.validate_survey(decrypted_json)
-        except BadMessageError:
-            # If the validation fails, the message is to be marked "invalid"
-            # and then stored. We don't then want to stop processing at this point.
-            decrypted_json['invalid'] = True
-            self.logger.info("Invalid survey data, skipping receipting", tx_id=self.tx_id)
-        else:
-            # only send the receipt is the json is valid
-            if decrypted_json.get("survey_id") != "feedback":
-                self.logger.info("Receipting survey", tx_id=self.tx_id)
-                self.send_receipt(decrypted_json)
-            else:
-                self.logger.info("Feedback survey, skipping receipting", tx_id=self.tx_id)
-        finally:
-            # store the survey regardless
-            self.store_survey(decrypted_json)
-
-        return
+        self.validate_survey(decrypted_json)
 
     def send_receipt(self, decrypted_json):
         receipt_json = {
