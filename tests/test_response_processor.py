@@ -110,7 +110,7 @@ class TestResponseProcessor(unittest.TestCase):
             with self.assertRaises(RetryableError):
                 self._process()
             self.assertFalse(self.rp.send_receipt.called)
-            self.assertTrue(self.rp.store_survey.called)
+            self.assertFalse(self.rp.store_survey.called)
 
     def test_validate_returns_400(self):
         self.rp.decrypt_survey = MagicMock(return_value=valid_json)
