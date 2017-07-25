@@ -65,6 +65,13 @@ class ResponseProcessor:
         self.logger = self.logger.bind(tx_id=self.tx_id)
         self.validate_survey(decrypted_json)
 
+        if decrypted_json.get("survey_id") != "feedback":
+            self.logger.info("Receipting survey", tx_id=self.tx_id)
+            self.send_receipt(decrypted_json)
+        else:
+            self.logger.info("Feedback survey, skipping receipting", tx_id=self.tx_id)
+        self.store_survey(decrypted_json)
+
     def send_receipt(self, decrypted_json):
         receipt_json = {
             'tx_id': decrypted_json['tx_id'],
