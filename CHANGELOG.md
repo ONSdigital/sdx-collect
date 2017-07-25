@@ -1,4 +1,4 @@
-### Unreleased
+### 1.5.0 2017-07-25
   - Change all instances of ADD to COPY in Dockerfile
   - Remove use of SDX_HOME variable in makefile
   - Only receipt if the JSON data is valid
