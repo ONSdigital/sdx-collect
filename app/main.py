@@ -14,7 +14,7 @@ from app.response_processor import ResponseProcessor
 import app.settings
 
 
-if __name__ == "__main__":
+def run():
     consumer = AsyncConsumer(
         durable_queue=True,
         exchange=app.settings.RABBIT_EXCHANGE,
@@ -32,6 +32,9 @@ if __name__ == "__main__":
     )
 
     try:
-        consumer.run()
+        message_consumer._consumer.run()
     except KeyboardInterrupt:
-        consumer.stop()
+        message_consumer._consumer.stop()
+
+if __name__ == "__main__":
+    run()

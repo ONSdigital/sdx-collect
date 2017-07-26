@@ -2,6 +2,7 @@
   - Change all instances of ADD to COPY in Dockerfile
   - Remove use of SDX_HOME variable in makefile
   - Only receipt if the JSON data is valid
+  - Integrate with sdc-rabbit library
 
 ### 1.4.1 2017-07-11
   - Fix #180 where message is not quarantined when a DecryptError is raised
