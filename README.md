@@ -7,6 +7,20 @@
 On receipt it hands off to sdx-decrypt to decrypt the survey data, validates the result with sdx-validate and then stores the json by calling sdx-store. Once complete the survey is receipted
 via the appropriate receipting service.
 
+## Installation
+
+To install, use:
+
+```
+make build
+```
+
+To run the test suite, use:
+
+```
+make test
+```
+
 ## Configuration
 
 The following envioronment variables can be set:
