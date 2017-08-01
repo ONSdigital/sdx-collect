@@ -49,7 +49,7 @@ class ResponseProcessor:
             elif 'validate' in parts:
                 return 'SDX-VALIDATE'
         except AttributeError as e:
-            self.logger.error(e)
+            self.logger.error(str(e))
 
     def _process(self, encrypted_survey):
         decrypted_json = self.decrypt_survey(encrypted_survey)
