@@ -17,7 +17,7 @@ import app.settings
 def run():
     logging.basicConfig(format=app.settings.LOGGING_FORMAT)
     logging.getLogger("pika").setLevel(logging.INFO)
-    for log in ("sdc", "sdx"):
+    for log in ("sdc", "sdx-collect"):
         logging.getLogger(log).setLevel(app.settings.LOGGING_LEVEL)
 
     quarantine_publisher = QueuePublisher(
