@@ -15,7 +15,10 @@ import app.settings
 
 
 def run():
-    logging.basicConfig()
+    logging.basicConfig(format=settings.LOGGING_FORMAT)
+    for log in ("pika", "sdc", "sdx"):
+        logging.getLogger(log).setLevel(settings.LOGGING_LEVEL)
+
     quarantine_publisher = QueuePublisher(
         urls=app.settings.RABBIT_URLS,
         queue=app.settings.RABBIT_QUARANTINE_QUEUE
