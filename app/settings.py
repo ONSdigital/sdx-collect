@@ -6,7 +6,7 @@ from requests.adapters import HTTPAdapter
 
 
 LOGGING_LEVEL = logging.getLevelName(os.getenv("LOGGING_LEVEL", "DEBUG"))
-LOGGING_FORMAT = "%(asctime)s.%(msecs)|%(levelname)s: sdx-collect: %(message)s"
+LOGGING_FORMAT = "%(asctime)s.%(msecs)s |%(levelname)s: sdx-collect: %(message)s"
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 APP_TMP = os.path.join(APP_ROOT, 'tmp')
