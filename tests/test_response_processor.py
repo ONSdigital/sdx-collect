@@ -53,8 +53,8 @@ class TestResponseProcessorSettings(unittest.TestCase):
 class TestResponseProcessor(unittest.TestCase):
 
     def setUp(self):
-        self.rp = ResponseProcessor(logger)
-        self.rp_invalid = ResponseProcessor(logger, tx_id='invalid')
+        self.rp = ResponseProcessor()
+        self.rp_invalid = ResponseProcessor(tx_id='invalid')
 
     def _process(self):
         self.rp._process("NxjsJBSahBXHSbxHBasx")
