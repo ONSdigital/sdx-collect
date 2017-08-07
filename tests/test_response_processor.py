@@ -8,7 +8,6 @@ import mock
 from requests import Response
 
 from sdc.rabbit.exceptions import BadMessageError, RetryableError
-from sdc.rabbit.exceptions import PublishMessageError
 from structlog import wrap_logger
 
 from app.response_processor import ResponseProcessor
@@ -188,7 +187,7 @@ class TestResponseProcessor(unittest.TestCase):
         settings.SDX_COLLECT_SECRET = "seB388LNHgxcuvAcg1pOV20_VR7uJWNGAznE0fOqKxg=".encode('ascii')
 
         # rrm queue fail
-        with self.assertRaises(PublishMessageError):
+        with self.assertRaises(RetryableError):
             self._process()
 
         # rrm publish ok
@@ -213,7 +212,7 @@ class TestResponseProcessor(unittest.TestCase):
         invalid_json = copy.deepcopy(valid_json)
         invalid_json['survey_id'] = None
 
-        with self.assertRaises(RetryableError):
+        with self.assertRaises(BadMessageError):
             self.rp.send_receipt(invalid_json)
 
     def test_send_feedback(self):

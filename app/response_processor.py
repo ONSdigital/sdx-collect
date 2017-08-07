@@ -63,10 +63,15 @@ class ResponseProcessor:
         if not self.tx_id:
             self.tx_id = decrypted_json.get('tx_id')
         elif self.tx_id != decrypted_json.get('tx_id'):
+            logger.info('tx_ids from decrypted_json and message header do not match.' +
+                        ' Rejecting message',
+                        decrypted_tx_id=decrypted_json.get('tx_id'),
+                        message_tx_id=self.tx_id)
             raise BadMessageError
 
         self.logger = self.logger.bind(tx_id=self.tx_id)
         self.validate_survey(decrypted_json)
+        self.store_survey(decrypted_json)
 
         if decrypted_json.get("survey_id") != "feedback":
             self.logger.info("Receipting survey", tx_id=self.tx_id)
@@ -74,7 +79,6 @@ class ResponseProcessor:
         else:
             self.logger.info("Feedback survey, skipping receipting",
                              tx_id=self.tx_id)
-        self.store_survey(decrypted_json)
 
     def send_receipt(self, decrypted_json):
         receipt_json = {
@@ -92,6 +96,7 @@ class ResponseProcessor:
             self.logger.error("No survey id",
                               tx_id=decrypted_json['tx_id'],
                               ru_ref=decrypted_json['metadata']['ru_ref'])
+            raise BadMessageError
 
         elif decrypted_json.get("survey_id") == "census":
             self.logger.info("About to publish receipt into ctp queue")
@@ -99,7 +104,8 @@ class ResponseProcessor:
             try:
                 self.ctp_publisher.publish_message(dumps(receipt_json),
                                                    secret=settings.SDX_COLLECT_SECRET)
-            except PublishMessageError:
+            except PublishMessageError as e:
+                self.logger.error("Unsuccesful publish", error=e)
                 raise RetryableError
 
         else:
@@ -108,7 +114,8 @@ class ResponseProcessor:
                 self.logger.info("About to publish receipt into rrm queue")
                 self.rrm_publisher.publish_message(dumps(receipt_json),
                                                    secret=settings.SDX_COLLECT_SECRET)
-            except PublishMessageError:
+            except PublishMessageError as e:
+                self.logger.error("Unsuccesful publish", error=e)
                 raise RetryableError
 
         self.logger.info("Receipt published")
