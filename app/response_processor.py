@@ -3,7 +3,7 @@ import logging
 import os
 
 from requests.packages.urllib3.exceptions import MaxRetryError
-from sdc.rabbit.exceptions import BadMessageError, RetryableError
+from sdc.rabbit.exceptions import BadMessageError, PublishMessageError, RetryableError
 from structlog import wrap_logger
 
 from app import settings
@@ -92,19 +92,24 @@ class ResponseProcessor:
             self.logger.error("No survey id",
                               tx_id=decrypted_json['tx_id'],
                               ru_ref=decrypted_json['metadata']['ru_ref'])
-            queue_ok = False
 
         elif decrypted_json.get("survey_id") == "census":
             self.logger.info("About to publish receipt into ctp queue")
-            queue_ok = self.ctp_publisher.publish_message(
-                dumps(receipt_json), secret=settings.SDX_COLLECT_SECRET)
-        else:
-            self.logger.info("About to publish receipt into rrm queue")
-            queue_ok = self.rrm_publisher.publish_message(
-                dumps(receipt_json), secret=settings.SDX_COLLECT_SECRET)
 
-        if not queue_ok:
-            raise RetryableError()
+            try:
+                self.ctp_publisher.publish_message(dumps(receipt_json),
+                                                   secret=settings.SDX_COLLECT_SECRET)
+            except PublishMessageError:
+                raise RetryableError
+
+        else:
+
+            try:
+                self.logger.info("About to publish receipt into rrm queue")
+                self.rrm_publisher.publish_message(dumps(receipt_json),
+                                                   secret=settings.SDX_COLLECT_SECRET)
+            except PublishMessageError:
+                raise RetryableError
 
         self.logger.info("Receipt published")
 
