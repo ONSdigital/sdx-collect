@@ -18,6 +18,7 @@ def run():
     logging.basicConfig(format=app.settings.LOGGING_FORMAT)
     logging.getLogger("").setLevel(app.settings.LOGGING_LEVEL)
     logging.getLogger("pika").setLevel(logging.INFO)
+    logging.getLogger("sdc.rabbit").setLevel(logging.DEBUG)
 
     quarantine_publisher = QueuePublisher(
         urls=app.settings.RABBIT_URLS,
