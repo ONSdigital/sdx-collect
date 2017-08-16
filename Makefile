@@ -1,6 +1,6 @@
-.PHONY: build clean test
+.PHONY: build test
 
-build: clean
+build:
 	pip3 install -r requirements.txt
 
 test:
