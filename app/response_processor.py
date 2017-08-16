@@ -3,10 +3,11 @@ import logging
 import os
 
 from requests.packages.urllib3.exceptions import MaxRetryError
-from sdc.rabbit.exceptions import BadMessageError, PublishMessageError, RetryableError
+from sdc.rabbit.exceptions import BadMessageError, PublishMessageError, RetryableError, QuarantinableError
 from structlog import wrap_logger
 
 from app import settings
+from app.helpers.exceptions import ClientError
 from app.private_publisher import PrivatePublisher
 from app.settings import session
 
@@ -51,7 +52,7 @@ class ResponseProcessor:
             elif 'validate' in parts:
                 return 'SDX-VALIDATE'
         except AttributeError as e:
-            self.logger.error(str(e))
+            self.logger.error("No valid service name", exception=e)
 
     def _process(self, encrypted_survey):
         decrypted_json = self.decrypt_survey(encrypted_survey)
@@ -70,15 +71,25 @@ class ResponseProcessor:
             raise BadMessageError
 
         self.logger = self.logger.bind(tx_id=self.tx_id)
-        self.validate_survey(decrypted_json)
-        self.store_survey(decrypted_json)
 
-        if decrypted_json.get("survey_id") != "feedback":
-            self.logger.info("Receipting survey", tx_id=self.tx_id)
+        try:
+            self.validate_survey(decrypted_json)
+        except ClientError:
+            # If the validation fails, the message is to be marked "invalid"
+            # and then stored. We don't then want to stop processing at this point.
+
+            decrypted_json['invalid'] = True
+            self.logger.info("Invalid survey data, skipping receipting")
+
+        if decrypted_json.get("survey_id") != "feedback" and decrypted_json.get('invalid') is not True:
+            self.logger.info("Receipting survey")
             self.send_receipt(decrypted_json)
         else:
-            self.logger.info("Feedback survey, skipping receipting",
-                             tx_id=self.tx_id)
+            self.logger.info("Feedback survey, skipping receipting")
+
+        self.store_survey(decrypted_json)
+
+        self.logger.unbind("user_id", "ru_ref", "tx_id")
 
     def send_receipt(self, decrypted_json):
         receipt_json = {
@@ -96,7 +107,7 @@ class ResponseProcessor:
             self.logger.error("No survey id",
                               tx_id=decrypted_json['tx_id'],
                               ru_ref=decrypted_json['metadata']['ru_ref'])
-            raise BadMessageError
+            raise QuarantinableError
 
         elif decrypted_json.get("survey_id") == "census":
             self.logger.info("About to publish receipt into ctp queue")
@@ -124,7 +135,11 @@ class ResponseProcessor:
         self.logger.info("Decrypting survey")
         response = self.remote_call(settings.SDX_DECRYPT_URL,
                                     data=encrypted_survey)
-        self.response_ok(response)
+        try:
+            self.response_ok(response)
+        except ClientError:
+            self.logger.error("Survey decryption unsuccessful. Quarantining Survey.")
+            raise QuarantinableError
 
         self.logger.info("Survey decryption successful")
         return response.json()
@@ -137,8 +152,14 @@ class ResponseProcessor:
 
     def store_survey(self, decrypted_json):
         self.logger.info("Storing survey")
-        self.response_ok(self.remote_call(settings.SDX_RESPONSES_URL,
-                                          json=decrypted_json))
+        response = self.remote_call(settings.SDX_RESPONSES_URL,
+                                    json=decrypted_json)
+        try:
+            self.response_ok(response)
+        except ClientError:
+            self.logger.error("Survey storage unsuccessful. Quarantining Survey.")
+            raise QuarantinableError
+
         self.logger.info("Survey storage successful")
 
     def remote_call(self, request_url, json=None, data=None, headers=None,
@@ -176,9 +197,9 @@ class ResponseProcessor:
             res_logger.info("Returned from service", response="ok", service=service)
             return
 
-        elif res.status_code == 400:
+        elif 400 <= res.status_code < 500:
             res_logger.info("Returned from service", response="client error", service=service)
-            raise BadMessageError
+            raise ClientError
 
         else:
             res_logger.error("Returned from service", response="service error", service=service)

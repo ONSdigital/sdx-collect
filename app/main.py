@@ -2,13 +2,9 @@
 #   encoding: UTF-8
 
 import logging
-import os.path
-import sys
 
 from sdc.rabbit import MessageConsumer
 from sdc.rabbit import QueuePublisher
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from app.response_processor import ResponseProcessor
 import app.settings

@@ -7,7 +7,7 @@ from unittest.mock import MagicMock, Mock
 import mock
 from requests import Response
 
-from sdc.rabbit.exceptions import BadMessageError, RetryableError
+from sdc.rabbit.exceptions import BadMessageError, RetryableError, QuarantinableError
 from structlog import wrap_logger
 
 from app.response_processor import ResponseProcessor
@@ -84,7 +84,7 @@ class TestResponseProcessor(unittest.TestCase):
 
             # 400 - bad
             r.status_code = 400
-            with self.assertRaises(BadMessageError):
+            with self.assertRaises(QuarantinableError):
                 self._process()
 
             # 200 - ok
@@ -122,15 +122,15 @@ class TestResponseProcessor(unittest.TestCase):
             call_mock.return_value = r
             # 400 - bad
             r.status_code = 400
-            with self.assertRaises(BadMessageError):
-                self._process()
+            self._process()
 
             # receipt is not called
             self.assertFalse(self.rp.send_receipt.called)
-            # store is not called
-            self.assertFalse(self.rp.store_survey.called)
+            # store is called
+            self.assertTrue(self.rp.store_survey.called)
 
     def test_validate_returns_success(self):
+        valid_json.pop("invalid", None)
         self.rp.decrypt_survey = MagicMock(return_value=valid_json)
         # <validate>
         self.rp.store_survey = MagicMock()
@@ -165,7 +165,7 @@ class TestResponseProcessor(unittest.TestCase):
 
             # 400 - bad
             r.status_code = 400
-            with self.assertRaises(BadMessageError):
+            with self.assertRaises(QuarantinableError):
                 self._process()
 
             # 200 - ok
@@ -212,7 +212,7 @@ class TestResponseProcessor(unittest.TestCase):
         invalid_json = copy.deepcopy(valid_json)
         invalid_json['survey_id'] = None
 
-        with self.assertRaises(BadMessageError):
+        with self.assertRaises(QuarantinableError):
             self.rp.send_receipt(invalid_json)
 
     def test_send_feedback(self):
