@@ -57,9 +57,9 @@ class ResponseProcessor:
     def _process(self, encrypted_survey):
         decrypted_json = self.decrypt_survey(encrypted_survey)
 
-        metadata = decrypted_json['metadata']
-        self.logger = self.logger.bind(user_id=metadata['user_id'],
-                                       ru_ref=metadata['ru_ref'])
+        metadata = decrypted_json.get('metadata', {})
+        self.logger = self.logger.bind(user_id=metadata.get('user_id'),
+                                       ru_ref=metadata.get('ru_ref'))
 
         if not self.tx_id:
             self.tx_id = decrypted_json.get('tx_id')
@@ -68,7 +68,7 @@ class ResponseProcessor:
                         ' Rejecting message',
                         decrypted_tx_id=decrypted_json.get('tx_id'),
                         message_tx_id=self.tx_id)
-            raise BadMessageError
+            raise QuarantinableError
 
         self.logger = self.logger.bind(tx_id=self.tx_id)
 
@@ -93,20 +93,18 @@ class ResponseProcessor:
 
     def send_receipt(self, decrypted_json):
         receipt_json = {
-            'tx_id': decrypted_json['tx_id'],
+            'tx_id': decrypted_json.get('tx_id'),
             'collection': {
-                'exercise_sid': decrypted_json['collection']['exercise_sid']
+                'exercise_sid': decrypted_json.get('collection', {}).get('exercise_sid')
             },
             'metadata': {
-                'ru_ref': decrypted_json['metadata']['ru_ref'],
-                'user_id': decrypted_json['metadata']['user_id']
+                'ru_ref': decrypted_json.get('metadata', {}).get('ru_ref'),
+                'user_id': decrypted_json.get('metadata', {}).get('user_id')
             }
         }
 
         if not decrypted_json.get("survey_id"):
-            self.logger.error("No survey id",
-                              tx_id=decrypted_json['tx_id'],
-                              ru_ref=decrypted_json['metadata']['ru_ref'])
+            self.logger.error("No survey id")
             raise QuarantinableError
 
         elif decrypted_json.get("survey_id") == "census":

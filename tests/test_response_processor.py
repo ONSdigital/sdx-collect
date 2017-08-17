@@ -2,10 +2,13 @@ import copy
 import json
 import logging
 import os
+import responses
 import unittest
 from unittest.mock import MagicMock, Mock
 import mock
 from requests import Response
+from requests.packages.urllib3 import HTTPConnectionPool
+from requests.packages.urllib3.exceptions import MaxRetryError
 
 from sdc.rabbit.exceptions import BadMessageError, RetryableError, QuarantinableError
 from structlog import wrap_logger
@@ -190,7 +193,15 @@ class TestResponseProcessor(unittest.TestCase):
         with self.assertRaises(RetryableError):
             self._process()
 
+        # # rrm queue fail census
+        census_json = valid_json
+        census_json['survey_id'] = 'census'
+        with self.assertRaises(RetryableError):
+            self._process()
+
         # rrm publish ok
+        json_023 = valid_json
+        json_023['survey_id'] = '023'
         self.rp.rrm_publisher.publish_message = MagicMock()
         self._process()
 
@@ -214,6 +225,36 @@ class TestResponseProcessor(unittest.TestCase):
 
         with self.assertRaises(QuarantinableError):
             self.rp.send_receipt(invalid_json)
+
+    @responses.activate
+    def test_remote_call_get(self):
+        url = "http://www.testing.test/responses"
+        responses.add(responses.GET, url, json={'status': 'ok'}, status=200)
+        self.rp.remote_call(url)
+        assert len(responses.calls) == 1
+
+    @responses.activate
+    def test_remote_call_post_json(self):
+        url = "http://www.testing.test/responses"
+        responses.add(responses.POST, url, json={'status': 'ok'}, status=200)
+        self.rp.remote_call(url, json={"fruit": "banana"})
+        assert len(responses.calls) == 1
+
+    @responses.activate
+    def test_remote_call_post_data(self):
+        url = "http://www.testing.test/responses"
+        responses.add(responses.POST, url, json={'status': 'ok'}, status=200)
+        self.rp.remote_call(url, data="banana")
+        assert len(responses.calls) == 1
+
+    @responses.activate
+    def test_remote_call_maxretryerror(self):
+        url = "http://www.testing.test/responses"
+        responses.add(responses.GET, url, body=MaxRetryError(HTTPConnectionPool, url))
+        with self.assertLogs(level="ERROR") as cm:
+            self.rp.remote_call(url)
+
+        self.assertIn("Max retries exceeded (5)", cm[0][0].message)
 
     def test_send_feedback(self):
         self.rp.decrypt_survey = MagicMock(return_value=feedback)
