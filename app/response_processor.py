@@ -3,7 +3,7 @@ import logging
 import os
 
 from requests.packages.urllib3.exceptions import MaxRetryError
-from sdc.rabbit.exceptions import BadMessageError, PublishMessageError, RetryableError, QuarantinableError
+from sdc.rabbit.exceptions import PublishMessageError, RetryableError, QuarantinableError
 from structlog import wrap_logger
 
 from app import settings

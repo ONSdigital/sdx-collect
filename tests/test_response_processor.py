@@ -10,7 +10,7 @@ from requests import Response
 from requests.packages.urllib3 import HTTPConnectionPool
 from requests.packages.urllib3.exceptions import MaxRetryError
 
-from sdc.rabbit.exceptions import BadMessageError, RetryableError, QuarantinableError
+from sdc.rabbit.exceptions import RetryableError, QuarantinableError
 from structlog import wrap_logger
 
 from app.response_processor import ResponseProcessor
@@ -94,7 +94,7 @@ class TestResponseProcessor(unittest.TestCase):
             r.status_code = 200
             self._process()
 
-            with self.assertRaises(BadMessageError):
+            with self.assertRaises(QuarantinableError):
                 self._process_invalid()
 
     def test_validate_returns_500(self):
