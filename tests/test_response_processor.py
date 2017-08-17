@@ -231,21 +231,21 @@ class TestResponseProcessor(unittest.TestCase):
         url = "http://www.testing.test/responses"
         responses.add(responses.GET, url, json={'status': 'ok'}, status=200)
         self.rp.remote_call(url)
-        assert len(responses.calls) == 1
+        self.assertEqual(len(responses.calls), 1)
 
     @responses.activate
     def test_remote_call_post_json(self):
         url = "http://www.testing.test/responses"
         responses.add(responses.POST, url, json={'status': 'ok'}, status=200)
         self.rp.remote_call(url, json={"fruit": "banana"})
-        assert len(responses.calls) == 1
+        self.assertEqual(len(responses.calls), 1)
 
     @responses.activate
     def test_remote_call_post_data(self):
         url = "http://www.testing.test/responses"
         responses.add(responses.POST, url, json={'status': 'ok'}, status=200)
         self.rp.remote_call(url, data="banana")
-        assert len(responses.calls) == 1
+        self.assertEqual(len(responses.calls), 1)
 
     @responses.activate
     def test_remote_call_maxretryerror(self):
