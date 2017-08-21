@@ -17,6 +17,8 @@ def run():
     logging.getLogger("pika").setLevel(logging.INFO)
     logging.getLogger("sdc.rabbit").setLevel(logging.DEBUG)
 
+    response_processor = ResponseProcessor()
+
     quarantine_publisher = QueuePublisher(
         urls=app.settings.RABBIT_URLS,
         queue=app.settings.RABBIT_QUARANTINE_QUEUE
@@ -28,7 +30,7 @@ def run():
         rabbit_queue=app.settings.RABBIT_QUEUE,
         rabbit_urls=app.settings.RABBIT_URLS,
         quarantine_publisher=quarantine_publisher,
-        process=ResponseProcessor.process
+        process=response_processor.process
     )
 
     try:

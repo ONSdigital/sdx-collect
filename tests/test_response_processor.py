@@ -2,14 +2,14 @@ import copy
 import json
 import logging
 import os
-import responses
 import unittest
 from unittest.mock import MagicMock, Mock
+
 import mock
+import responses
 from requests import Response
 from requests.packages.urllib3 import HTTPConnectionPool
 from requests.packages.urllib3.exceptions import MaxRetryError
-
 from sdc.rabbit.exceptions import RetryableError, QuarantinableError
 from structlog import wrap_logger
 
@@ -56,13 +56,13 @@ class TestResponseProcessor(unittest.TestCase):
 
     def setUp(self):
         self.rp = ResponseProcessor()
-        self.rp_invalid = ResponseProcessor(tx_id='invalid')
+        self.rp_invalid = ResponseProcessor()
 
     def _process(self):
-        self.rp._process("NxjsJBSahBXHSbxHBasx")
+        self.rp.process("NxjsJBSahBXHSbxHBasx")
 
     def _process_invalid(self):
-        self.rp_invalid._process("NxjsJBSahBXHSbxHBasx")
+        self.rp_invalid.process("NxjsJBSahBXHSbxHBasx", "NxjsJBSahBXHSbxHBasx")
 
     def test_decrypt(self):
         # <decrypt>

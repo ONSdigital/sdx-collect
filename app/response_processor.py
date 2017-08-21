@@ -16,11 +16,6 @@ logger = wrap_logger(logging.getLogger(__name__))
 
 class ResponseProcessor:
 
-    @classmethod
-    def process(cls, msg, tx_id=None, logger=logger):
-        processor = cls(tx_id, logger)
-        processor._process(msg)
-
     @staticmethod
     def options():
         rv = {}
@@ -31,9 +26,10 @@ class ResponseProcessor:
             pass
         return rv
 
-    def __init__(self, tx_id=None, logger=logger):
+    def __init__(self, logger=logger):
         self.logger = logger
-        self.tx_id = tx_id
+
+        self.tx_id = None
 
         self.rrm_publisher = PrivatePublisher(
             settings.RABBIT_URLS, settings.RABBIT_RRM_RECEIPT_QUEUE
@@ -54,16 +50,16 @@ class ResponseProcessor:
         except AttributeError as e:
             self.logger.error("No valid service name", exception=e)
 
-    def _process(self, encrypted_survey):
-        decrypted_json = self.decrypt_survey(encrypted_survey)
+    def process(self, msg, tx_id=None):
+        decrypted_json = self.decrypt_survey(msg)
 
         metadata = decrypted_json.get('metadata', {})
         self.logger = self.logger.bind(user_id=metadata.get('user_id'),
                                        ru_ref=metadata.get('ru_ref'))
 
-        if not self.tx_id:
+        if not tx_id:
             self.tx_id = decrypted_json.get('tx_id')
-        elif self.tx_id != decrypted_json.get('tx_id'):
+        elif tx_id != decrypted_json.get('tx_id'):
             logger.info('tx_ids from decrypted_json and message header do not match.' +
                         ' Rejecting message',
                         decrypted_tx_id=decrypted_json.get('tx_id'),
@@ -80,12 +76,12 @@ class ResponseProcessor:
 
             decrypted_json['invalid'] = True
             self.logger.info("Invalid survey data, skipping receipting")
-
-        if decrypted_json.get("survey_id") != "feedback" and decrypted_json.get('invalid') is not True:
-            self.logger.info("Receipting survey")
-            self.send_receipt(decrypted_json)
         else:
-            self.logger.info("Feedback survey, skipping receipting")
+            if decrypted_json.get("survey_id") != "feedback":
+                self.logger.info("Receipting survey")
+                self.send_receipt(decrypted_json)
+            else:
+                self.logger.info("Feedback survey, skipping receipting")
 
         self.store_survey(decrypted_json)
 
