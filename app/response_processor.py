@@ -88,16 +88,20 @@ class ResponseProcessor:
         self.logger.unbind("user_id", "ru_ref", "tx_id")
 
     def send_receipt(self, decrypted_json):
-        receipt_json = {
-            'tx_id': decrypted_json.get('tx_id'),
-            'collection': {
-                'exercise_sid': decrypted_json.get('collection', {}).get('exercise_sid')
-            },
-            'metadata': {
-                'ru_ref': decrypted_json.get('metadata', {}).get('ru_ref'),
-                'user_id': decrypted_json.get('metadata', {}).get('user_id')
+        try:
+            receipt_json = {
+                'tx_id': decrypted_json['tx_id'],
+                'collection': {
+                    'exercise_sid': decrypted_json['collection']['exercise_sid']
+                },
+                'metadata': {
+                    'ru_ref': decrypted_json['metadata']['ru_ref'],
+                    'user_id': decrypted_json['metadata']['user_id']
+                }
             }
-        }
+        except KeyError as e:
+            self.logger.error("Unsuccesful publish, missing key values", error=e)
+            raise QuarantinableError
 
         if not decrypted_json.get("survey_id"):
             self.logger.error("No survey id")
