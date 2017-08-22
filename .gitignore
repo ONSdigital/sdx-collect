@@ -5,6 +5,7 @@ logs/
 *.pyc
 .Python
 pip-selfcheck.json
+*.sublime*
 lib/
 bin/
 include/
