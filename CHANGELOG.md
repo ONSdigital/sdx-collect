@@ -1,3 +1,6 @@
+### Unreleased
+  - Ensure integrity and version of library dependencies
+
 ### 1.5.0 2017-07-25
   - Change all instances of ADD to COPY in Dockerfile
   - Remove use of SDX_HOME variable in makefile
