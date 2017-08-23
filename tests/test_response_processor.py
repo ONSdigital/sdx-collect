@@ -4,14 +4,17 @@ import logging
 import os
 import unittest
 from unittest.mock import MagicMock, Mock
-import mock
-from requests import Response
 
+import mock
+import responses
+from requests import Response
+from requests.packages.urllib3 import HTTPConnectionPool
+from requests.packages.urllib3.exceptions import MaxRetryError
+from sdc.rabbit.exceptions import RetryableError, QuarantinableError
 from structlog import wrap_logger
 
 from app.response_processor import ResponseProcessor
 from tests.test_data import feedback_decrypted, valid_decrypted
-from app.helpers.exceptions import DecryptError, RetryableError, BadMessageError
 from app import settings
 
 
@@ -52,14 +55,14 @@ class TestResponseProcessorSettings(unittest.TestCase):
 class TestResponseProcessor(unittest.TestCase):
 
     def setUp(self):
-        self.rp = ResponseProcessor(logger)
-        self.rp_invalid = ResponseProcessor(logger, tx_id='invalid')
+        self.rp = ResponseProcessor()
+        self.rp_invalid = ResponseProcessor()
 
     def _process(self):
         self.rp.process("NxjsJBSahBXHSbxHBasx")
 
     def _process_invalid(self):
-        self.rp_invalid.process("NxjsJBSahBXHSbxHBasx")
+        self.rp_invalid.process("NxjsJBSahBXHSbxHBasx", "NxjsJBSahBXHSbxHBasx")
 
     def test_decrypt(self):
         # <decrypt>
@@ -84,14 +87,14 @@ class TestResponseProcessor(unittest.TestCase):
 
             # 400 - bad
             r.status_code = 400
-            with self.assertRaises(DecryptError):
+            with self.assertRaises(QuarantinableError):
                 self._process()
 
             # 200 - ok
             r.status_code = 200
             self._process()
 
-            with self.assertRaises(BadMessageError):
+            with self.assertRaises(QuarantinableError):
                 self._process_invalid()
 
     def test_validate_returns_500(self):
@@ -109,7 +112,7 @@ class TestResponseProcessor(unittest.TestCase):
             with self.assertRaises(RetryableError):
                 self._process()
             self.assertFalse(self.rp.send_receipt.called)
-            self.assertTrue(self.rp.store_survey.called)
+            self.assertFalse(self.rp.store_survey.called)
 
     def test_validate_returns_400(self):
         self.rp.decrypt_survey = MagicMock(return_value=valid_json)
@@ -121,15 +124,16 @@ class TestResponseProcessor(unittest.TestCase):
         with mock.patch('app.response_processor.ResponseProcessor.remote_call') as call_mock:
             call_mock.return_value = r
             # 400 - bad
-            # Is allowed to continue so that it may be stored
             r.status_code = 400
             self._process()
+
             # receipt is not called
             self.assertFalse(self.rp.send_receipt.called)
-            # but store is
+            # store is called
             self.assertTrue(self.rp.store_survey.called)
 
     def test_validate_returns_success(self):
+        valid_json.pop("invalid", None)
         self.rp.decrypt_survey = MagicMock(return_value=valid_json)
         # <validate>
         self.rp.store_survey = MagicMock()
@@ -164,7 +168,7 @@ class TestResponseProcessor(unittest.TestCase):
 
             # 400 - bad
             r.status_code = 400
-            with self.assertRaises(BadMessageError):
+            with self.assertRaises(QuarantinableError):
                 self._process()
 
             # 200 - ok
@@ -189,7 +193,15 @@ class TestResponseProcessor(unittest.TestCase):
         with self.assertRaises(RetryableError):
             self._process()
 
+        # # rrm queue fail census
+        census_json = valid_json
+        census_json['survey_id'] = 'census'
+        with self.assertRaises(RetryableError):
+            self._process()
+
         # rrm publish ok
+        json_023 = valid_json
+        json_023['survey_id'] = '023'
         self.rp.rrm_publisher.publish_message = MagicMock()
         self._process()
 
@@ -211,8 +223,38 @@ class TestResponseProcessor(unittest.TestCase):
         invalid_json = copy.deepcopy(valid_json)
         invalid_json['survey_id'] = None
 
-        with self.assertRaises(RetryableError):
+        with self.assertRaises(QuarantinableError):
             self.rp.send_receipt(invalid_json)
+
+    @responses.activate
+    def test_remote_call_get(self):
+        url = "http://www.testing.test/responses"
+        responses.add(responses.GET, url, json={'status': 'ok'}, status=200)
+        self.rp.remote_call(url)
+        self.assertEqual(len(responses.calls), 1)
+
+    @responses.activate
+    def test_remote_call_post_json(self):
+        url = "http://www.testing.test/responses"
+        responses.add(responses.POST, url, json={'status': 'ok'}, status=200)
+        self.rp.remote_call(url, json={"fruit": "banana"})
+        self.assertEqual(len(responses.calls), 1)
+
+    @responses.activate
+    def test_remote_call_post_data(self):
+        url = "http://www.testing.test/responses"
+        responses.add(responses.POST, url, json={'status': 'ok'}, status=200)
+        self.rp.remote_call(url, data="banana")
+        self.assertEqual(len(responses.calls), 1)
+
+    @responses.activate
+    def test_remote_call_maxretryerror(self):
+        url = "http://www.testing.test/responses"
+        responses.add(responses.GET, url, body=MaxRetryError(HTTPConnectionPool, url))
+        with self.assertLogs(level="ERROR") as cm:
+            self.rp.remote_call(url)
+
+        self.assertIn("Max retries exceeded (5)", cm[0][0].message)
 
     def test_send_feedback(self):
         self.rp.decrypt_survey = MagicMock(return_value=feedback)
