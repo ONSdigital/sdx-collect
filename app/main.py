@@ -22,6 +22,7 @@ def run():
         urls=app.settings.RABBIT_URLS,
         queue=app.settings.RABBIT_QUARANTINE_QUEUE
     )
+
     message_consumer = MessageConsumer(
         durable_queue=True,
         exchange=app.settings.RABBIT_EXCHANGE,
