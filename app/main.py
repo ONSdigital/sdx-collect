@@ -14,7 +14,6 @@ def run():
     logging.basicConfig(format=app.settings.LOGGING_FORMAT,
                         datefmt="%Y-%m-%dT%H:%M:%S",
                         level=app.settings.LOGGING_LEVEL)
-    logging.getLogger("pika").setLevel(logging.INFO)
     logging.getLogger("sdc.rabbit").setLevel(logging.DEBUG)
 
     response_processor = ResponseProcessor()
@@ -23,6 +22,7 @@ def run():
         urls=app.settings.RABBIT_URLS,
         queue=app.settings.RABBIT_QUARANTINE_QUEUE
     )
+
     message_consumer = MessageConsumer(
         durable_queue=True,
         exchange=app.settings.RABBIT_EXCHANGE,
