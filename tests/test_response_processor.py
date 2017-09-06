@@ -196,8 +196,10 @@ class TestResponseProcessor(unittest.TestCase):
         # # rrm queue fail census
         census_json = valid_json
         census_json['survey_id'] = 'census'
-        with self.assertRaises(RetryableError):
-            self._process()
+        with self.assertLogs(level='INFO') as cm:
+            self.rp.send_receipt(census_json)
+
+        self.assertIn("Ignoring received CTP submission", cm.output[0])
 
         # rrm publish ok
         json_023 = valid_json
@@ -209,7 +211,6 @@ class TestResponseProcessor(unittest.TestCase):
 
         # Queue types
         self.rp.rrm_publisher.publish_message = Mock(side_effect=RRMQueue)
-        self.rp.ctp_publisher.publish_message = Mock(side_effect=CTPQueue)
 
         with self.assertRaises(RRMQueue):
             self.rp.send_receipt(valid_json)
@@ -217,8 +218,10 @@ class TestResponseProcessor(unittest.TestCase):
         census_json = valid_json
         census_json['survey_id'] = 'census'
 
-        with self.assertRaises(CTPQueue):
-            self.rp.send_receipt(valid_json)
+        with self.assertLogs(level='INFO') as cm:
+            self.rp.send_receipt(census_json)
+
+        self.assertIn("Ignoring received CTP submission", cm.output[0])
 
         invalid_json = copy.deepcopy(valid_json)
         invalid_json['survey_id'] = None
