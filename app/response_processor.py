@@ -136,7 +136,7 @@ class ResponseProcessor:
 
         try:
             if survey_id == 'census':
-                self.logger.info("Would of published notification to ctp queue")
+                self.logger.info("Ignoring received CTP submission")
             elif survey_id == '144':
                 self.logger.info("About to publish notification to cora queue")
                 self.cora_notifications.publish_message(self.tx_id)
