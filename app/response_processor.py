@@ -3,6 +3,7 @@ import logging
 import os
 
 from requests.packages.urllib3.exceptions import MaxRetryError
+from sdc.rabbit import QueuePublisher
 from sdc.rabbit.exceptions import PublishMessageError, RetryableError, QuarantinableError
 from structlog import wrap_logger
 
@@ -34,6 +35,15 @@ class ResponseProcessor:
         self.rrm_publisher = PrivatePublisher(
             settings.RABBIT_URLS, settings.RABBIT_RRM_RECEIPT_QUEUE
         )
+
+        self.cs_notifications = QueuePublisher(settings.RABBIT_URLS,
+                                               settings.RABBIT_CS_QUEUE)
+
+        self.ctp_notifications = QueuePublisher(settings.RABBIT_URLS,
+                                                settings.RABBIT_CTP_QUEUE)
+
+        self.cora_notifications = QueuePublisher(settings.RABBIT_URLS,
+                                                 settings.RABBIT_CORA_QUEUE)
 
     def service_name(self, url=None):
         try:
@@ -82,6 +92,11 @@ class ResponseProcessor:
 
         self.store_survey(decrypted_json)
 
+        if decrypted_json.get("survey_id") != "feedback" and not decrypted_json.get('invalid'):
+            self.send_notification(decrypted_json.get("survey_id"))
+        else:
+            self.logger.info("Feedback survey, skipping notification")
+
         self.logger.unbind("user_id", "ru_ref", "tx_id")
 
     def send_receipt(self, decrypted_json):
@@ -119,6 +134,22 @@ class ResponseProcessor:
                 raise RetryableError
 
         self.logger.info("Receipt published")
+
+    def send_notification(self, survey_id):
+
+        try:
+            if survey_id == 'census':
+                self.logger.info("About to publish notification to ctp queue")
+                self.ctp_notifications.publish_message(self.tx_id)
+            elif survey_id == '144':
+                self.logger.info("About to publish notification to cora queue")
+                self.cora_notifications.publish_message(self.tx_id)
+            else:
+                self.logger.info("About to publish notification to cs queue")
+                self.cs_notifications.publish_message(self.tx_id)
+        except PublishMessageError as e:
+            self.logger.error("Unable to queue response notification", error=e)
+            raise RetryableError
 
     def decrypt_survey(self, encrypted_survey):
         self.logger.info("Decrypting survey")
