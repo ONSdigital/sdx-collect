@@ -1,6 +1,7 @@
 ### Unreleased
   - Ensure integrity and version of library dependencies
   - No longer process CTP submissions
+  - Send response notifications
 
 ### 1.5.0 2017-07-25
   - Change all instances of ADD to COPY in Dockerfile
