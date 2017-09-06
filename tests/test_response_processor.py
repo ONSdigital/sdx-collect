@@ -245,12 +245,6 @@ class TestResponseProcessor(unittest.TestCase):
         with self.assertRaises(RetryableError):
             self._process()
 
-        # # ctp notifications queue fail census
-        census_json = valid_json
-        census_json['survey_id'] = 'census'
-        with self.assertRaises(RetryableError):
-            self._process()
-
         # # cora notifications queue fail census
         cora_json = valid_json
         cora_json['survey_id'] = '114'
