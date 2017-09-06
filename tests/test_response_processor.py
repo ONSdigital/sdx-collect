@@ -13,6 +13,7 @@ from requests.packages.urllib3.exceptions import MaxRetryError
 from sdc.rabbit.exceptions import RetryableError, QuarantinableError
 from structlog import wrap_logger
 
+from app.helpers.exceptions import ClientError
 from app.response_processor import ResponseProcessor
 from tests.test_data import feedback_decrypted, valid_decrypted
 from app import settings
@@ -69,6 +70,7 @@ class TestResponseProcessor(unittest.TestCase):
         self.rp.validate_survey = MagicMock()
         self.rp.store_survey = MagicMock()
         self.rp.send_receipt = MagicMock()
+        self.rp.send_notification = MagicMock()
 
         self.rp_invalid.validate_survey = MagicMock()
         self.rp_invalid.store_survey = MagicMock()
@@ -102,6 +104,7 @@ class TestResponseProcessor(unittest.TestCase):
         # <validate>
         self.rp.store_survey = MagicMock()
         self.rp.send_receipt = MagicMock()
+        self.rp.send_notification = MagicMock()
 
         r = Response()
         with mock.patch('app.response_processor.ResponseProcessor.remote_call') as call_mock:
@@ -138,6 +141,7 @@ class TestResponseProcessor(unittest.TestCase):
         # <validate>
         self.rp.store_survey = MagicMock()
         self.rp.send_receipt = MagicMock()
+        self.rp.send_notification = MagicMock()
 
         r = Response()
         with mock.patch('app.response_processor.ResponseProcessor.remote_call') as call_mock:
@@ -156,6 +160,7 @@ class TestResponseProcessor(unittest.TestCase):
         self.rp.validate_survey = MagicMock()
         # <store>
         self.rp.send_receipt = MagicMock()
+        self.rp.send_notification = MagicMock()
 
         r = Response()
         with mock.patch('app.response_processor.ResponseProcessor.remote_call') as call_mock:
@@ -179,6 +184,7 @@ class TestResponseProcessor(unittest.TestCase):
         self.rp.decrypt_survey = MagicMock(return_value=valid_json)
         self.rp.validate_survey = MagicMock()
         self.rp.store_survey = MagicMock()
+        self.rp.send_notification = MagicMock()
         # <send_receipt>
 
         # Bad key - none set (shouldn't occur as service will not start without key)
@@ -228,6 +234,53 @@ class TestResponseProcessor(unittest.TestCase):
 
         with self.assertRaises(QuarantinableError):
             self.rp.send_receipt(invalid_json)
+
+        invalid_json.pop('tx_id', None)
+
+        with self.assertRaises(QuarantinableError):
+            self.rp.send_receipt(invalid_json)
+
+    def test_send_notification(self):
+        self.rp.decrypt_survey = MagicMock(return_value=valid_json)
+        self.rp.validate_survey = MagicMock()
+        self.rp.store_survey = MagicMock()
+        self.rp.send_receipt = MagicMock()
+
+        # Subsequent tests expect valid key
+        settings.SDX_COLLECT_SECRET = "seB388LNHgxcuvAcg1pOV20_VR7uJWNGAznE0fOqKxg=".encode('ascii')
+
+        # cs notifications queue fail
+        with self.assertRaises(RetryableError):
+            self._process()
+
+        # # census notifications logged
+        census_json = valid_json
+        census_json['survey_id'] = 'census'
+        with self.assertLogs(level='INFO') as cm:
+            self._process()
+
+        self.assertIn("Ignoring received CTP submission", cm.output[1])
+
+        # # cora notifications queue fail census
+        cora_json = valid_json
+        cora_json['survey_id'] = '114'
+        with self.assertRaises(RetryableError):
+            self._process()
+
+        # # passes notifications feedback
+        feedback_json = valid_json
+        feedback_json['survey_id'] = 'feedback'
+        self._process()
+
+        # # passes notifications invalid survey
+        self.rp.validate_survey = MagicMock(side_effect=ClientError)
+        self._process()
+
+        # cs notifications queue publish ok
+        json_023 = valid_json
+        json_023['survey_id'] = '023'
+        self.rp.cs_notifications.publish_message = MagicMock()
+        self._process()
 
     @responses.activate
     def test_remote_call_get(self):
