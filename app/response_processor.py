@@ -42,6 +42,12 @@ class ResponseProcessor:
         self.cora_notifications = QueuePublisher(settings.RABBIT_URLS,
                                                  settings.RABBIT_CORA_QUEUE)
 
+        self.cs_notifications = QueuePublisher(settings.RABBIT_URLS,
+                                               settings.RABBIT_CS_QUEUE)
+
+        self.cora_notifications = QueuePublisher(settings.RABBIT_URLS,
+                                                 settings.RABBIT_CORA_QUEUE)
+
     def service_name(self, url=None):
         try:
             parts = url.split('/')
