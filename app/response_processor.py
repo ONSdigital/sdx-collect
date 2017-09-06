@@ -39,9 +39,6 @@ class ResponseProcessor:
         self.cs_notifications = QueuePublisher(settings.RABBIT_URLS,
                                                settings.RABBIT_CS_QUEUE)
 
-        self.ctp_notifications = QueuePublisher(settings.RABBIT_URLS,
-                                                settings.RABBIT_CTP_QUEUE)
-
         self.cora_notifications = QueuePublisher(settings.RABBIT_URLS,
                                                  settings.RABBIT_CORA_QUEUE)
 
@@ -139,8 +136,7 @@ class ResponseProcessor:
 
         try:
             if survey_id == 'census':
-                self.logger.info("About to publish notification to ctp queue")
-                self.ctp_notifications.publish_message(self.tx_id)
+                self.logger.info("Would of published notification to ctp queue")
             elif survey_id == '144':
                 self.logger.info("About to publish notification to cora queue")
                 self.cora_notifications.publish_message(self.tx_id)
