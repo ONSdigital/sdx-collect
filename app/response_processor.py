@@ -34,9 +34,6 @@ class ResponseProcessor:
         self.rrm_publisher = PrivatePublisher(
             settings.RABBIT_URLS, settings.RABBIT_RRM_RECEIPT_QUEUE
         )
-        self.ctp_publisher = PrivatePublisher(
-            settings.RABBIT_URLS, settings.RABBIT_CTP_RECEIPT_QUEUE
-        )
 
     def service_name(self, url=None):
         try:
@@ -108,14 +105,8 @@ class ResponseProcessor:
             raise QuarantinableError
 
         elif decrypted_json.get("survey_id") == "census":
-            self.logger.info("About to publish receipt into ctp queue")
-
-            try:
-                self.ctp_publisher.publish_message(dumps(receipt_json),
-                                                   secret=settings.SDX_COLLECT_SECRET)
-            except PublishMessageError as e:
-                self.logger.error("Unsuccesful publish", error=e)
-                raise RetryableError
+            self.logger.info("Ignoring received CTP submission")
+            return None
 
         else:
 
