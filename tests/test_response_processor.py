@@ -235,6 +235,11 @@ class TestResponseProcessor(unittest.TestCase):
         with self.assertRaises(QuarantinableError):
             self.rp.send_receipt(invalid_json)
 
+        invalid_json.pop('tx_id', None)
+
+        with self.assertRaises(QuarantinableError):
+            self.rp.send_receipt(invalid_json)
+
     def test_send_notification(self):
         self.rp.decrypt_survey = MagicMock(return_value=valid_json)
         self.rp.validate_survey = MagicMock()
@@ -247,6 +252,14 @@ class TestResponseProcessor(unittest.TestCase):
         # cs notifications queue fail
         with self.assertRaises(RetryableError):
             self._process()
+
+        # # census notifications logged
+        census_json = valid_json
+        census_json['survey_id'] = 'census'
+        with self.assertLogs(level='INFO') as cm:
+            self._process()
+
+        self.assertIn("Ignoring received CTP submission", cm.output[1])
 
         # # cora notifications queue fail census
         cora_json = valid_json
