@@ -73,6 +73,8 @@ class ResponseProcessor:
                         decrypted_tx_id=decrypted_json.get('tx_id'),
                         message_tx_id=self.tx_id)
             raise QuarantinableError
+        else:
+            self.tx_id = tx_id
 
         self.logger = self.logger.bind(tx_id=self.tx_id)
 
@@ -143,10 +145,10 @@ class ResponseProcessor:
                 self.logger.info("Ignoring received CTP submission")
             elif survey_id == '144':
                 self.logger.info("About to publish notification to cora queue")
-                self.cora_notifications.publish_message(self.tx_id)
+                self.cora_notifications.publish_message(self.tx_id, headers={'tx_id': self.tx_id})
             else:
                 self.logger.info("About to publish notification to cs queue")
-                self.cs_notifications.publish_message(self.tx_id)
+                self.cs_notifications.publish_message(self.tx_id, headers={'tx_id': self.tx_id})
         except PublishMessageError as e:
             self.logger.error("Unable to queue response notification", error=e)
             raise RetryableError
