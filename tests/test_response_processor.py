@@ -279,7 +279,9 @@ class TestResponseProcessor(unittest.TestCase):
         # cs notifications queue publish ok
         json_023 = valid_json
         json_023['survey_id'] = '023'
+        json_023.pop('invalid', None)
         self.rp.cs_notifications.publish_message = MagicMock()
+        self.rp.validate_survey = MagicMock()
         self._process()
 
     @responses.activate
