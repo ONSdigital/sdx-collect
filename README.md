@@ -36,6 +36,9 @@ The following envioronment variables can be set:
 | RABBIT_EXCHANGE           | ``message``                           | Exchange for incoming queue
 | RABBIT_RRM_RECEIPT_QUEUE  | ``rrm_receipt``                       | Name of rrm receipt service queue
 | RABBIT_CTP_RECEIPT_QUEUE  | ``ctp_receipt``                       | Name of ctp receipt service queue
+| SDX_COLLECT_RABBIT_CORA_QUEUE  | ``sdx-cora-survey-notifications``| Name of cora notifications service queue
+| SDX_COLLECT_RABBIT_CTP_QUEUE  | ``sdx-ctp-survey-notifications``  | Name of ctp notifications service queue
+| SDX_COLLECT_RABBIT_CS_QUEUE  | ``sdx-cs-survey-notifications``    | Name of cs notifications service queue
 
 ### License
 
