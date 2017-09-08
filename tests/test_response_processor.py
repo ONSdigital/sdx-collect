@@ -59,8 +59,8 @@ class TestResponseProcessor(unittest.TestCase):
         self.rp = ResponseProcessor()
         self.rp_invalid = ResponseProcessor()
 
-    def _process(self):
-        self.rp.process("NxjsJBSahBXHSbxHBasx")
+    def _process(self, tx_id=None):
+        self.rp.process("NxjsJBSahBXHSbxHBasx", tx_id=tx_id)
 
     def _process_invalid(self):
         self.rp_invalid.process("NxjsJBSahBXHSbxHBasx", "NxjsJBSahBXHSbxHBasx")
@@ -180,6 +180,19 @@ class TestResponseProcessor(unittest.TestCase):
             r.status_code = 200
             self._process()
 
+    def test_tx_id_set(self):
+        self.rp.decrypt_survey = MagicMock(return_value=valid_json)
+        self.rp.validate_survey = MagicMock()
+        self.rp.store_survey = MagicMock()
+        self.rp.send_receipt = MagicMock()
+        self.rp.send_notification = MagicMock()
+
+        r = Response()
+        with mock.patch('app.response_processor.ResponseProcessor.remote_call'):
+            r.status_code = 200
+            self._process(tx_id=valid_json.get('tx_id'))
+            self.assertEqual(self.rp.tx_id, valid_json.get('tx_id'))
+
     def test_send_receipt(self):
         self.rp.decrypt_survey = MagicMock(return_value=valid_json)
         self.rp.validate_survey = MagicMock()
@@ -263,7 +276,7 @@ class TestResponseProcessor(unittest.TestCase):
 
         # # cora notifications queue fail census
         cora_json = valid_json
-        cora_json['survey_id'] = '114'
+        cora_json['survey_id'] = '144'
         with self.assertRaises(RetryableError):
             self._process()
 
@@ -279,7 +292,9 @@ class TestResponseProcessor(unittest.TestCase):
         # cs notifications queue publish ok
         json_023 = valid_json
         json_023['survey_id'] = '023'
+        json_023.pop('invalid', None)
         self.rp.cs_notifications.publish_message = MagicMock()
+        self.rp.validate_survey = MagicMock()
         self._process()
 
     @responses.activate
