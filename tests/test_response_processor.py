@@ -188,7 +188,7 @@ class TestResponseProcessor(unittest.TestCase):
         self.rp.send_notification = MagicMock()
 
         r = Response()
-        with mock.patch('app.response_processor.ResponseProcessor.remote_call') as call_mock:
+        with mock.patch('app.response_processor.ResponseProcessor.remote_call'):
             r.status_code = 200
             self._process(tx_id=valid_json.get('tx_id'))
             self.assertEqual(self.rp.tx_id, valid_json.get('tx_id'))
