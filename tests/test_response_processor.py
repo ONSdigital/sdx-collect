@@ -268,9 +268,9 @@ class TestResponseProcessor(unittest.TestCase):
             self._process()
 
         # # passes notifications feedback
-        feedback_json = valid_json
-        feedback_json['survey_id'] = 'feedback'
+        self.rp.decrypt_survey = MagicMock(return_value=feedback)
         self._process()
+        self.rp.decrypt_survey = MagicMock(return_value=valid_json)
 
         # # passes notifications invalid survey
         self.rp.validate_survey = MagicMock(side_effect=ClientError)
@@ -317,9 +317,11 @@ class TestResponseProcessor(unittest.TestCase):
         self.rp.validate_survey = MagicMock()
         self.rp.store_survey = MagicMock()
 
-        self.rp.send_receipt = Mock(side_effect=RRMQueue)
+        with self.assertLogs(level="INFO") as cm:
+            self._process()
 
-        self._process()
+        self.assertIn("Feedback survey, skipping receipting", cm.output[0])
+        self.assertIn("Feedback survey, skipping notification", cm.output[1])
 
     def test_service_name_return_responses(self):
         url = "www.testing.test/responses"
