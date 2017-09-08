@@ -78,6 +78,8 @@ class ResponseProcessor:
 
         self.logger = self.logger.bind(tx_id=self.tx_id)
 
+        response_type = str(decrypted_json.get("type"))
+
         try:
             self.validate_survey(decrypted_json)
         except ClientError:
@@ -87,7 +89,7 @@ class ResponseProcessor:
             decrypted_json['invalid'] = True
             self.logger.info("Invalid survey data, skipping receipting")
         else:
-            if decrypted_json.get("survey_id") != "feedback":
+            if response_type.find("feedback") == -1:
                 self.logger.info("Receipting survey")
                 self.send_receipt(decrypted_json)
             else:
@@ -95,7 +97,7 @@ class ResponseProcessor:
 
         self.store_survey(decrypted_json)
 
-        if decrypted_json.get("survey_id") != "feedback" and not decrypted_json.get('invalid'):
+        if response_type.find("feedback") == -1 and not decrypted_json.get('invalid'):
             self.send_notification(decrypted_json.get("survey_id"))
         else:
             self.logger.info("Feedback survey, skipping notification")
