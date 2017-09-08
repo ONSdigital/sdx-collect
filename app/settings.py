@@ -44,11 +44,11 @@ RABBIT_URL2 = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
 
 RABBIT_URLS = [RABBIT_URL, RABBIT_URL2]
 
-RABBIT_CORA_QUEUE = os.getenv('SDX_STORE_RABBIT_CORA_QUEUE',
+RABBIT_CORA_QUEUE = os.getenv('SDX_COLLECT_RABBIT_CORA_QUEUE',
                               'sdx-cora-survey-notifications')
-RABBIT_CTP_QUEUE = os.getenv('SDX_STORE_RABBIT_CTP_QUEUE',
+RABBIT_CTP_QUEUE = os.getenv('SDX_COLLECT_RABBIT_CTP_QUEUE',
                              'sdx-ctp-survey-notifications')
-RABBIT_CS_QUEUE = os.getenv('SDX_STORE_RABBIT_CS_QUEUE',
+RABBIT_CS_QUEUE = os.getenv('SDX_COLLECT_RABBIT_CS_QUEUE',
                             'sdx-cs-survey-notifications')
 
 # Configure the number of retries attempted before failing call
