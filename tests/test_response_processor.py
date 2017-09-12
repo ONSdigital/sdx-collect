@@ -289,11 +289,11 @@ class TestResponseProcessor(unittest.TestCase):
         self.rp.validate_survey = MagicMock(side_effect=ClientError)
         self._process()
 
-        # cs notifications queue publish ok
+        # survey notifications queue publish ok
         json_023 = valid_json
         json_023['survey_id'] = '023'
         json_023.pop('invalid', None)
-        self.rp.cs_notifications.publish_message = MagicMock()
+        self.rp.notifications.publish_message = MagicMock()
         self.rp.validate_survey = MagicMock()
         self._process()
 
