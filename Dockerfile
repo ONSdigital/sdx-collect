@@ -8,8 +8,9 @@ RUN mkdir -p /app/logs
 
 COPY app /app
 COPY startup.sh /startup.sh
-COPY Makefile /Makefile
+COPY requirements.txt /app/requirements.txt
 
-CMD make build
+RUN apt-get install build-essential libssl-dev libffi-dev -y
+RUN pip3 install --no-cache-dir -U -r /app/requirements.txt
 
 ENTRYPOINT ./startup.sh
