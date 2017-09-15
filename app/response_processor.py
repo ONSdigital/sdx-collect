@@ -39,8 +39,6 @@ class ResponseProcessor:
         self.notifications = QueuePublisher(settings.RABBIT_URLS,
                                             settings.RABBIT_SURVEY_QUEUE)
 
-        self.notifications._durable_queue = True
-
     def service_name(self, url=None):
         try:
             parts = url.split('/')
