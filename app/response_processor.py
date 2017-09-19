@@ -133,7 +133,8 @@ class ResponseProcessor:
             try:
                 self.logger.info("About to publish receipt into rrm queue")
                 self.rrm_publisher.publish_message(dumps(receipt_json),
-                                                   secret=settings.SDX_COLLECT_SECRET)
+                                                   secret=settings.SDX_COLLECT_SECRET,
+                                                   headers={'tx_id': decrypted_json['tx_id']})
             except PublishMessageError as e:
                 self.logger.error("Unsuccesful publish", error=e)
                 raise RetryableError
