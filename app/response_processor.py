@@ -36,15 +36,8 @@ class ResponseProcessor:
             settings.RABBIT_URLS, settings.RABBIT_RRM_RECEIPT_QUEUE
         )
 
-        self.cs_notifications = QueuePublisher(settings.RABBIT_URLS,
-                                               settings.RABBIT_CS_QUEUE)
-
-        self.cs_notifications._durable_queue = False
-
-        self.cora_notifications = QueuePublisher(settings.RABBIT_URLS,
-                                                 settings.RABBIT_CORA_QUEUE)
-
-        self.cora_notifications._durable_queue = False
+        self.notifications = QueuePublisher(settings.RABBIT_URLS,
+                                            settings.RABBIT_SURVEY_QUEUE)
 
     def service_name(self, url=None):
         try:
@@ -146,12 +139,9 @@ class ResponseProcessor:
         try:
             if survey_id == 'census':
                 self.logger.info("Ignoring received CTP submission")
-            elif survey_id == '144':
-                self.logger.info("About to publish notification to cora queue")
-                self.cora_notifications.publish_message(self.tx_id, headers={'tx_id': self.tx_id})
             else:
-                self.logger.info("About to publish notification to cs queue")
-                self.cs_notifications.publish_message(self.tx_id, headers={'tx_id': self.tx_id})
+                self.logger.info("About to publish notification to queue")
+                self.notifications.publish_message(self.tx_id, headers={'tx_id': self.tx_id})
         except PublishMessageError as e:
             self.logger.error("Unable to queue response notification", error=e)
             raise RetryableError

@@ -1,4 +1,5 @@
 ### Unreleased
+  - Publish all surveys to same downstream by removing cora specific queueing
   - Remove sdx common clone in Dockerfile
   - Send headers to RRM receipt publisher
   
