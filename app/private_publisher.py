@@ -40,8 +40,8 @@ class PrivatePublisher(QueuePublisher):
             message = f.decrypt(token.encode("utf-8"))
         return message.decode("utf-8")
 
-    def publish_message(self, message, content_type=None, headers=None, secret=None):
+    def publish(self, message, content_type=None, headers=None, secret=None):
         token = PrivatePublisher.encrypt(message, secret=secret)
-        return super().publish_message(
+        return self.publish_message(
             token, content_type=content_type, headers=headers
         )
