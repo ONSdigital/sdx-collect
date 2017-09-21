@@ -1,5 +1,5 @@
 ### Unreleased
-  - Publish all surveys to same downstream
+  - Publish all surveys to same downstream by removing cora specific queueing
   - Remove sdx common clone in Dockerfile
   
 ### 2.0.0 2017-09-11
