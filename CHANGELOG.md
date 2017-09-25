@@ -1,8 +1,10 @@
 ### Unreleased
+
+### 3.0.0 2017-09-25
   - Publish all surveys to same downstream by removing cora specific queueing
   - Remove sdx common clone in Dockerfile
   - Send headers to RRM receipt publisher
-  
+
 ### 2.0.0 2017-09-11
   - Ensure integrity and version of library dependencies
   - No longer process CTP submissions
