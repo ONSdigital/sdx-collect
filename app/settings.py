@@ -47,7 +47,7 @@ RABBIT_URLS = [RABBIT_URL, RABBIT_URL2]
 RABBIT_CTP_QUEUE = os.getenv('SDX_COLLECT_RABBIT_CTP_QUEUE',
                              'sdx-ctp-survey-notifications')
 RABBIT_SURVEY_QUEUE = os.getenv('SDX_COLLECT_RABBIT_QUEUE',
-                                'sdx-survey-notifications')
+                                'sdx-survey-notification-durable')
 
 # Configure the number of retries attempted before failing call
 session = requests.Session()
