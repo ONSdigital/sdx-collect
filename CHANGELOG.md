@@ -1,5 +1,8 @@
 ### Unreleased
 
+### 3.0.1 2017-09-25
+  - Change queue name
+
 ### 3.0.0 2017-09-25
   - Publish all surveys to same downstream by removing cora specific queueing
   - Remove sdx common clone in Dockerfile
