@@ -17,9 +17,9 @@ SDX_VALIDATE_URL = os.getenv("SDX_VALIDATE_URL", "http://sdx-validate:5000/valid
 
 RABBIT_QUEUE = os.getenv('RABBIT_SURVEY_QUEUE', 'survey')
 RABBIT_QUARANTINE_QUEUE = os.getenv('RABBIT_QUARANTINE_QUEUE', 'survey_quarantine')
-RABBIT_EXCHANGE = os.getenv('RABBITMQ_EXCHANGE', 'message')
+RABBIT_EXCHANGE = 'message'
 
-RABBIT_RRM_RECEIPT_QUEUE = os.getenv('RECEIPT_RRM_QUEUE', 'rrm_receipt')
+RABBIT_RRM_RECEIPT_QUEUE = 'rrm_receipt'
 RABBIT_CTP_RECEIPT_QUEUE = os.getenv('RECEIPT_CTP_QUEUE', 'ctp_receipt')
 
 SDX_COLLECT_SECRET = os.getenv("SDX_COLLECT_SECRET")
