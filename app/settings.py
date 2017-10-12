@@ -20,7 +20,6 @@ RABBIT_QUARANTINE_QUEUE = os.getenv('RABBIT_QUARANTINE_QUEUE', 'survey_quarantin
 RABBIT_EXCHANGE = 'message'
 
 RABBIT_RRM_RECEIPT_QUEUE = 'rrm_receipt'
-RABBIT_CTP_RECEIPT_QUEUE = 'ctp_receipt'
 
 SDX_COLLECT_SECRET = os.getenv("SDX_COLLECT_SECRET")
 if SDX_COLLECT_SECRET is not None:
@@ -44,7 +43,6 @@ RABBIT_URL2 = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
 
 RABBIT_URLS = [RABBIT_URL, RABBIT_URL2]
 
-RABBIT_CTP_QUEUE = 'sdx-ctp-survey-notifications'
 RABBIT_SURVEY_QUEUE = 'sdx-survey-notification-durable'
 
 # Configure the number of retries attempted before failing call
