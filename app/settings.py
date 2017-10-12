@@ -17,10 +17,9 @@ SDX_VALIDATE_URL = os.getenv("SDX_VALIDATE_URL", "http://sdx-validate:5000/valid
 
 RABBIT_QUEUE = os.getenv('RABBIT_SURVEY_QUEUE', 'survey')
 RABBIT_QUARANTINE_QUEUE = os.getenv('RABBIT_QUARANTINE_QUEUE', 'survey_quarantine')
-RABBIT_EXCHANGE = os.getenv('RABBITMQ_EXCHANGE', 'message')
+RABBIT_EXCHANGE = 'message'
 
-RABBIT_RRM_RECEIPT_QUEUE = os.getenv('RECEIPT_RRM_QUEUE', 'rrm_receipt')
-RABBIT_CTP_RECEIPT_QUEUE = os.getenv('RECEIPT_CTP_QUEUE', 'ctp_receipt')
+RABBIT_RRM_RECEIPT_QUEUE = 'rrm_receipt'
 
 SDX_COLLECT_SECRET = os.getenv("SDX_COLLECT_SECRET")
 if SDX_COLLECT_SECRET is not None:
@@ -44,10 +43,7 @@ RABBIT_URL2 = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
 
 RABBIT_URLS = [RABBIT_URL, RABBIT_URL2]
 
-RABBIT_CTP_QUEUE = os.getenv('SDX_COLLECT_RABBIT_CTP_QUEUE',
-                             'sdx-ctp-survey-notifications')
-RABBIT_SURVEY_QUEUE = os.getenv('SDX_COLLECT_RABBIT_QUEUE',
-                                'sdx-survey-notification-durable')
+RABBIT_SURVEY_QUEUE = 'sdx-survey-notification-durable'
 
 # Configure the number of retries attempted before failing call
 session = requests.Session()
