@@ -1,5 +1,6 @@
 ### Unreleased
   - Hardcode unchanging variables in settings.py to make configuration management simpler
+  - Add service config to config file
 
 ### 3.0.1 2017-09-25
   - Change queue name
