@@ -1,8 +1,5 @@
 import logging
 import os
-import requests
-from requests.packages.urllib3.util.retry import Retry
-from requests.adapters import HTTPAdapter
 
 
 LOGGING_LEVEL = logging.getLevelName(os.getenv("LOGGING_LEVEL", "DEBUG"))
@@ -44,9 +41,3 @@ RABBIT_URL2 = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
 RABBIT_URLS = [RABBIT_URL, RABBIT_URL2]
 
 RABBIT_SURVEY_QUEUE = 'sdx-survey-notification-durable'
-
-# Configure the number of retries attempted before failing call
-session = requests.Session()
-retries = Retry(total=5, backoff_factor=0.1)
-session.mount('http://', HTTPAdapter(max_retries=retries))
-session.mount('https://', HTTPAdapter(max_retries=retries))

@@ -10,7 +10,7 @@ from structlog import wrap_logger
 from app import settings
 from app.helpers.exceptions import ClientError
 from app.private_publisher import PrivatePublisher
-from app.settings import session
+from app import session
 
 logger = wrap_logger(logging.getLogger(__name__))
 
