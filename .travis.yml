@@ -9,7 +9,6 @@ install:
     - make build
     - pip install codecov
 script:
-    - make test
-    - coverage run -m unittest tests/*.py
+    - pytest --cov=app --cov-report html
 after_success:
-    - codecov
+  - bash <(curl -s https://codecov.io/bash)
