@@ -9,6 +9,6 @@ install:
     - make build
     - pip install codecov
 script:
-    - pytest --cov=app --cov-report html
+    - pytest tests/ --cov=app --cov-report html
 after_success:
   - bash <(curl -s https://codecov.io/bash)
