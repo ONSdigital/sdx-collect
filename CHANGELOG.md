@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 3.1.0 2017-10-16
   - Hardcode unchanging variables in settings.py to make configuration management simpler
   - Add service config to config file
 
