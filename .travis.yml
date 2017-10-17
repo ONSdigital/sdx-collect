@@ -7,7 +7,7 @@ before_install:
     - pip install --upgrade pip
 install:
     - make build
-    - pip install pytest-cov 
+    - pip install -r test-requirements.txt
 script:
     - pytest tests/ --cov=app --cov-report html
 after_success:
