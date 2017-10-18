@@ -1,4 +1,5 @@
 ### Unreleased
+  - change to use pytest to improve test output and code coverage stats
 
 ### 3.1.0 2017-10-16
   - Hardcode unchanging variables in settings.py to make configuration management simpler
