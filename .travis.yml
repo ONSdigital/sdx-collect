@@ -12,4 +12,4 @@ install:
 script:
     - pytest tests/ --cov=app --cov-report html
 after_success:
-  - codecov
+    - codecov
