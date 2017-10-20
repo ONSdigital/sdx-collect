@@ -10,6 +10,6 @@ install:
     - pip install -r test_requirements.txt
     - pip install codecov
 script:
-    - pytest tests/ --cov=app --cov-report html
+    - pytest -v tests/ --cov=app --cov-report html
 after_success:
     - codecov
