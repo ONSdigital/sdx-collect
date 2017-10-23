@@ -7,9 +7,9 @@ before_install:
     - pip install --upgrade pip
 install:
     - make build
+    - pip install -r test_requirements.txt
     - pip install codecov
 script:
-    - make test
-    - coverage run -m unittest tests/*.py
+    - pytest -v tests/ --cov=app --cov-report html
 after_success:
     - codecov
