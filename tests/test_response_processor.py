@@ -3,7 +3,7 @@ import json
 import logging
 import os
 import unittest
-from unittest.mock import MagicMock, Mock
+from unittest.mock import MagicMock, Mock, patch
 
 import mock
 import responses
@@ -17,6 +17,7 @@ from app.helpers.exceptions import ClientError
 from app.response_processor import ResponseProcessor
 from tests.test_data import feedback_decrypted, valid_decrypted
 from app import settings
+from app import session
 
 
 logger = wrap_logger(logging.getLogger(__name__))
@@ -322,10 +323,21 @@ class TestResponseProcessor(unittest.TestCase):
     def test_remote_call_maxretryerror(self):
         url = "http://www.testing.test/responses"
         responses.add(responses.GET, url, body=MaxRetryError(HTTPConnectionPool, url))
-        with self.assertLogs(level="ERROR") as cm:
-            self.rp.remote_call(url)
-
+        with self.assertRaises(RetryableError):
+            with self.assertLogs(level="ERROR") as cm:
+                self.rp.remote_call(url)
         self.assertIn("Max retries exceeded (5)", cm[0][0].message)
+
+    @responses.activate
+    @patch.object(session, 'get')
+    def test_remote_call_raises_retryable_error_on_connection_error(self, mock_request):
+        mock_request.side_effect = ConnectionError()
+        url = "http://www.testing.test/responses"
+        responses.add(responses.GET, url, body=MaxRetryError(HTTPConnectionPool, url))
+        with self.assertRaises(RetryableError):
+            with self.assertLogs(level="ERROR") as cm:
+                self.rp.remote_call(url)
+        self.assertIn("Connection error occurred. Retrying", cm[0][0].message)
 
     def test_send_feedback(self):
         self.rp.decrypt_survey = MagicMock(return_value=feedback)
