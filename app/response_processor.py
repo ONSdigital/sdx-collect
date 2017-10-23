@@ -203,6 +203,10 @@ class ResponseProcessor:
 
         except MaxRetryError:
             self.logger.error("Max retries exceeded (5)", request_url=request_url)
+            raise RetryableError
+        except ConnectionError:
+            self.logger.error("Connection error occurred. Retrying")
+            raise RetryableError
 
     def response_ok(self, res):
         request_url = res.url
