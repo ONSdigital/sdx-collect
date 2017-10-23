@@ -1,4 +1,5 @@
 ### Unreleased
+  - Added RetryableError to remote_call so that HTTP errors give rise to rabbit NAKS and hence retry
 
 ### 3.1.0 2017-10-16
   - Hardcode unchanging variables in settings.py to make configuration management simpler
