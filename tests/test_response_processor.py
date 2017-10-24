@@ -352,17 +352,16 @@ class TestResponseProcessor(unittest.TestCase):
         self.assertIn("Feedback survey, skipping notification", cm.output[1])
 
     def test_invalid_and_not_feedback(self):
-        self.rp.decrypt_survey = MagicMock(return_value=invalid)
-        self.rp.validate_survey = MagicMock()
-        self.rp.store_survey = MagicMock()
-
         invalid_json = copy.deepcopy(valid_json)
-        invalid_json['survey_id'] = None
+
+        self.rp.decrypt_survey = MagicMock(return_value=invalid_json)
+        self.rp.validate_survey = MagicMock(side_effect=ClientError)
+        self.rp.store_survey = MagicMock()
 
         with self.assertLogs(level="INFO") as cm:
             self._process()
 
-        self.assertIn("Invalid survey data, skipping receipting", cm.output)
+        self.assertIn("Invalid survey data, skipping receipting", cm.output[0])
 
     def test_service_name_return_responses(self):
         url = "www.testing.test/responses"
