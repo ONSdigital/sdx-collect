@@ -15,7 +15,7 @@ from structlog import wrap_logger
 
 from app.helpers.exceptions import ClientError
 from app.response_processor import ResponseProcessor
-from tests.test_data import feedback_decrypted, valid_decrypted
+from tests.test_data import feedback_decrypted, invalid_decrypted, valid_decrypted
 from app import settings
 from app import session
 
@@ -23,6 +23,7 @@ from app import session
 logger = wrap_logger(logging.getLogger(__name__))
 valid_json = json.loads(valid_decrypted)
 feedback = json.loads(feedback_decrypted)
+invalid = json.loads(invalid_decrypted)
 
 
 class RRMQueue(Exception):
@@ -349,6 +350,18 @@ class TestResponseProcessor(unittest.TestCase):
 
         self.assertIn("Feedback survey, skipping receipting", cm.output[0])
         self.assertIn("Feedback survey, skipping notification", cm.output[1])
+
+    def test_invalid_and_not_feedback(self):
+        invalid_json = copy.deepcopy(valid_json)
+
+        self.rp.decrypt_survey = MagicMock(return_value=invalid_json)
+        self.rp.validate_survey = MagicMock(side_effect=ClientError)
+        self.rp.store_survey = MagicMock()
+
+        with self.assertLogs(level="INFO") as cm:
+            self._process()
+
+        self.assertIn("Invalid survey data, skipping receipting", cm.output[0])
 
     def test_service_name_return_responses(self):
         url = "www.testing.test/responses"

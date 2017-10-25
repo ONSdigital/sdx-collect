@@ -1,5 +1,6 @@
 ### Unreleased
   - Change to use pytest to improve test output and code coverage stats
+  - Fixes incorrect logging if validation fails
   - Added RetryableError to remote_call so that HTTP errors give rise to rabbit NAKS and hence retry
 
 ### 3.1.0 2017-10-16

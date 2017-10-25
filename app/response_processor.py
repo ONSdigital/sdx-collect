@@ -90,8 +90,12 @@ class ResponseProcessor:
 
         self.store_survey(decrypted_json)
 
-        if response_type.find("feedback") == -1 and not decrypted_json.get('invalid'):
+        if 'invalid' in decrypted_json:
+            self.logger.error("Invalid survey response received, skipping notification")
+
+        elif response_type.find("feedback") == -1:
             self.send_notification(decrypted_json.get("survey_id"))
+
         else:
             self.logger.info("Feedback survey, skipping notification")
 
