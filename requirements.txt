@@ -1,18 +1,21 @@
-requests==2.12.4  
-pika==0.10.0  
-Jinja2==2.8  
-sdx-common==0.7.2  
-six==1.10.0
-structlog==16.1.0
-arrow==0.8.0
-reportlab==3.3.0
-idna==2.0
-pyasn1==0.1.8
-cffi==1.11.2
-MarkupSafe==1.0
-python-dateutil==2.6.1
-Pillow==2.4.0
-pycparser==2.18
-sdc-rabbit==1.0.3
-tornado==4.5.1
-backports_abc==0.5
+sdx-common==1.0.2 \
+    --hash=sha256:e9ea578a37028e0c2e65d59239e43ea63070f75ca986bdc91e6874da944ce077 \
+    --hash=sha256:28d808ab472d9f4f3a67e66d7e0f9821a93d271cac9bf414fe9d469b70e6735c
+sdc-rabbit==1.1.0 \
+    --hash=sha256:e1f012dd5813879167d79ffa799cb7a1939285bf5ac8691eea5e48db010301e6 \
+    --hash=sha256:b349b2fad0549bd45fefdc47009fce3e51e304a7e826b044593ec15208400182
+pika==0.10.0 \
+    --hash=sha256:63131aaeec48a6c8f1db1fe657e1e74cf384c3927eb7d1725e31edae4220dea4 \
+    --hash=sha256:7277b4d12a99efa4058782614d84138983f9f89d690bdfcea66290d810806459
+structlog==17.2.0 \
+    --hash=sha256:9947d12d904529e6133384e52091ce92d0541472a722460cfcb4bcc8d02340b0 \
+    --hash=sha256:6980001045abd235fa12582222627c19b89109e58b85eb77d5a5abc778df6e20
+tornado==4.5.1 \
+    --hash=sha256:2b4618010625bcf01f187eec3148c6a3db76a2a900f7dde416330fc413274df1 \
+    --hash=sha256:fb0883ae46da958d06fda2e3be6c033825a0b8603c493df8a69c0237055308d9 \
+    --hash=sha256:0a6894559e62a186d6cc20f1c0e7318f83ae8e28922d75c4b6f83d42cc91d8b1 \
+    --hash=sha256:c3f4456f0ab9e62dab7ede834dcf4c89082238e97b3e67a9196572c076e716aa \
+    --hash=sha256:db0904a28253cfe53e7dedc765c71596f3c53bb8a866ae50123320ec1a7b73fd
+backports_abc==0.4 \
+    --hash=sha256:c64508e766dfe09a94a442c12b57c6e098a402921ecb340a4ec57c7e10fd464c \
+    --hash=sha256:8b3e4092ba3d541c7a2f9b7d0d9c0275b21c6a01c53a61c731eba6686939d0a5
