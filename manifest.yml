@@ -5,9 +5,9 @@ applications:
 
   env:
     CF_DEPLOYMENT: True
-    SDX_DECRYPT_URL: http://sdx-decrypt.apps.devtest.onsclofo.uk:8080
-    SDX_VALIDATE_URL: http://sdx-validate.apps.devtest.onsclofo.uk:8080
-    SDX_STORE_URL: http://sdx-store.apps.devtest.onsclofo.uk:8080
+    SDX_DECRYPT_URL: http://sdx-decrypt.apps.devtest.onsclofo.uk/decrypt
+    SDX_VALIDATE_URL: http://sdx-validate.apps.devtest.onsclofo.uk/validate
+    SDX_RESPONSES_URL: http://sdx-store.apps.devtest.onsclofo.uk/responses
 
   services:
    - sdx-rabbit-dev
