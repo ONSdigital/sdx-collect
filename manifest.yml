@@ -10,7 +10,7 @@ applications:
     SDX_RESPONSES_URL: http://sdx-store.apps.devtest.onsclofo.uk/responses
     RABBIT_QUEUE: survey
     RABBIT_QUARANTINE_QUEUE: survey_quarantine
-    SDX_COLLECT_SECRET: SuperSecretKey
+    SDX_COLLECT_SECRET: IggLKu_vAtU8LnN0HV3CLXMUaGi8LvEk-u5sqOt2QMA=
 
   services:
    - sdx-rabbit-dev

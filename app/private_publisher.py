@@ -2,6 +2,10 @@ from sdc.rabbit.publisher import QueuePublisher
 
 from cryptography.fernet import Fernet
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class PrivatePublisher(QueuePublisher):
 
@@ -15,6 +19,7 @@ class PrivatePublisher(QueuePublisher):
         try:
             f = Fernet(secret)
         except ValueError:
+            logger.exception("Error creating Fernet unable to encrypt message - is the secret 32 bytes")
             return None
         try:
             token = f.encrypt(message)

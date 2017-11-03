@@ -129,6 +129,7 @@ class ResponseProcessor:
 
             try:
                 self.logger.info("About to publish receipt into rrm queue")
+                self.logger.debug(receipt_json)
                 self.rrm_publisher.publish(dumps(receipt_json),
                                            headers={'tx_id': decrypted_json['tx_id']},
                                            secret=settings.SDX_COLLECT_SECRET)
