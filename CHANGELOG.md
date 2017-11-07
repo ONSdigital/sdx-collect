@@ -1,5 +1,6 @@
 ### Unreleased
   - Update default queue name
+  - Remove sdx-collect requirement
 
 ### 3.2.0 2017-11-01
   - Change to use pytest to improve test output and code coverage stats
