@@ -1,10 +1,10 @@
 .PHONY: build test
 
 build:
-	pip3 install -r requirements.txt
+	pipenv --three
+	pipenv install --dev
 
 test:
-	pip3 install -r test_requirements.txt
-	flake8 --exclude ./lib/*
-	pytest -v --cov app
+	pipenv run flake8 --exclude ./lib/*
+	pipenv run pytest -v --cov app
 
