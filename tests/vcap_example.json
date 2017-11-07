@@ -1,0 +1,86 @@
+{
+  "rabbitmq": [
+    {
+      "credentials": {
+        "dashboard_url": "https://localhost/#/login/user/password",
+        "hostname": "168.0.0.1",
+        "hostnames": [
+          "168.0.0.1"
+        ],
+        "http_api_uri": "https://user:password@localhost/api/",
+        "http_api_uris": [
+          "https://user:password@localhost/api/"
+        ],
+        "password": "password",
+        "protocols": {
+          "amqp": {
+            "host": "168.0.0.1",
+            "hosts": [
+              "168.0.0.1"
+            ],
+            "password": "password",
+            "port": 5672,
+            "ssl": false,
+            "uri": "amqp://user:password@168.0.0.1:5672/example_vhost",
+            "uris": [
+              "amqp://user:password@168.0.0.1:5672/example_vhost"
+            ],
+            "username": "user",
+            "vhost": "example_vhost"
+          },
+          "management": {
+            "host": "168.0.0.1",
+            "hosts": [
+              "168.0.0.1"
+            ],
+            "password": "password",
+            "path": "/api/",
+            "port": 15672,
+            "ssl": false,
+            "uri": "http://user:password@168.0.0.1:15672/api/",
+            "uris": [
+              "http://user:password@168.0.0.1:15672/api/"
+            ],
+            "username": "user"
+          },
+          "mqtt": {
+            "host": "168.0.0.1",
+            "hosts": [
+              "168.0.0.1"
+            ],
+            "password": "password",
+            "port": 1883,
+            "ssl": false,
+            "uri": "mqtt://example_vhost%3Auser:password@168.0.0.1:1883",
+            "uris": [
+              "mqtt://example_vhost%3Auser:password@168.0.0.1:1883"
+            ],
+            "username": "example_vhost:user"
+          }
+        },
+        "ssl": false,
+        "uri": "amqp://user:password@168.0.0.1:5672/example_vhost",
+        "uris": [
+          "amqp://user:password@168.0.0.1:5672/example_vhost"
+        ],
+        "username": "user",
+        "vhost": "example_vhost"
+      },
+      "label": "rabbitmq",
+      "name": "sdx-rabbit-dev",
+      "plan": "standard",
+      "provider": null,
+      "syslog_drain_url": null,
+      "tags": [
+        "rabbitmq",
+        "messaging",
+        "message-queue",
+        "amqp",
+        "stomp",
+        "mqtt",
+        "pivotal"
+      ],
+      "volume_mounts": []
+    }
+  ]
+}
