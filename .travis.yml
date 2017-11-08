@@ -7,9 +7,9 @@ before_install:
     - pip install --upgrade pip
     - pip install pipenv
 install:
-    - make build
-    - pipenv --three
+    - pipenv install --dev --deploy
     - pipenv install codecov
+    - pipenv check
 script:
     - pipenv run pytest -v tests/ --cov=app --cov-report html
 after_success:
