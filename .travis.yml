@@ -5,11 +5,11 @@ python:
     - "3.4"
 before_install:
     - pip install --upgrade pip
+    - pip install pipenv
 install:
-    - make build
-    - pip install -r test_requirements.txt
-    - pip install codecov
+    - pipenv install --dev --deploy
+    - pipenv install codecov
 script:
-    - pytest -v tests/ --cov=app --cov-report html
+    - pipenv run pytest -v tests/ --cov=app --cov-report html
 after_success:
-    - codecov
+    - pipenv run codecov

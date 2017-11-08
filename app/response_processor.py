@@ -48,8 +48,8 @@ class ResponseProcessor:
                 return 'SDX-DECRYPT'
             elif 'validate' in parts:
                 return 'SDX-VALIDATE'
-        except AttributeError as e:
-            self.logger.error("No valid service name", exception=e)
+        except AttributeError:
+            self.logger.exception("No valid service name")
 
     def process(self, msg, tx_id=None):
         decrypted_json = self.decrypt_survey(msg)

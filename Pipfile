@@ -1,0 +1,36 @@
+[[source]]
+
+name = "pypi"
+verify_ssl = true
+url = "https://pypi.python.org/simple"
+
+
+[packages]
+
+cryptography = "==1.7.1"
+requests = "==2.12.4"
+pika = "==0.10.0"
+"jinja2" = "==2.8"
+structlog = "==17.2.0"
+arrow = "==0.8.0"
+reportlab = "==3.3.0"
+idna = "==2.0"
+"pyasn1" = "==0.1.8"
+cffi = "==1.4.1"
+markupsafe = "==1.0"
+python-dateutil = "==2.6.1"
+pillow = "==2.4.0"
+pycparser = "==2.18"
+sdc-rabbit = "==1.0.3"
+tornado = "==4.5.1"
+backports-abc = "==0.5"
+
+
+[dev-packages]
+
+"flake8" = "*"
+mock = "*"
+six = "*"
+responses = "*"
+pytest = "*"
+pytest-cov = "*"
