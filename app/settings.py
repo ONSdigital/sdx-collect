@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 
@@ -22,21 +23,34 @@ SDX_COLLECT_SECRET = os.getenv("SDX_COLLECT_SECRET")
 if SDX_COLLECT_SECRET is not None:
     SDX_COLLECT_SECRET = SDX_COLLECT_SECRET.encode("ascii")
 
-RABBIT_URL = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
-    hostname=os.getenv('RABBITMQ_HOST', 'rabbit'),
-    port=os.getenv('RABBITMQ_PORT', 5672),
-    user=os.getenv('RABBITMQ_DEFAULT_USER', 'rabbit'),
-    password=os.getenv('RABBITMQ_DEFAULT_PASS', 'rabbit'),
-    vhost=os.getenv('RABBITMQ_DEFAULT_VHOST', '%2f')
-)
 
-RABBIT_URL2 = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
-    hostname=os.getenv('RABBITMQ_HOST2', 'rabbit'),
-    port=os.getenv('RABBITMQ_PORT2', 5672),
-    user=os.getenv('RABBITMQ_DEFAULT_USER', 'rabbit'),
-    password=os.getenv('RABBITMQ_DEFAULT_PASS', 'rabbit'),
-    vhost=os.getenv('RABBITMQ_DEFAULT_VHOST', '%2f')
-)
+def parse_vcap_services():
+    vcap_services = os.getenv("VCAP_SERVICES")
+    parsed_vcap_services = json.loads(vcap_services)
+    rabbit_config = parsed_vcap_services.get('rabbitmq')
+    rabbit_url = rabbit_config[0].get('credentials').get('uri')
+    rabbit_url2 = rabbit_config[1].get('credentials').get('uri') if len(rabbit_config) > 1 else rabbit_url
+    return rabbit_url, rabbit_url2
+
+
+if os.getenv("CF_DEPLOYMENT", False):
+    RABBIT_URL, RABBIT_URL2 = parse_vcap_services()
+else:
+    RABBIT_URL = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
+        hostname=os.getenv('RABBITMQ_HOST', 'rabbit'),
+        port=os.getenv('RABBITMQ_PORT', 5672),
+        user=os.getenv('RABBITMQ_DEFAULT_USER', 'rabbit'),
+        password=os.getenv('RABBITMQ_DEFAULT_PASS', 'rabbit'),
+        vhost=os.getenv('RABBITMQ_DEFAULT_VHOST', '%2f')
+    )
+
+    RABBIT_URL2 = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
+        hostname=os.getenv('RABBITMQ_HOST2', 'rabbit'),
+        port=os.getenv('RABBITMQ_PORT2', 5672),
+        user=os.getenv('RABBITMQ_DEFAULT_USER', 'rabbit'),
+        password=os.getenv('RABBITMQ_DEFAULT_PASS', 'rabbit'),
+        vhost=os.getenv('RABBITMQ_DEFAULT_VHOST', '%2f')
+    )
 
 RABBIT_URLS = [RABBIT_URL, RABBIT_URL2]
 
