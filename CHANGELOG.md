@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 3.3.0 2017-11-21
   - Update default queue name
   - Remove sdx-collect requirement
 
