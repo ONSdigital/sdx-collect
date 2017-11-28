@@ -8,7 +8,7 @@ applications:
     SDX_DECRYPT_URL: http://sdx-decrypt.apps.devtest.onsclofo.uk/decrypt
     SDX_VALIDATE_URL: http://sdx-validate.apps.devtest.onsclofo.uk/validate
     SDX_RESPONSES_URL: http://sdx-store.apps.devtest.onsclofo.uk/responses
-    RABBIT_QUEUE: survey
+    RABBIT_SURVEY_QUEUE: survey
     RABBIT_QUARANTINE_QUEUE: survey_quarantine
     SDX_COLLECT_SECRET: IggLKu_vAtU8LnN0HV3CLXMUaGi8LvEk-u5sqOt2QMA=
 
