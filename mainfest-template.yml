@@ -1,0 +1,20 @@
+applications:
+- name: sdx-collect-SPACE
+  buildpack: python_buildpack
+  health-check-type: process
+  instances: INSTANCES
+  host: sdx-collect-SPACE
+  timeout: 180
+  memory: 512M
+
+  env:
+    CF_DEPLOYMENT: True
+    SDX_DECRYPT_URL: http://sdx-decrypt-SPACE.apps.devtest.onsclofo.uk/decrypt
+    SDX_VALIDATE_URL: http://sdx-validate-SPACE.apps.devtest.onsclofo.uk/validate
+    SDX_RESPONSES_URL: http://sdx-store-SPACE.apps.devtest.onsclofo.uk/responses
+    RABBIT_SURVEY_QUEUE: survey
+    RABBIT_QUARANTINE_QUEUE: survey_quarantine
+    SDX_COLLECT_SECRET: COLLECTSECRET
+
+  services:
+   - sdx-rabbit-dev
