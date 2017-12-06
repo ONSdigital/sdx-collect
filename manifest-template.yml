@@ -17,4 +17,4 @@ applications:
     SDX_COLLECT_SECRET: COLLECTSECRET
 
   services:
-   - sdx-rabbit-dev
+   - sdx-rabbit-SPACE
