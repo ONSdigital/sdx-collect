@@ -36,7 +36,7 @@ def parse_vcap_services():
 if os.getenv("CF_DEPLOYMENT", False):
     RABBIT_URL, RABBIT_URL2 = parse_vcap_services()
 else:
-    RABBIT_URL = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
+    RABBIT_URL = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}?heartbeat_interval=5'.format(
         hostname=os.getenv('RABBITMQ_HOST', 'rabbit'),
         port=os.getenv('RABBITMQ_PORT', 5672),
         user=os.getenv('RABBITMQ_DEFAULT_USER', 'rabbit'),
@@ -44,7 +44,7 @@ else:
         vhost=os.getenv('RABBITMQ_DEFAULT_VHOST', '%2f')
     )
 
-    RABBIT_URL2 = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
+    RABBIT_URL2 = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}?heartbeat_interval=5'.format(
         hostname=os.getenv('RABBITMQ_HOST2', 'rabbit'),
         port=os.getenv('RABBITMQ_PORT2', 5672),
         user=os.getenv('RABBITMQ_DEFAULT_USER', 'rabbit'),

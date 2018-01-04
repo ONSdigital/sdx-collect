@@ -1,4 +1,5 @@
 ### Unreleased
+  - Add heartbeat interval to rabbit mq url
 
 ### 3.3.0 2017-11-21
   - Update default queue name
