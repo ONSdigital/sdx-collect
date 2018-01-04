@@ -28,8 +28,9 @@ def parse_vcap_services():
     vcap_services = os.getenv("VCAP_SERVICES")
     parsed_vcap_services = json.loads(vcap_services)
     rabbit_config = parsed_vcap_services.get('rabbitmq')
-    rabbit_url = rabbit_config[0].get('credentials').get('uri')
-    rabbit_url2 = rabbit_config[1].get('credentials').get('uri') if len(rabbit_config) > 1 else rabbit_url
+    heartbeat_interval = "?heartbeat_interval=5"
+    rabbit_url = rabbit_config[0].get('credentials').get('uri') + heartbeat_interval
+    rabbit_url2 = rabbit_config[1].get('credentials').get('uri') + heartbeat_interval if len(rabbit_config) > 1 else rabbit_url
     return rabbit_url, rabbit_url2
 
 
