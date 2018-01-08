@@ -18,6 +18,8 @@ RABBIT_QUARANTINE_QUEUE = os.getenv('RABBIT_QUARANTINE_QUEUE', 'survey_quarantin
 RABBIT_EXCHANGE = 'message'
 
 RABBIT_RRM_RECEIPT_QUEUE = 'rrm_receipt'
+HEARTBEAT_INTERVAL = "?heartbeat_interval=5"
+
 
 SDX_COLLECT_SECRET = os.getenv("SDX_COLLECT_SECRET")
 if SDX_COLLECT_SECRET is not None:
@@ -28,8 +30,9 @@ def parse_vcap_services():
     vcap_services = os.getenv("VCAP_SERVICES")
     parsed_vcap_services = json.loads(vcap_services)
     rabbit_config = parsed_vcap_services.get('rabbitmq')
-    rabbit_url = rabbit_config[0].get('credentials').get('uri')
-    rabbit_url2 = rabbit_config[1].get('credentials').get('uri') if len(rabbit_config) > 1 else rabbit_url
+
+    rabbit_url = rabbit_config[0].get('credentials').get('uri') + HEARTBEAT_INTERVAL
+    rabbit_url2 = rabbit_config[1].get('credentials').get('uri') + HEARTBEAT_INTERVAL if len(rabbit_config) > 1 else rabbit_url
     return rabbit_url, rabbit_url2
 
 
@@ -42,7 +45,7 @@ else:
         user=os.getenv('RABBITMQ_DEFAULT_USER', 'rabbit'),
         password=os.getenv('RABBITMQ_DEFAULT_PASS', 'rabbit'),
         vhost=os.getenv('RABBITMQ_DEFAULT_VHOST', '%2f')
-    )
+    ) + HEARTBEAT_INTERVAL
 
     RABBIT_URL2 = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
         hostname=os.getenv('RABBITMQ_HOST2', 'rabbit'),
@@ -50,7 +53,7 @@ else:
         user=os.getenv('RABBITMQ_DEFAULT_USER', 'rabbit'),
         password=os.getenv('RABBITMQ_DEFAULT_PASS', 'rabbit'),
         vhost=os.getenv('RABBITMQ_DEFAULT_VHOST', '%2f')
-    )
+    ) + HEARTBEAT_INTERVAL
 
 RABBIT_URLS = [RABBIT_URL, RABBIT_URL2]
 
