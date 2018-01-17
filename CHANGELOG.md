@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 3.4.0 2018-01-17
   - Add heartbeat interval to rabbit mq url
 
 ### 3.3.0 2017-11-21
