@@ -1,4 +1,5 @@
 ### Unreleased
+  - Send case_id to rrm-receipt queue if present in decrypted JSON
   - Import PrivatePublisher from app module rather than publisher module
 
 ### 3.4.0 2018-01-17
