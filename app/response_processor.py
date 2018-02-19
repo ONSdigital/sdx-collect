@@ -101,7 +101,7 @@ class ResponseProcessor:
 
         self.logger.unbind("user_id", "ru_ref", "tx_id")
 
-    def send_receipt(self, decrypted_json):
+    def make_receipt(self, decrypted_json):
         try:
             receipt_json = {
                 'tx_id': decrypted_json['tx_id'],
@@ -124,8 +124,12 @@ class ResponseProcessor:
             receipt_json['case_id'] = case_id
         except KeyError:
             # Don't do anything, as this survey originated from RRM
+            logger.debug("Received an rrm survey")
             pass
 
+        return receipt_json
+
+    def send_receipt(self, decrypted_json):
         if not decrypted_json.get("survey_id"):
             self.logger.error("No survey id")
             raise QuarantinableError
@@ -133,12 +137,12 @@ class ResponseProcessor:
             self.logger.info("Ignoring received CTP submission")
             return None
         else:
-
+            receipt = self.make_receipt(decrypted_json)
             try:
                 self.logger.info("About to publish receipt into rrm queue")
-                self.logger.debug(receipt_json)
+                self.logger.debug(receipt)
                 self.rrm_publisher.publish(
-                    dumps(receipt_json),
+                    dumps(receipt),
                     headers={'tx_id': decrypted_json['tx_id']},
                     secret=settings.SDX_COLLECT_SECRET)
             except PublishMessageError as e:
@@ -148,7 +152,6 @@ class ResponseProcessor:
         self.logger.info("Receipt published")
 
     def send_notification(self, survey_id):
-
         try:
             if survey_id == 'census':
                 self.logger.info("Ignoring received CTP submission")
