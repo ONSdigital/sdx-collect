@@ -228,8 +228,6 @@ class TestResponseProcessor(unittest.TestCase):
         self.rp.rrm_publisher.publish_message = MagicMock()
         self._process()
 
-        self._process()
-
         # Queue types
         self.rp.rrm_publisher.publish_message = Mock(side_effect=RRMQueue)
 
