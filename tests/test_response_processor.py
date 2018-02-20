@@ -15,13 +15,14 @@ from structlog import wrap_logger
 
 from app.helpers.exceptions import ClientError
 from app.response_processor import ResponseProcessor
-from tests.test_data import feedback_decrypted, invalid_decrypted, valid_decrypted
+from tests.test_data import feedback_decrypted, invalid_decrypted, valid_decrypted, valid_rm_decrypted
 from app import settings
 from app import session
 
 
 logger = wrap_logger(logging.getLogger(__name__))
 valid_json = json.loads(valid_decrypted)
+valid_rm_json = json.loads(valid_rm_decrypted)
 feedback = json.loads(feedback_decrypted)
 invalid = json.loads(invalid_decrypted)
 
@@ -200,7 +201,6 @@ class TestResponseProcessor(unittest.TestCase):
         self.rp.validate_survey = MagicMock()
         self.rp.store_survey = MagicMock()
         self.rp.send_notification = MagicMock()
-        # <send_receipt>
 
         # Bad key - none set (shouldn't occur as service will not start without key)
         settings.SDX_COLLECT_SECRET = None
@@ -228,8 +228,6 @@ class TestResponseProcessor(unittest.TestCase):
         self.rp.rrm_publisher.publish_message = MagicMock()
         self._process()
 
-        self._process()
-
         # Queue types
         self.rp.rrm_publisher.publish_message = Mock(side_effect=RRMQueue)
 
@@ -254,6 +252,36 @@ class TestResponseProcessor(unittest.TestCase):
 
         with self.assertRaises(QuarantinableError):
             self.rp.send_receipt(invalid_json)
+
+    def test_send_rm_receipt(self):
+        self.rp.decrypt_survey = MagicMock(return_value=valid_rm_json)
+        self.rp.validate_survey = MagicMock()
+        self.rp.store_survey = MagicMock()
+        self.rp.send_notification = MagicMock()
+
+        # Bad key - none set (shouldn't occur as service will not start without key)
+        settings.SDX_COLLECT_SECRET = None
+        with self.assertRaises(TypeError):
+            self._process()
+
+        # Subsequent tests expect valid key
+        settings.SDX_COLLECT_SECRET = "seB388LNHgxcuvAcg1pOV20_VR7uJWNGAznE0fOqKxg=".encode('ascii')
+
+        # rrm queue fail
+        with self.assertRaises(RetryableError):
+            self._process()
+
+        # rm publish ok
+        json_023 = valid_rm_json
+        json_023['survey_id'] = '023'
+        self.rp.rrm_publisher.publish_message = MagicMock()
+        self._process()
+
+        # Queue types
+        self.rp.rrm_publisher.publish_message = Mock(side_effect=RRMQueue)
+
+        with self.assertRaises(RRMQueue):
+            self.rp.send_receipt(valid_rm_json)
 
     def test_send_notification(self):
         self.rp.decrypt_survey = MagicMock(return_value=valid_json)
