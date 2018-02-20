@@ -125,7 +125,6 @@ class ResponseProcessor:
         except KeyError:
             # Don't do anything, as this survey originated from RRM
             logger.debug("Received an rrm survey")
-            pass
 
         return receipt_json
 
