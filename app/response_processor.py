@@ -70,36 +70,30 @@ class ResponseProcessor:
 
         self.logger = self.logger.bind(tx_id=self.tx_id)
 
-        response_type = str(decrypted_json.get("type"))
+        valid = self.validate_survey(decrypted_json)
 
-        try:
-            self.validate_survey(decrypted_json)
-        except ClientError:
-            # If the validation fails, the message is to be marked "invalid"
-            # and then stored. We don't then want to stop processing at this point.
-
+        if not valid:
+            self.logger.info("Invalid survey data, skipping receipting and downstream processing")
             decrypted_json['invalid'] = True
-            self.logger.info("Invalid survey data, skipping receipting")
-        else:
-            if response_type.find("feedback") == -1:
-                self.logger.info("Receipting survey")
-                self.send_receipt(decrypted_json)
-            else:
-                self.logger.info("Feedback survey, skipping receipting")
 
         self.store_survey(decrypted_json)
 
-        if 'invalid' in decrypted_json:
-            self.logger.error(
-                "Invalid survey response received, skipping notification")
+        if valid and self._requires_receipting(decrypted_json):
+            self.send_receipt(decrypted_json)
 
-        elif response_type.find("feedback") == -1:
-            self.send_notification(decrypted_json.get("survey_id"))
-
-        else:
-            self.logger.info("Feedback survey, skipping notification")
+        if valid and self._requires_downstream_processing(decrypted_json):
+            self.send_notification()
 
         self.logger.unbind("user_id", "ru_ref", "tx_id")
+
+    def _requires_receipting(self, decrypted_json):
+        if decrypted_json.get("survey_id") == "census":
+            self.logger.info("Skipping receipting", survey="census")
+            return False
+        elif self._is_feedback_survey(decrypted_json):
+            self.logger.info("Feedback survey, skipping receipting")
+            return False
+        return True
 
     def make_receipt(self, decrypted_json):
         try:
@@ -128,38 +122,48 @@ class ResponseProcessor:
 
         return receipt_json
 
+    def _requires_downstream_processing(self, decrypted_json):
+        if self._is_feedback_survey(decrypted_json):
+            self.logger.info("Feedback survey, skipping downstream processing")
+            return False
+        elif decrypted_json.get("version") == "0.0.2":
+            survey_id = decrypted_json.get("survey_id")
+            self.logger.info("Skipping downstream processing", survey_id=survey_id)
+            return False
+        return True
+
+    @staticmethod
+    def _is_feedback_survey(decrypted_json):
+        response_type = str(decrypted_json.get("type"))
+        return response_type.find("feedback") != -1
+
     def send_receipt(self, decrypted_json):
         if not decrypted_json.get("survey_id"):
             self.logger.error("No survey id")
             raise QuarantinableError
-        elif decrypted_json.get("survey_id") == "census":
-            self.logger.info("Ignoring received CTP submission")
-            return None
-        else:
-            receipt = self.make_receipt(decrypted_json)
-            try:
-                self.logger.info("About to publish receipt into rrm queue")
-                self.logger.debug(receipt)
-                self.rrm_publisher.publish(
-                    dumps(receipt),
-                    headers={'tx_id': decrypted_json['tx_id']},
-                    secret=settings.SDX_COLLECT_SECRET)
-            except PublishMessageError as e:
-                self.logger.error("Unsuccesful publish", error=e)
-                raise RetryableError
 
-        self.logger.info("Receipt published")
-
-    def send_notification(self, survey_id):
+        self.logger.info("Receipting survey")
+        receipt = self.make_receipt(decrypted_json)
         try:
-            if survey_id == 'census':
-                self.logger.info("Ignoring received CTP submission")
-            else:
-                self.logger.info("About to publish notification to queue")
-                self.notifications.publish_message(
-                    self.tx_id, headers={
-                        'tx_id': self.tx_id
-                    })
+            self.logger.info("About to publish receipt into rrm queue")
+            self.logger.debug(receipt)
+            self.rrm_publisher.publish(
+                dumps(receipt),
+                headers={'tx_id': decrypted_json['tx_id']},
+                secret=settings.SDX_COLLECT_SECRET)
+            self.logger.info("Receipt published")
+        except PublishMessageError as e:
+            self.logger.error("Unsuccesful publish", error=e)
+            raise RetryableError
+
+    def send_notification(self):
+        self.logger.info("Sending to downstream")
+        try:
+            self.logger.info("About to publish notification to queue")
+            self.notifications.publish_message(
+                self.tx_id, headers={
+                    'tx_id': self.tx_id
+                })
         except PublishMessageError as e:
             self.logger.error("Unable to queue response notification", error=e)
             raise RetryableError
@@ -180,9 +184,15 @@ class ResponseProcessor:
 
     def validate_survey(self, decrypted_json):
         self.logger.info("Validating survey")
-        self.response_ok(
-            self.remote_call(settings.SDX_VALIDATE_URL, json=decrypted_json))
+        try:
+            self.response_ok(self.remote_call(settings.SDX_VALIDATE_URL, json=decrypted_json))
+        except ClientError:
+            # If the validation fails, the message is to be marked "invalid"
+            # and then stored. We don't then want to stop processing at this point.
+            return False
+
         self.logger.info("Survey validation successful")
+        return True
 
     def store_survey(self, decrypted_json):
         self.logger.info("Storing survey")

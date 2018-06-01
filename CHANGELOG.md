@@ -1,4 +1,5 @@
 ### Unreleased
+  - Support LMS test 1 by skipping downstream
 
 ### 3.5.0 2018-03-06
   - Send case_id to rrm-receipt queue if present in decrypted JSON

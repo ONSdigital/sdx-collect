@@ -100,3 +100,37 @@ feedback_decrypted = '''
   }
 }
 '''
+
+valid_census_decrypted = '''
+{
+  "submitted_at": "2018-06-01T13:31:39.953654+00:00",
+  "survey_id": "census",
+  "case_ref": "1000000000000001",
+  "data": [
+    {
+      "answer_instance": 0,
+      "value": "Yes",
+      "answer_id": "address-check-answer",
+      "block_id": "address-check-block",
+      "group_id": "about-household-group",
+      "group_instance": 0
+    }
+  ],
+  "version": "0.0.2",
+  "metadata": {
+    "ref_period_end_date": "2018-05-31",
+    "ru_ref": "Test Data",
+    "ref_period_start_date": "2018-05-01",
+    "user_id": "UNKNOWN"
+  },
+  "origin": "uk.gov.ons.edc.eq",
+  "collection": {
+    "instrument_id": "1",
+    "period": "201605",
+    "exercise_sid": "789"
+  },
+  "type": "uk.gov.ons.edc.eq:surveyresponse",
+  "tx_id": "9660044e-e756-4afd-bb23-a3cf39957ba1",
+  "case_id": "4c0bc9ec-06d4-4f66-88b6-2e42b79e17b3"
+}
+'''
