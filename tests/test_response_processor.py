@@ -13,15 +13,15 @@ from requests.packages.urllib3.exceptions import MaxRetryError
 from sdc.rabbit.exceptions import RetryableError, QuarantinableError
 from structlog import wrap_logger
 
-from app.helpers.exceptions import ClientError
 from app.response_processor import ResponseProcessor
-from tests.test_data import feedback_decrypted, invalid_decrypted, valid_decrypted, valid_rm_decrypted
+from tests.test_data import feedback_decrypted, invalid_decrypted, valid_decrypted, valid_rm_decrypted, valid_census_decrypted
 from app import settings
 from app import session
 
 
 logger = wrap_logger(logging.getLogger(__name__))
 valid_json = json.loads(valid_decrypted)
+valid_census_json = json.loads(valid_census_decrypted)
 valid_rm_json = json.loads(valid_rm_decrypted)
 feedback = json.loads(feedback_decrypted)
 invalid = json.loads(invalid_decrypted)
@@ -135,6 +135,7 @@ class TestResponseProcessor(unittest.TestCase):
 
             # receipt is not called
             self.assertFalse(self.rp.send_receipt.called)
+
             # store is called
             self.assertTrue(self.rp.store_survey.called)
 
@@ -153,9 +154,10 @@ class TestResponseProcessor(unittest.TestCase):
             # 200 - ok
             r.status_code = 200
             self._process()
-            # receipt is not called
+            # receipt is called
             self.assertTrue(self.rp.send_receipt.called)
-            # but store is
+
+            # and store is
             self.assertTrue(self.rp.store_survey.called)
 
     def test_store(self):
@@ -215,15 +217,15 @@ class TestResponseProcessor(unittest.TestCase):
             self._process()
 
         # # rrm queue fail census
-        census_json = valid_json
+        census_json = copy.deepcopy(valid_json)
         census_json['survey_id'] = 'census'
         with self.assertLogs(level='INFO') as cm:
-            self.rp.send_receipt(census_json)
+            self.rp._requires_receipting(census_json)
 
-        self.assertIn("Ignoring received CTP submission", cm.output[0])
+        self.assertIn("Skipping receipting", cm.output[0])
 
         # rrm publish ok
-        json_023 = valid_json
+        json_023 = copy.deepcopy(valid_json)
         json_023['survey_id'] = '023'
         self.rp.rrm_publisher.publish_message = MagicMock()
         self._process()
@@ -234,13 +236,13 @@ class TestResponseProcessor(unittest.TestCase):
         with self.assertRaises(RRMQueue):
             self.rp.send_receipt(valid_json)
 
-        census_json = valid_json
+        census_json = copy.deepcopy(valid_json)
         census_json['survey_id'] = 'census'
 
         with self.assertLogs(level='INFO') as cm:
-            self.rp.send_receipt(census_json)
+            self.rp._requires_receipting(census_json)
 
-        self.assertIn("Ignoring received CTP submission", cm.output[0])
+        self.assertIn("Skipping receipting", cm.output[0])
 
         invalid_json = copy.deepcopy(valid_json)
         invalid_json['survey_id'] = None
@@ -296,13 +298,25 @@ class TestResponseProcessor(unittest.TestCase):
         with self.assertRaises(RetryableError):
             self._process()
 
+    def test_send_notification_census(self):
+        self.rp.decrypt_survey = MagicMock(return_value=valid_census_json)
+        self.rp.validate_survey = MagicMock()
+        self.rp.store_survey = MagicMock()
+        self.rp.send_receipt = MagicMock()
+
         # # census notifications logged
         census_json = valid_json
         census_json['survey_id'] = 'census'
         with self.assertLogs(level='INFO') as cm:
             self._process()
 
-        self.assertIn("Ignoring received CTP submission", cm.output[1])
+        self.assertIn("Skipping receipting", cm.output[0])
+
+    def test_send_notification_cora(self):
+        self.rp.decrypt_survey = MagicMock(return_value=valid_json)
+        self.rp.validate_survey = MagicMock()
+        self.rp.store_survey = MagicMock()
+        self.rp.send_receipt = MagicMock()
 
         # # cora notifications queue fail census
         cora_json = valid_json
@@ -316,8 +330,14 @@ class TestResponseProcessor(unittest.TestCase):
         self.rp.decrypt_survey = MagicMock(return_value=valid_json)
 
         # # passes notifications invalid survey
-        self.rp.validate_survey = MagicMock(side_effect=ClientError)
+        self.rp.validate_survey = MagicMock(return_value=False)
         self._process()
+
+    def test_send_notification_success(self):
+        self.rp.decrypt_survey = MagicMock(return_value=valid_json)
+        self.rp.validate_survey = MagicMock()
+        self.rp.store_survey = MagicMock()
+        self.rp.send_receipt = MagicMock()
 
         # survey notifications queue publish ok
         json_023 = valid_json
@@ -377,13 +397,13 @@ class TestResponseProcessor(unittest.TestCase):
             self._process()
 
         self.assertIn("Feedback survey, skipping receipting", cm.output[0])
-        self.assertIn("Feedback survey, skipping notification", cm.output[1])
+        self.assertIn("Feedback survey, skipping downstream processing", cm.output[1])
 
     def test_invalid_and_not_feedback(self):
         invalid_json = copy.deepcopy(valid_json)
 
         self.rp.decrypt_survey = MagicMock(return_value=invalid_json)
-        self.rp.validate_survey = MagicMock(side_effect=ClientError)
+        self.rp.validate_survey = MagicMock(return_value=False)
         self.rp.store_survey = MagicMock()
 
         with self.assertLogs(level="INFO") as cm:
