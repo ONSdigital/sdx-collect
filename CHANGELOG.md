@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 3.6.0 2018-06-20
   - Support LMS test 1 by skipping downstream
 
 ### 3.5.0 2018-03-06
