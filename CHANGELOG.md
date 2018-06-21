@@ -1,4 +1,5 @@
 ### Unreleased
+  - Remove second rabbit host.
 
 ### 3.6.0 2018-06-20
   - Support LMS test 1 by skipping downstream

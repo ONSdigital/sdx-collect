@@ -32,12 +32,11 @@ def parse_vcap_services():
     rabbit_config = parsed_vcap_services.get('rabbitmq')
 
     rabbit_url = rabbit_config[0].get('credentials').get('uri') + HEARTBEAT_INTERVAL
-    rabbit_url2 = rabbit_config[1].get('credentials').get('uri') + HEARTBEAT_INTERVAL if len(rabbit_config) > 1 else rabbit_url
-    return rabbit_url, rabbit_url2
+    return rabbit_url
 
 
 if os.getenv("CF_DEPLOYMENT", False):
-    RABBIT_URL, RABBIT_URL2 = parse_vcap_services()
+    RABBIT_URL = parse_vcap_services()
 else:
     RABBIT_URL = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
         hostname=os.getenv('RABBITMQ_HOST', 'rabbit'),
