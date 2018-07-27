@@ -1,4 +1,5 @@
 ### Unreleased
+  - Update dependencies and remove unused ones
 
 ### 3.7.0 2018-06-27
   - Remove second rabbit host.
