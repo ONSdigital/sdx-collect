@@ -46,8 +46,8 @@ class ResponseProcessor:
                 return 'SDX-DECRYPT'
             elif 'validate' in parts:
                 return 'SDX-VALIDATE'
-        except AttributeError as e:
-            self.logger.error("No valid service name", exception=e)
+        except AttributeError:
+            self.logger.exception("No valid service name")
 
     def process(self, msg, tx_id=None):
         decrypted_json = self.decrypt_survey(msg)
@@ -59,7 +59,7 @@ class ResponseProcessor:
         if not tx_id:
             self.tx_id = decrypted_json.get('tx_id')
         elif tx_id != decrypted_json.get('tx_id'):
-            logger.info(
+            self.logger.info(
                 'tx_ids from decrypted_json and message header do not match.' +
                 ' Rejecting message',
                 decrypted_tx_id=decrypted_json.get('tx_id'),
@@ -146,7 +146,7 @@ class ResponseProcessor:
         receipt = self.make_receipt(decrypted_json)
         try:
             self.logger.info("About to publish receipt into rrm queue")
-            self.logger.debug(receipt)
+            self.logger.debug(str(receipt))
             self.rrm_publisher.publish(
                 dumps(receipt),
                 headers={'tx_id': decrypted_json['tx_id']},
