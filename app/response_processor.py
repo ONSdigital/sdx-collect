@@ -108,9 +108,8 @@ class ResponseProcessor:
                     'user_id': decrypted_json['metadata']['user_id']
                 }
             }
-        except KeyError as e:
-            self.logger.error(
-                "Unsuccesful publish, missing key values", error=e)
+        except KeyError:
+            self.logger.exception("Unsuccesful publish, missing key values")
             raise QuarantinableError
 
         try:
@@ -152,8 +151,8 @@ class ResponseProcessor:
                 headers={'tx_id': decrypted_json['tx_id']},
                 secret=settings.SDX_COLLECT_SECRET)
             self.logger.info("Receipt published")
-        except PublishMessageError as e:
-            self.logger.error("Unsuccesful publish", error=e)
+        except PublishMessageError:
+            self.logger.exception("Unsuccesful publish")
             raise RetryableError
 
     def send_notification(self):
@@ -164,8 +163,8 @@ class ResponseProcessor:
                 self.tx_id, headers={
                     'tx_id': self.tx_id
                 })
-        except PublishMessageError as e:
-            self.logger.error("Unable to queue response notification", error=e)
+        except PublishMessageError:
+            self.logger.exception("Unable to queue response notification")
             raise RetryableError
 
     def decrypt_survey(self, encrypted_survey):
@@ -263,7 +262,7 @@ class ResponseProcessor:
             return
 
         elif 400 <= res.status_code < 500:
-            res_logger.info(
+            res_logger.error(
                 "Returned from service",
                 response="client error",
                 service=service)
