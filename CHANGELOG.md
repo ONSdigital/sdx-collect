@@ -1,4 +1,5 @@
 ### Unreleased
+  - Changed log level on responses with a 4xx status from INFO to ERROR
 
 ### 3.8.0 2018-08-15
   - Update dependencies and remove unused ones
