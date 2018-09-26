@@ -74,6 +74,7 @@ class TestResponseProcessor(unittest.TestCase):
         self.rp.store_survey = MagicMock()
         self.rp.send_receipt = MagicMock()
         self.rp.send_notification = MagicMock()
+        self.rp.send_to_dap_queue = MagicMock()
 
         self.rp_invalid.validate_survey = MagicMock()
         self.rp_invalid.store_survey = MagicMock()
@@ -183,6 +184,7 @@ class TestResponseProcessor(unittest.TestCase):
 
             # 200 - ok
             r.status_code = 200
+            r.encoding = 'utf-8'
             self._process()
 
     def test_tx_id_set(self):
@@ -345,6 +347,25 @@ class TestResponseProcessor(unittest.TestCase):
         json_023.pop('invalid', None)
         self.rp.notifications.publish_message = MagicMock()
         self.rp.validate_survey = MagicMock()
+        self._process()
+
+    @responses.activate
+    def test_send_to_dap_queue(self):
+        url = "http://sdx-store:5000/responses/0f534ffc-9442-414c-b39f-a756b4adc6cb"
+        responses.add(responses.GET, url,
+                      headers={'Content-MD5': 'abc123',
+                               'Content-Length': '123',
+                               'Content-Type': 'application/json'},
+                      status=200)
+        lms_json = copy.deepcopy(valid_json)
+        lms_json['survey_id'] = 'lms'
+        lms_json['version'] = '0.0.2'
+
+        self.rp.decrypt_survey = MagicMock(return_value=lms_json)
+        self.rp.validate_survey = MagicMock(return_value=True)
+        self.rp.store_survey = MagicMock()
+        self.rp.send_receipt = MagicMock()
+        self.rp.dap.publish_message = MagicMock()
         self._process()
 
     @responses.activate

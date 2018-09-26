@@ -6,5 +6,5 @@ build:
 test:
 	pip3 install -r test_requirements.txt
 	flake8 --exclude ./lib/*
-	pytest -v --cov app
+	pytest -v --cov-report term-missing --cov app
 

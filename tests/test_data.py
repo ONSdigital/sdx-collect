@@ -7,6 +7,7 @@ valid_decrypted = '''
   "version": "0.0.1",
   "origin": "uk.gov.ons.edc.eq",
   "survey_id": "023",
+  "case_id": "58506af6-b484-48e9-bda7-3e4e24205545",
   "collection": {
     "exercise_sid": "hfjdskf",
     "instrument_id": "0102",
@@ -32,7 +33,7 @@ valid_rm_decrypted = '''
   "version": "0.0.1",
   "origin": "uk.gov.ons.edc.eq",
   "survey_id": "023",
-  "case_id": "case_id",
+  "case_id": "58506af6-b484-48e9-bda7-3e4e24205545",
   "collection": {
     "exercise_sid": "hfjdskf",
     "instrument_id": "0102",
@@ -58,6 +59,7 @@ invalid_decrypted = '''
   "version": "0.0.1",
   "origin": "uk.gov.ons.edc.eq",
   "survey_id": 1,
+  "case_id": "58506af6-b484-48e9-bda7-3e4e24205545",
   "collection": {
     "exercise_sid": "hfjdskf",
     "instrument_id": "0102",
