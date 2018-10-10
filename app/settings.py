@@ -20,6 +20,8 @@ RABBIT_EXCHANGE = 'message'
 RABBIT_RRM_RECEIPT_QUEUE = 'rrm_receipt'
 HEARTBEAT_INTERVAL = "?heartbeat_interval=5"
 
+DAP_SOURCE_NAME = os.getenv("DAP_SOURCE_NAME", "sdx_development")
+
 
 SDX_COLLECT_SECRET = os.getenv("SDX_COLLECT_SECRET")
 if SDX_COLLECT_SECRET is not None:
@@ -49,3 +51,4 @@ else:
 RABBIT_URLS = [RABBIT_URL]
 
 RABBIT_SURVEY_QUEUE = 'sdx-survey-notification-durable'
+RABBIT_DAP_QUEUE = 'sdx_dap'

@@ -10,7 +10,7 @@ from app.response_processor import ResponseProcessor
 import app.settings
 
 
-def run():
+def run():  # pragma: no cover
     logging.basicConfig(format=app.settings.LOGGING_FORMAT,
                         datefmt="%Y-%m-%dT%H:%M:%S",
                         level=app.settings.LOGGING_LEVEL)

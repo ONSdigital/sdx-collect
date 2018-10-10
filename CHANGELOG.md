@@ -1,4 +1,5 @@
 ### Unreleased
+  - Queue message to be consumed by minifi for LMS surveys
 
 ### 3.8.0 2018-08-15
   - Update dependencies and remove unused ones
