@@ -172,7 +172,7 @@ class ResponseProcessor:
                 decrypted_json['collection']['period'],
                 decrypted_json['metadata']['ru_ref'])
             dap_json = {
-                'version': 'v1',
+                'version': '1',
                 'files': [{
                     'name': '{}.json'.format(decrypted_json['tx_id']),
                     'URL': '{}/{}'.format(settings.SDX_RESPONSES_URL, decrypted_json['tx_id']),
@@ -185,7 +185,7 @@ class ResponseProcessor:
                 'description': description,
                 'iterationL1': decrypted_json['collection']['period'],
                 'dataset': decrypted_json['survey_id'],
-                'schemaversion': "1"
+                'schemaversion': '1'
             }
         except KeyError:
             self.logger.exception("Unsuccesful publish, missing key values")
