@@ -151,6 +151,9 @@ class ResponseProcessor:
         return receipt_json
 
     def _requires_dap_processing(self, decrypted_json):
+        if self._is_feedback_survey(decrypted_json):
+            self.logger.info("Feedback survey, skipping sending to DAP")
+            return False
         if decrypted_json.get("survey_id") == "lms":
             self.logger.info("LMS survey, sending to DAP", survey_id=decrypted_json.get("survey_id"))
             return True
