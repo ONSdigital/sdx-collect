@@ -1,5 +1,6 @@
 ### Unreleased
   - Fix bug where LMS feedback surveys were trying to be picked up by minifi
+  - Add version log on startup
 
 ### 3.9.0 2018-10-22
   - Queue message to be consumed by minifi for LMS surveys
