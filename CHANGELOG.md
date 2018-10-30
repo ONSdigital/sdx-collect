@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 3.9.1 2018-10-30
   - Fix bug where LMS feedback surveys were trying to be picked up by minifi
   - Add version log on startup
 
