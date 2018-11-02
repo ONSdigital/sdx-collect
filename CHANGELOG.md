@@ -1,4 +1,5 @@
 ### Unreleased
+  - Set D-Trades to go to DAP
 
 ### 3.9.1 2018-10-30
   - Fix bug where LMS feedback surveys were trying to be picked up by minifi
