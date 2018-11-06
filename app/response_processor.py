@@ -69,7 +69,7 @@ class ResponseProcessor:
         valid = self.validate_survey(decrypted_json)
 
         if not valid:
-            self.logger.info("Invalid survey data, skipping receipting and downstream processing")
+            self.logger.error("Invalid survey data, skipping receipting and downstream processing")
             decrypted_json['invalid'] = True
 
         self.store_survey(decrypted_json)
