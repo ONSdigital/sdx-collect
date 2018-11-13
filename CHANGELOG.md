@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 3.10.0 2018-11-13
   - Set D-Trades to go to DAP
 
 ### 3.9.1 2018-10-30
