@@ -218,14 +218,6 @@ class TestResponseProcessor(unittest.TestCase):
         with self.assertRaises(RetryableError):
             self._process()
 
-        # # rrm queue fail census
-        census_json = copy.deepcopy(valid_json)
-        census_json['survey_id'] = 'census'
-        with self.assertLogs(level='INFO') as cm:
-            self.rp._requires_receipting(census_json)
-
-        self.assertIn("Skipping receipting", cm.output[0])
-
         # rrm publish ok
         json_023 = copy.deepcopy(valid_json)
         json_023['survey_id'] = '023'
@@ -237,14 +229,6 @@ class TestResponseProcessor(unittest.TestCase):
 
         with self.assertRaises(RRMQueue):
             self.rp.send_receipt(valid_json)
-
-        census_json = copy.deepcopy(valid_json)
-        census_json['survey_id'] = 'census'
-
-        with self.assertLogs(level='INFO') as cm:
-            self.rp._requires_receipting(census_json)
-
-        self.assertIn("Skipping receipting", cm.output[0])
 
         invalid_json = copy.deepcopy(valid_json)
         invalid_json['survey_id'] = None
@@ -305,14 +289,17 @@ class TestResponseProcessor(unittest.TestCase):
         self.rp.validate_survey = MagicMock()
         self.rp.store_survey = MagicMock()
         self.rp.send_receipt = MagicMock()
-
+        self.rp.dap.publish_message = MagicMock()
+        self.rp.send_to_dap_queue = MagicMock()
+        self.rp._requires_receipting = MagicMock()
         # # census notifications logged
         census_json = valid_json
         census_json['survey_id'] = 'census'
         with self.assertLogs(level='INFO') as cm:
             self._process()
 
-        self.assertIn("Skipping receipting", cm.output[0])
+        self.assertTrue(self.rp.send_to_dap_queue.called)
+        self.assertNotIn("Skipping receipting", cm.output[0])
 
     def test_send_notification_cora(self):
         self.rp.decrypt_survey = MagicMock(return_value=valid_json)
@@ -358,7 +345,7 @@ class TestResponseProcessor(unittest.TestCase):
                                'Content-Type': 'application/json'},
                       status=200)
         lms_json = copy.deepcopy(valid_json)
-        lms_json['survey_id'] = 'lms'
+        lms_json['survey_id'] = 'census'
         lms_json['version'] = '0.0.2'
 
         self.rp.decrypt_survey = MagicMock(return_value=lms_json)

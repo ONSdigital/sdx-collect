@@ -122,10 +122,7 @@ class ResponseProcessor:
         return response
 
     def _requires_receipting(self, decrypted_json):
-        if decrypted_json.get("survey_id") == "census":
-            self.logger.info("Skipping receipting", survey="census")
-            return False
-        elif self._is_feedback_survey(decrypted_json):
+        if self._is_feedback_survey(decrypted_json):
             self.logger.info("Feedback survey, skipping receipting")
             return False
         return True
@@ -154,8 +151,8 @@ class ResponseProcessor:
         if self._is_feedback_survey(decrypted_json):
             self.logger.info("Feedback survey, skipping sending to DAP")
             return False
-        if decrypted_json.get("survey_id") in ("lms", "281"):  # LMS and D-Trades
-            self.logger.info("LMS survey, sending to DAP", survey_id=decrypted_json.get("survey_id"))
+        if decrypted_json.get("survey_id") in ("lms", "281", "census"):  # LMS, D-Trades, census
+            self.logger.info("Sending to DAP", survey_id=decrypted_json.get("survey_id"))
             return True
         return False
 
