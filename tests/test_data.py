@@ -136,3 +136,24 @@ valid_census_decrypted = '''
   "case_id": "4c0bc9ec-06d4-4f66-88b6-2e42b79e17b3"
 }
 '''
+
+dap_manifest = '''
+{
+    "version":1,
+    "files":[
+        {
+            "sizeBytes":7257,
+            "md5sum":"9d7bf6f4dc2c2029bc12c9a60e2d9438",
+            "name":"9660044e-e756-4afd-bb23-a3cf39957ba1.json",
+            "URL":"http://sdx-store:5000/responses/9660044e-e756-4afd-bb23-a3cf39957ba1"
+     }
+    ],
+    "sensitivity":"High",
+    "sourceName":"<ENVIRONMENT>",
+    "manifestCreated":"2018-09-19T13:56:59.753Z",
+    "description":"census survey response for period 2021 sample unit 1",
+    "iterationL1":"household",
+    "dataset":"census",
+    "schemaVersion":1
+}
+'''
