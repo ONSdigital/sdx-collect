@@ -1,8 +1,6 @@
 flake8==3.4.1
 mock==2.0.0
-six==1.10.0
 structlog==17.2.0
 responses==0.9.0
-cryptography==2.3
 pytest==3.6.3
 pytest-cov==2.5.1
