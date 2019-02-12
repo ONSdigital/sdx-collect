@@ -1,4 +1,5 @@
 ### Unreleased
+  - Update packages to fix security issue
   - Set census surveys to go to DAP and be receipted
 
 ### 3.10.0 2018-11-13
