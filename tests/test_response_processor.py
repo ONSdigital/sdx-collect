@@ -14,7 +14,7 @@ from sdc.rabbit.exceptions import RetryableError, QuarantinableError
 from structlog import wrap_logger
 
 from app.response_processor import ResponseProcessor
-from tests.test_data import feedback_decrypted, invalid_decrypted, valid_decrypted, valid_rm_decrypted, valid_census_decrypted
+from tests.test_data import feedback_decrypted, invalid_decrypted, valid_decrypted, valid_rm_decrypted, valid_census_decrypted, dap_manifest
 from app import settings
 from app import session
 
@@ -25,6 +25,7 @@ valid_census_json = json.loads(valid_census_decrypted)
 valid_rm_json = json.loads(valid_rm_decrypted)
 feedback = json.loads(feedback_decrypted)
 invalid = json.loads(invalid_decrypted)
+dap_manifest = json.loads(dap_manifest)
 
 
 class RRMQueue(Exception):
@@ -246,6 +247,7 @@ class TestResponseProcessor(unittest.TestCase):
         self.rp.validate_survey = MagicMock()
         self.rp.store_survey = MagicMock()
         self.rp.send_notification = MagicMock()
+        self.rp.create_dtrades_submission_and_send_to_dap = MagicMock()
 
         # Bad key - none set (shouldn't occur as service will not start without key)
         settings.SDX_COLLECT_SECRET = None
@@ -276,6 +278,7 @@ class TestResponseProcessor(unittest.TestCase):
         self.rp.validate_survey = MagicMock()
         self.rp.store_survey = MagicMock()
         self.rp.send_receipt = MagicMock()
+        self.rp.create_dtrades_submission_and_send_to_dap = MagicMock()
 
         # Subsequent tests expect valid key
         settings.SDX_COLLECT_SECRET = "seB388LNHgxcuvAcg1pOV20_VR7uJWNGAznE0fOqKxg=".encode('ascii')
@@ -329,7 +332,7 @@ class TestResponseProcessor(unittest.TestCase):
         self.rp.send_receipt = MagicMock()
 
         # survey notifications queue publish ok
-        json_023 = valid_json
+        json_023 = copy.deepcopy(valid_json)
         json_023['survey_id'] = '023'
         json_023.pop('invalid', None)
         self.rp.notifications.publish_message = MagicMock()
@@ -354,6 +357,27 @@ class TestResponseProcessor(unittest.TestCase):
         self.rp.send_receipt = MagicMock()
         self.rp.dap.publish_message = MagicMock()
         self._process()
+
+    @responses.activate
+    def test_rsi_survey_duplication(self):
+        """Test that rsi survey gets a duplicated dtrades survey created that gets sent to the dap queue"""
+        rsi_json = copy.deepcopy(valid_json)
+        rsi_json['survey_id'] = '023'
+
+        self.rp.decrypt_survey = MagicMock(return_value=rsi_json)
+        self.rp.validate_survey = MagicMock(return_value=True)
+        self.rp.store_survey = MagicMock()
+        self.rp.send_receipt = MagicMock()
+        self.rp.dap.publish_message = MagicMock()
+        self.rp.make_dap_data = MagicMock(return_value=dap_manifest)
+        self.rp.send_to_dap_queue = MagicMock()
+        self.rp.send_notification = MagicMock()
+        self._process()
+
+        # 2 surveys (the original rsi and the duplicated dtrade should be stored)
+        assert self.rp.store_survey.call_count == 2
+        assert self.rp.send_to_dap_queue.call_count == 1
+        assert self.rp.send_notification.call_count == 1
 
     @responses.activate
     def test_remote_call_get(self):
@@ -404,8 +428,9 @@ class TestResponseProcessor(unittest.TestCase):
         with self.assertLogs(level="INFO") as cm:
             self._process()
 
-        self.assertIn("Feedback survey, skipping receipting", cm.output[0])
-        self.assertIn("Feedback survey, skipping downstream processing", cm.output[1])
+        self.assertIn("Feedback survey, skipping creation of dtrades submission for dap", cm.output[0])
+        self.assertIn("Feedback survey, skipping receipting", cm.output[1])
+        self.assertIn("Feedback survey, skipping downstream processing", cm.output[2])
 
     def test_invalid_and_not_feedback(self):
         invalid_json = copy.deepcopy(valid_json)

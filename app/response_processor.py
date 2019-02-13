@@ -1,7 +1,9 @@
+import copy
 from datetime import datetime
 from json import dumps
 import logging
 import os
+import uuid
 
 from requests.packages.urllib3.exceptions import MaxRetryError
 from sdc.rabbit import QueuePublisher
@@ -74,6 +76,9 @@ class ResponseProcessor:
 
         self.store_survey(decrypted_json)
 
+        if self._requires_dtrade_submission_sent_to_dap(decrypted_json):
+            self.create_dtrades_submission_and_send_to_dap(decrypted_json, valid)
+
         if valid and self._requires_receipting(decrypted_json):
             self.send_receipt(decrypted_json)
 
@@ -108,6 +113,43 @@ class ResponseProcessor:
 
         self.logger.info("Survey validation successful")
         return True
+
+    def _requires_dtrade_submission_sent_to_dap(self, decrypted_json):
+        if decrypted_json.get('survey_id') != '023':
+            self.logger.info("Non-rsi survey, skipping creation of dtrades submission for dap")
+            return False
+        elif self._is_feedback_survey(decrypted_json):
+            self.logger.info("Feedback survey, skipping creation of dtrades submission for dap")
+            return False
+        return True
+
+    def create_dtrades_submission_and_send_to_dap(self, decrypted_json, valid):
+        """
+        RSI submissions have a special requirement to go downstream as an RSI survey but go to DAP
+        as a Dtrades survey.  To do this, we take a fresh copy the submission, change the survey_id
+        and generate a new tx_id for it.  This way, we can have 2 seperate submissions in sdx-store that
+        represent the same submission if we need to look at them for whatever reason.
+
+        Because the data sent is identical, we don't have to pass it to sdx-validate.  Also, because we know
+        what this duplicate submission is for, we don't have to do a check to see if it needs to go to dap.  However,
+        if the submission is invalid, we'll store it but not send it to dap.
+        """
+        self.logger.info("rsi submission detected, creating a dtrades submission to send to dap")
+        dtrades_submission = copy.deepcopy(decrypted_json)
+        dtrades_submission['survey_id'] = '281'
+        dtrades_tx_id = str(uuid.uuid4())
+        dtrades_submission['tx_id'] = dtrades_tx_id
+
+        # Need to bind the new tx_id so we can search for this new submission if something goes wrong
+        self.logger = self.logger.bind(tx_id=dtrades_tx_id)
+        self.store_survey(dtrades_submission)
+        if valid:
+            self.send_to_dap_queue(dtrades_submission)
+        else:
+            self.logger.info("Invalid survey data, skipping sending to dap")
+
+        # Need to rebind the tx_id of the original submission now that we're done
+        self.logger = self.logger.bind(tx_id=self.tx_id)
 
     def store_survey(self, decrypted_json):
         self.logger.info("Storing survey")

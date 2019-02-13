@@ -1,4 +1,5 @@
 ### Unreleased
+  - RSI submissions (023) will have a duplicate Dtrades (281) submission sent to DAP
   - Update packages to fix security issue
 
 ### 3.11.0 2019-02-08
