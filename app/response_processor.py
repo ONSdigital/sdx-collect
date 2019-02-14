@@ -300,7 +300,7 @@ class ResponseProcessor:
             self.logger.info("Publishing data to dap queue")
             self.dap.publish_message(
                 dumps(message),
-                headers={'tx_id': self.tx_id})
+                headers={'tx_id': decrypted_json['tx_id']})
         except PublishMessageError:
             self.logger.exception("Failed to publish to dap queue")
             raise RetryableError
