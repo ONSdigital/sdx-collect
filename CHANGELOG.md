@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 3.11.1 2019-02-19
   - Update packages to fix security issue
 
 ### 3.11.0 2019-02-08
