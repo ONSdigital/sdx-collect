@@ -151,7 +151,7 @@ class ResponseProcessor:
         if self._is_feedback_survey(decrypted_json):
             self.logger.info("Feedback survey, skipping sending to DAP")
             return False
-        if decrypted_json.get("survey_id") in ("lms", "281", "census"):  # LMS, D-Trades, census
+        if decrypted_json.get("survey_id") in ["023", "281", "lms", "census"]:  # RSI, Dtrades
             self.logger.info("Sending to DAP", survey_id=decrypted_json.get("survey_id"))
             return True
         return False
