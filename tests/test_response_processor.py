@@ -241,10 +241,13 @@ class TestResponseProcessor(unittest.TestCase):
         with self.assertRaises(QuarantinableError):
             self.rp.send_receipt(invalid_json)
 
+        assert self.rp.send_notification.call_count == 1
+
     def test_send_rm_receipt(self):
         self.rp.decrypt_survey = MagicMock(return_value=valid_rm_json)
         self.rp.validate_survey = MagicMock()
         self.rp.store_survey = MagicMock()
+        self.rp.send_to_dap_queue = MagicMock()
         self.rp.send_notification = MagicMock()
 
         # Bad key - none set (shouldn't occur as service will not start without key)
@@ -270,6 +273,9 @@ class TestResponseProcessor(unittest.TestCase):
 
         with self.assertRaises(RRMQueue):
             self.rp.send_receipt(valid_rm_json)
+
+        assert self.rp.send_to_dap_queue.call_count == 1
+        assert self.rp.send_notification.call_count == 1
 
     def test_send_notification(self):
         self.rp.decrypt_survey = MagicMock(return_value=valid_json)
@@ -329,7 +335,7 @@ class TestResponseProcessor(unittest.TestCase):
         self.rp.send_receipt = MagicMock()
 
         # survey notifications queue publish ok
-        json_023 = valid_json
+        json_023 = copy.deepcopy(valid_json)
         json_023['survey_id'] = '023'
         json_023.pop('invalid', None)
         self.rp.notifications.publish_message = MagicMock()

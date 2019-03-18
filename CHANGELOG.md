@@ -1,4 +1,5 @@
 ### Unreleased
+  - Set RSI to go to DAP
 
 ### 3.11.1 2019-02-19
   - Update packages to fix security issue
