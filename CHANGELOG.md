@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 3.12.0 2019-03-25
   - Set RSI to go to DAP
 
 ### 3.11.1 2019-02-19
