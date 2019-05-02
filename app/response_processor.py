@@ -47,6 +47,9 @@ class ResponseProcessor:
             self.logger.exception("No valid service name")
 
     def process(self, msg, tx_id=None):
+        # Bind the tx_id from the rabbit message header as we don't have access to the one in the survey yet.
+        self.logger = self.logger.bind(tx_id=tx_id)
+
         decrypted_json = self.decrypt_survey(msg)
 
         metadata = decrypted_json.get('metadata', {})
@@ -63,8 +66,6 @@ class ResponseProcessor:
             raise QuarantinableError
         else:
             self.tx_id = tx_id
-
-        self.logger = self.logger.bind(tx_id=self.tx_id)
 
         valid = self.validate_survey(decrypted_json)
 

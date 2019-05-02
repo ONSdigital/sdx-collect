@@ -1,4 +1,5 @@
 ### Unreleased
+  - Fix bug where tx_id from previous submission was bound to the logger before decryption was done
 
 ### 3.12.0 2019-03-25
   - Set RSI to go to DAP
