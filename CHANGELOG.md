@@ -1,5 +1,6 @@
 ### Unreleased
   - Fix bug where tx_id from previous submission was bound to the logger before decryption was done
+  - Update urllib3 to fix security issue
 
 ### 3.12.0 2019-03-25
   - Set RSI to go to DAP
