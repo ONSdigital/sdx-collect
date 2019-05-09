@@ -47,11 +47,13 @@ class ResponseProcessor:
             self.logger.exception("No valid service name")
 
     def process(self, msg, tx_id=None):
+        # Bind the tx_id from the rabbit message header as we don't have access to the one in the survey yet.
+        self.logger = self.logger.bind(tx_id=tx_id)
+
         decrypted_json = self.decrypt_survey(msg)
 
         metadata = decrypted_json.get('metadata', {})
-        self.logger = self.logger.bind(
-            user_id=metadata.get('user_id'), ru_ref=metadata.get('ru_ref'))
+        self.logger = self.logger.bind(user_id=metadata.get('user_id'), ru_ref=metadata.get('ru_ref'))
 
         if not tx_id:
             self.tx_id = decrypted_json.get('tx_id')
@@ -63,8 +65,6 @@ class ResponseProcessor:
             raise QuarantinableError
         else:
             self.tx_id = tx_id
-
-        self.logger = self.logger.bind(tx_id=self.tx_id)
 
         valid = self.validate_survey(decrypted_json)
 
@@ -83,7 +83,9 @@ class ResponseProcessor:
         if valid and self._requires_dap_processing(decrypted_json):
             self.send_to_dap_queue(decrypted_json)
 
-        self.logger.unbind("user_id", "ru_ref", "tx_id")
+        # If we don't unbind these fields, their current value will be retained for the next
+        # submission.  This leads to incorrect values being logged out in the bound fields.
+        self.logger = self.logger.unbind("user_id", "ru_ref", "tx_id")
 
     def decrypt_survey(self, encrypted_survey):
         self.logger.info("Decrypting survey")
