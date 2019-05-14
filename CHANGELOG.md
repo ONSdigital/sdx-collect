@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 3.12.1 2019-05-14
   - Fix bug where tx_id from previous submission was bound to the logger before decryption was done
   - Update urllib3 to fix security issue
 
