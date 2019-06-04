@@ -1,6 +1,5 @@
-flake8==3.4.1
-mock==2.0.0
-structlog==17.2.0
-responses==0.9.0
-pytest==3.6.3
-pytest-cov==2.5.1
+flake8==3.7.7
+mock==3.0.5
+responses==0.10.6
+pytest==4.6.2
+pytest-cov==2.7.1
