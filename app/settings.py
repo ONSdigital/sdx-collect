@@ -18,7 +18,7 @@ RABBIT_QUARANTINE_QUEUE = os.getenv('RABBIT_QUARANTINE_QUEUE', 'survey_quarantin
 RABBIT_EXCHANGE = 'message'
 
 RABBIT_RRM_RECEIPT_QUEUE = 'rrm_receipt'
-HEARTBEAT_INTERVAL = "?heartbeat_interval=5"
+HEARTBEAT_INTERVAL = "?heartbeat=5"
 
 DAP_SOURCE_NAME = os.getenv("DAP_SOURCE_NAME", "sdx_development")
 

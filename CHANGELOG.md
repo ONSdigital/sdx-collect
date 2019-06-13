@@ -1,4 +1,7 @@
 ### Unreleased
+  - Remove python 3.4 and 3.5 from travis builds
+  - Add python 3.7 to travis builds
+  - Upgrade packages, including sdc-rabbit, tornado and pika to allow upgrade to python 3.7
 
 ### 3.12.1 2019-05-14
   - Fix bug where tx_id from previous submission was bound to the logger before decryption was done
