@@ -1,4 +1,5 @@
 ### Unreleased
+  - Reverted to default heartbeat
   - Remove python 3.4 and 3.5 from travis builds
   - Add python 3.7 to travis builds
   - Upgrade packages, including sdc-rabbit, tornado and pika to allow upgrade to python 3.7
