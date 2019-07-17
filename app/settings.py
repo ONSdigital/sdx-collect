@@ -18,7 +18,6 @@ RABBIT_QUARANTINE_QUEUE = os.getenv('RABBIT_QUARANTINE_QUEUE', 'survey_quarantin
 RABBIT_EXCHANGE = 'message'
 
 RABBIT_RRM_RECEIPT_QUEUE = 'rrm_receipt'
-HEARTBEAT_INTERVAL = "?heartbeat=5"
 
 DAP_SOURCE_NAME = os.getenv("DAP_SOURCE_NAME", "sdx_development")
 
@@ -33,7 +32,7 @@ def parse_vcap_services():
     parsed_vcap_services = json.loads(vcap_services)
     rabbit_config = parsed_vcap_services.get('rabbitmq')
 
-    rabbit_url = rabbit_config[0].get('credentials').get('uri') + HEARTBEAT_INTERVAL
+    rabbit_url = rabbit_config[0].get('credentials').get('uri')
     return rabbit_url
 
 
@@ -46,7 +45,7 @@ else:
         user=os.getenv('RABBITMQ_DEFAULT_USER', 'rabbit'),
         password=os.getenv('RABBITMQ_DEFAULT_PASS', 'rabbit'),
         vhost=os.getenv('RABBITMQ_DEFAULT_VHOST', '%2f')
-    ) + HEARTBEAT_INTERVAL
+    )
 
 RABBIT_URLS = [RABBIT_URL]
 
