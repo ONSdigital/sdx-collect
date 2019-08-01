@@ -1,5 +1,6 @@
 ### Unreleased
-### Unreleased 
+
+### 3.14.0 2019-08-01
   - Reverted to default heartbeat
 
 ### 3.13.0 2019-06-20
