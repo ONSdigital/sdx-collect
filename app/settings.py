@@ -49,5 +49,5 @@ else:
 
 RABBIT_URLS = [RABBIT_URL]
 
-RABBIT_SURVEY_QUEUE = 'sdx-survey-notification-durable'
+RABBIT_SURVEY_QUEUE = 'sdx_downstream'
 RABBIT_DAP_QUEUE = 'sdx_dap'
