@@ -1,6 +1,6 @@
-### Unreleased
 ### Unreleased 
   - Reverted to default heartbeat
+  - Change name of SDX Downstream queue
 
 ### 3.13.0 2019-06-20
   - Remove python 3.4 and 3.5 from travis builds
