@@ -159,9 +159,10 @@ class ResponseProcessor:
         return False
 
     def make_dap_data(self, decrypted_json):
+        """Creates the json payload required by minifi to send the submission to dap"""
         self.logger.info("Creating dap data")
 
-        response = self.remote_call('{}/{}'.format(settings.SDX_RESPONSES_URL, decrypted_json['tx_id']))
+        response = self.remote_call(f"{settings.SDX_RESPONSES_URL}/{decrypted_json['tx_id']}")
         try:
             self.response_ok(response)
         except ClientError:
@@ -176,8 +177,8 @@ class ResponseProcessor:
             dap_json = {
                 'version': '1',
                 'files': [{
-                    'name': '{}.json'.format(decrypted_json['tx_id']),
-                    'URL': '{}/{}'.format(settings.SDX_RESPONSES_URL, decrypted_json['tx_id']),
+                    'name': f"{decrypted_json['tx_id']}.json",
+                    'URL': f"{settings.SDX_RESPONSES_URL}/{decrypted_json['tx_id']}",
                     'sizeBytes': response.headers['Content-Length'],
                     'md5sum': response.headers['Content-MD5']
                 }],
@@ -205,7 +206,7 @@ class ResponseProcessor:
         """
         date_time = datetime.utcnow()
         milliseconds = date_time.strftime("%f")[:3]
-        return '{}.{}Z'.format(date_time.strftime("%Y-%m-%dT%H:%M:%S"), milliseconds)
+        return f"{date_time.strftime('%Y-%m-%dT%H:%M:%S')}.{milliseconds}Z"
 
     def _requires_downstream_processing(self, decrypted_json):
         if self._is_feedback_survey(decrypted_json):
@@ -245,12 +246,9 @@ class ResponseProcessor:
         self.logger.info("Sending to downstream")
         try:
             self.logger.info("About to publish notification to queue")
-            self.notifications.publish_message(
-                self.tx_id, headers={
-                    'tx_id': self.tx_id
-                })
-        except PublishMessageError as e:
-            self.logger.error("Unable to queue response notification", error=e)
+            self.notifications.publish_message(self.tx_id, headers={'tx_id': self.tx_id})
+        except PublishMessageError:
+            self.logger.exception("Unable to queue response notification")
             raise RetryableError
 
     def send_to_dap_queue(self, decrypted_json):
@@ -258,45 +256,23 @@ class ResponseProcessor:
         message = self.make_dap_data(decrypted_json)
         try:
             self.logger.info("Publishing data to dap queue")
-            self.dap.publish_message(
-                dumps(message),
-                headers={'tx_id': self.tx_id})
+            self.dap.publish_message(dumps(message), headers={'tx_id': self.tx_id})
         except PublishMessageError:
             self.logger.exception("Failed to publish to dap queue")
             raise RetryableError
         self.logger.info("Successfully published to dap queue")
 
-    def remote_call(self,
-                    request_url,
-                    json=None,
-                    data=None,
-                    headers=None,
-                    verify=True,
-                    auth=None):
+    def remote_call(self, request_url, json=None, data=None):
         service = self.service_name(request_url)
 
         try:
             self.logger.info("Calling service", request_url=request_url, service=service)
-            r = None
-
             if json:
-                r = session.post(
-                    request_url,
-                    json=json,
-                    headers=headers,
-                    verify=verify,
-                    auth=auth)
-            elif data:
-                r = session.post(
-                    request_url,
-                    data=data,
-                    headers=headers,
-                    verify=verify,
-                    auth=auth)
-            else:
-                r = session.get(request_url, headers=headers, verify=verify, auth=auth)
+                return session.post(request_url, json=json, verify=True)
+            if data:
+                return session.post(request_url, data=data, verify=True)
 
-            return r
+            return session.get(request_url, verify=True)
 
         except MaxRetryError:
             self.logger.error("Max retries exceeded (5)", request_url=request_url)
@@ -318,15 +294,9 @@ class ResponseProcessor:
             return
 
         elif 400 <= res.status_code < 500:
-            res_logger.error(
-                "Returned from service",
-                response="client error",
-                service=service)
+            res_logger.error("Returned from service", response="client error", service=service)
             raise ClientError
 
         else:
-            res_logger.error(
-                "Returned from service",
-                response="service error",
-                service=service)
+            res_logger.error("Returned from service", response="service error", service=service)
             raise RetryableError
