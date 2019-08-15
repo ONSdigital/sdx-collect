@@ -1,4 +1,5 @@
 ### Unreleased
+  - Tidy function arguments and use fstrings
 
 ### 3.15.0 2019-08-13
   - Change name of SDX Downstream queue
