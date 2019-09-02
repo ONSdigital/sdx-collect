@@ -1,5 +1,7 @@
 ### Unreleased
   - Tidy function arguments and use fstrings
+  - Update sdc-rabbit to 1.7.0 to fix reconnection issues
+  - Update various dependencies
 
 ### 3.15.0 2019-08-13
   - Change name of SDX Downstream queue
