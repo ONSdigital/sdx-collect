@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 3.16.0 2019-09-04
   - Tidy function arguments and use fstrings
   - Update sdc-rabbit to 1.7.0 to fix reconnection issues
   - Update various dependencies
