@@ -2,7 +2,7 @@ import requests
 from requests.packages.urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
 
-__version__ = "3.15.0"
+__version__ = "3.16.0"
 
 # Configure the number of retries attempted before failing call
 session = requests.Session()
