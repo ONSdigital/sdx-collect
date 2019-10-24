@@ -1,4 +1,5 @@
 ### Unreleased
+  - Add python 3.8 to travis builds
 
 ### 3.16.0 2019-09-04
   - Tidy function arguments and use fstrings
