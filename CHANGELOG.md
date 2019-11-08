@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 3.16.1 2019-11-08
   - Add python 3.8 to travis builds
 
 ### 3.16.0 2019-09-04
