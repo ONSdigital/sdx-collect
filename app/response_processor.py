@@ -294,6 +294,9 @@ class ResponseProcessor:
             return
 
         elif 400 <= res.status_code < 500:
+            if res.json().get('contains_null_character'):
+                logger.error("Null character found in payload, quarantining submission")
+                raise QuarantinableError
             res_logger.error("Returned from service", response="client error", service=service)
             raise ClientError
 

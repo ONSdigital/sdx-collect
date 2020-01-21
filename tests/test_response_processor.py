@@ -132,6 +132,8 @@ class TestResponseProcessor(unittest.TestCase):
             call_mock.return_value = r
             # 400 - bad
             r.status_code = 400
+            # Set content to keep r.json() function happy
+            r._content = b'{}'  # pylint:disable=protected-access
             self._process()
 
             # receipt is not called
@@ -174,11 +176,15 @@ class TestResponseProcessor(unittest.TestCase):
 
             # 500 - retry
             r.status_code = 500
+            # Set content to keep r.json() function happy
+            r._content = b'{}'  # pylint:disable=protected-access
             with self.assertRaises(RetryableError):
                 self._process()
 
             # 400 - bad
             r.status_code = 400
+            # Set content to keep r.json() function happy
+            r._content = b'{}'  # pylint:disable=protected-access
             with self.assertRaises(QuarantinableError):
                 self._process()
 
@@ -360,6 +366,23 @@ class TestResponseProcessor(unittest.TestCase):
         self.rp.send_receipt = MagicMock()
         self.rp.dap.publish_message = MagicMock()
         self._process()
+
+    @responses.activate
+    def test_null_character_raises_quarantine_error(self):
+        url = "http://sdx-validate:5000/validate"
+        response_json = {"contains_null_character": True,
+                         "valid": False,
+                         "status": 400,
+                         "message": "Null character found in submission",
+                         "uri": "http://sdx-validate:5000/validate"}
+
+        responses.add(responses.POST, url,
+                      json=response_json,
+                      status=400)
+
+        self.rp.decrypt_survey = MagicMock(return_value=valid_json)
+        with self.assertRaises(QuarantinableError):
+            self._process()
 
     @responses.activate
     def test_remote_call_get(self):

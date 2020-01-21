@@ -1,4 +1,5 @@
 ### Unreleased
+  - Quarantine submissions and feedback if they have null characters (`\u0000`) in the text
 
 ### 3.16.1 2019-11-08
   - Add python 3.8 to travis builds
