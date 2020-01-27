@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 3.17.0 2020-01-27
   - Quarantine submissions and feedback if they have null characters (`\u0000`) in the text
 
 ### 3.16.1 2019-11-08
