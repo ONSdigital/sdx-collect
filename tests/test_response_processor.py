@@ -369,18 +369,18 @@ class TestResponseProcessor(unittest.TestCase):
 
     @responses.activate
     def test_null_character_raises_quarantine_error(self):
-        url = "http://sdx-validate:5000/validate"
-        response_json = {"contains_null_character": True,
-                         "valid": False,
-                         "status": 400,
-                         "message": "Null character found in submission",
-                         "uri": "http://sdx-validate:5000/validate"}
+        url = "http://sdx-store:5000/responses"
+        response_json = {"contains_invalid_character": True,
+                         "status_code": 400,
+                         "message": "Invalid characters in payload",
+                         "url": "http://sdx-store:5000/responses"}
 
         responses.add(responses.POST, url,
                       json=response_json,
                       status=400)
 
         self.rp.decrypt_survey = MagicMock(return_value=valid_json)
+        self.rp.validate_survey = MagicMock(return_value=True)
         with self.assertRaises(QuarantinableError):
             self._process()
 

@@ -114,6 +114,7 @@ class ResponseProcessor:
     def store_survey(self, decrypted_json):
         self.logger.info("Storing survey")
         response = self.remote_call(settings.SDX_RESPONSES_URL, json=decrypted_json)
+
         try:
             self.response_ok(response)
         except ClientError:
@@ -286,16 +287,15 @@ class ResponseProcessor:
 
         service = self.service_name(request_url)
 
-        res_logger = self.logger
-        res_logger.bind(request_url=res.url, status=res.status_code)
+        res_logger = self.logger.bind(request_url=res.url, status=res.status_code)
 
         if res.status_code == 200 or res.status_code == 201:
             res_logger.info("Returned from service", response="ok", service=service)
             return
 
         elif 400 <= res.status_code < 500:
-            if res.json().get('contains_null_character'):
-                logger.error("Null character found in payload, quarantining submission")
+            if res.json().get('contains_invalid_character'):
+                logger.error("Invalid character found in payload, quarantining submission")
                 raise QuarantinableError
             res_logger.error("Returned from service", response="client error", service=service)
             raise ClientError
