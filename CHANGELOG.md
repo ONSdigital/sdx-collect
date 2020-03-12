@@ -1,4 +1,6 @@
 ### Unreleased
+  - Better handle submissions if they have invalid characters.  The fix implemented in 3.17.0 didn't
+  work as expected.
 
 ### 3.17.0 2020-01-27
   - Quarantine submissions and feedback if they have null characters (`\u0000`) in the text
