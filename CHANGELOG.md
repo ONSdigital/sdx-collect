@@ -1,4 +1,5 @@
 ### Unreleased
+  - Add corvid-19 survey to DAP bound surveys
 
 ### 3.18.0 2020-03-18
   - Better handle submissions if they have invalid characters.  The fix implemented in 3.17.0 didn't
