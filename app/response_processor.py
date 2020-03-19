@@ -219,6 +219,7 @@ class ResponseProcessor:
             return False
         elif decrypted_json.get("survey_id") in ["283"]:
             self.logger.info("Corvid-19 survey, skipping downstream processing")
+            return False
         return True
 
     @staticmethod
