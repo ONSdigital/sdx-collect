@@ -154,7 +154,7 @@ class ResponseProcessor:
         if self._is_feedback_survey(decrypted_json):
             self.logger.info("Feedback survey, skipping sending to DAP")
             return False
-        if decrypted_json.get("survey_id") in ["023", "281", "lms", "census"]:  # RSI, Dtrades
+        if decrypted_json.get("survey_id") in ["023", "281", "283", "lms", "census"]:  # RSI, Dtrades
             self.logger.info("Sending to DAP", survey_id=decrypted_json.get("survey_id"))
             return True
         return False
@@ -217,6 +217,8 @@ class ResponseProcessor:
             survey_id = decrypted_json.get("survey_id")
             self.logger.info("Skipping downstream processing", survey_id=survey_id)
             return False
+        elif decrypted_json.get("survey_id") in ["283"]:
+            self.logger.info("Corvid-19 survey, skipping downstream processing")
         return True
 
     @staticmethod
