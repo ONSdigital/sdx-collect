@@ -145,7 +145,7 @@ class ResponseProcessor:
                 }
             }
         except KeyError:
-            self.logger.exception("Unsuccesful publish, missing key values")
+            self.logger.exception("Unsuccessful publish, missing key values")
             raise QuarantinableError
 
         return receipt_json
