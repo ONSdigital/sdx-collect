@@ -218,7 +218,7 @@ class ResponseProcessor:
             self.logger.info("Skipping downstream processing", survey_id=survey_id)
             return False
         elif decrypted_json.get("survey_id") == "283":
-            self.logger.info("Corvid-19 survey, skipping downstream processing")
+            self.logger.info("Covid-19 survey, skipping downstream processing")
             return False
         return True
 
