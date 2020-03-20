@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 3.19.0 2020-03-20
   - Add covid-19 survey to DAP bound surveys
 
 ### 3.18.0 2020-03-18
