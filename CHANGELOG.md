@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 3.19.1 2020-05-21
   - Updated packages
 
 ### 3.19.0 2020-03-20
