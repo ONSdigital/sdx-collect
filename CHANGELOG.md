@@ -1,5 +1,7 @@
 ### Unreleased
- - Remove Cloudfoundry deployment files
+
+### 3.19.2 2020-06-09
+  - Remove Cloudfoundry deployment files
 
 ### 3.19.1 2020-05-21
   - Updated packages
