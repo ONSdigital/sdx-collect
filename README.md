@@ -8,6 +8,9 @@ On receipt it hands off to sdx-decrypt to decrypt the survey data, validates the
 via the appropriate receipting service.
 
 ## Installation
+This application presently doesn't use a virtual environment, and installs required packages from requirements files:
+- `requirements.txt`: packages for the application, with hashes for all packages: see https://pypi.org/project/hashin/   
+- `test-requirements.txt`: packages for testing and linting
 
 To install, use:
 
