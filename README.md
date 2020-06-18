@@ -17,18 +17,21 @@ It's also best to use `pyenv` and `pyenv-virtualenv`, to build in a virtual envi
 - https://github.com/pyenv/pyenv-virtualenv
 - (Note that the homebrew version of `pyenv` is easiest to install, but can lag behind the latest release of Python.)
 
-To install, set your python environment and use:
-
-```
-make build
-```
-
-To run the test suite, use:
-
-```
-make test
+### Getting started
+Once your virtual environment is set, install the requirements:
+```shell
+$ make build
 ```
 
+To test, first run `make build` as above, then run:
+```shell
+$ make test
+```
+
+It's also possible to install within a container using docker. From the sdx-collect directory:
+```shell
+$ docker build -t sdx-collect .
+```
 ## Configuration
 
 The following envioronment variables can be set:
