@@ -1,5 +1,18 @@
 ### Unreleased
 
+### 3.19.2 2020-06-09
+  - Remove Cloudfoundry deployment files
+
+### 3.19.1 2020-05-21
+  - Updated packages
+
+### 3.19.0 2020-03-20
+  - Add covid-19 survey to DAP bound surveys
+
+### 3.18.0 2020-03-18
+  - Better handle submissions if they have invalid characters.  The fix implemented in 3.17.0 didn't
+  work as expected.
+
 ### 3.17.0 2020-01-27
   - Quarantine submissions and feedback if they have null characters (`\u0000`) in the text
 

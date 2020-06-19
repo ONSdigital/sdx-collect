@@ -114,6 +114,7 @@ class ResponseProcessor:
     def store_survey(self, decrypted_json):
         self.logger.info("Storing survey")
         response = self.remote_call(settings.SDX_RESPONSES_URL, json=decrypted_json)
+
         try:
             self.response_ok(response)
         except ClientError:
@@ -144,7 +145,7 @@ class ResponseProcessor:
                 }
             }
         except KeyError:
-            self.logger.exception("Unsuccesful publish, missing key values")
+            self.logger.exception("Unsuccessful publish, missing key values")
             raise QuarantinableError
 
         return receipt_json
@@ -153,7 +154,7 @@ class ResponseProcessor:
         if self._is_feedback_survey(decrypted_json):
             self.logger.info("Feedback survey, skipping sending to DAP")
             return False
-        if decrypted_json.get("survey_id") in ["023", "281", "lms", "census"]:  # RSI, Dtrades
+        if decrypted_json.get("survey_id") in ["023", "281", "283", "lms", "census"]:  # RSI, Dtrades
             self.logger.info("Sending to DAP", survey_id=decrypted_json.get("survey_id"))
             return True
         return False
@@ -215,6 +216,9 @@ class ResponseProcessor:
         elif decrypted_json.get("version") == "0.0.2":
             survey_id = decrypted_json.get("survey_id")
             self.logger.info("Skipping downstream processing", survey_id=survey_id)
+            return False
+        elif decrypted_json.get("survey_id") == "283":
+            self.logger.info("Covid-19 survey, skipping downstream processing")
             return False
         return True
 
@@ -286,16 +290,15 @@ class ResponseProcessor:
 
         service = self.service_name(request_url)
 
-        res_logger = self.logger
-        res_logger.bind(request_url=res.url, status=res.status_code)
+        res_logger = self.logger.bind(request_url=res.url, status=res.status_code)
 
         if res.status_code == 200 or res.status_code == 201:
             res_logger.info("Returned from service", response="ok", service=service)
             return
 
         elif 400 <= res.status_code < 500:
-            if res.json().get('contains_null_character'):
-                logger.error("Null character found in payload, quarantining submission")
+            if res.json().get('contains_invalid_character'):
+                logger.error("Invalid character found in payload, quarantining submission")
                 raise QuarantinableError
             res_logger.error("Returned from service", response="client error", service=service)
             raise ClientError
