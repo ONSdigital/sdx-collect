@@ -10,3 +10,4 @@ RUN make build
 
 COPY startup.sh /startup.sh
 COPY app /app
+COPY reprocess.py /reprocess.py

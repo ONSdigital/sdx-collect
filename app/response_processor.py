@@ -46,11 +46,14 @@ class ResponseProcessor:
         except AttributeError:
             self.logger.exception("No valid service name")
 
-    def process(self, msg, tx_id=None):
+    def process(self, msg, tx_id=None, decrypt=True):
         # Bind the tx_id from the rabbit message header as we don't have access to the one in the survey yet.
         self.logger = self.logger.bind(tx_id=tx_id)
 
-        decrypted_json = self.decrypt_survey(msg)
+        if decrypt:
+            decrypted_json = self.decrypt_survey(msg)
+        else:
+            decrypted_json = msg
 
         metadata = decrypted_json.get('metadata', {})
         self.logger = self.logger.bind(user_id=metadata.get('user_id'), ru_ref=metadata.get('ru_ref'))
