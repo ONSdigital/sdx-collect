@@ -1,4 +1,5 @@
 ### Unreleased
+  - Reprocessing script for decrypted submissions 
   - MWSS survey to DAP as well
 
 ### 3.19.2 2020-06-09
