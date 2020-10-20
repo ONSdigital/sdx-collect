@@ -1,11 +1,10 @@
 FROM onsdigital/flask-crypto-queue
 
-RUN mkdir -p /app/logs
-
-COPY requirements.txt /requirements.txt
-COPY Makefile /Makefile
-RUN make build
-
 COPY app /app
 
-CMD ["python", "./main.py"]
+RUN mkdir -p /app/logs
+
+COPY requirements.txt /app/requirements.txt
+RUN pip3 install --no-cache-dir -U -r /app/requirements.txt
+
+CMD ["python", "./app/main.py"]
