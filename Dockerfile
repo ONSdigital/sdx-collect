@@ -6,4 +6,6 @@ RUN mkdir -p /app/logs
 
 RUN pip3 install --no-cache-dir -U -r /app/requirements.txt
 
-CMD ["python", "/app/run.py"]
+WORKDIR /app
+
+ENTRYPOINT ["./startup.sh"]
