@@ -215,8 +215,8 @@ class ResponseProcessor:
 
     def _requires_downstream_processing(self, decrypted_json):
         if self._is_feedback_survey(decrypted_json):
-            self.logger.info("Feedback survey, skipping downstream processing")
-            return False
+            self.logger.info("Feedback survey, downstream processing")
+            return True
         elif decrypted_json.get("version") == "0.0.2":
             survey_id = decrypted_json.get("survey_id")
             self.logger.info("Skipping downstream processing", survey_id=survey_id)
