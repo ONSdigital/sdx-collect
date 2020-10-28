@@ -75,13 +75,14 @@ class ResponseProcessor:
             self.logger.info("Invalid survey data, skipping receipting and downstream processing")
             decrypted_json['invalid'] = True
 
-        self.store_survey(decrypted_json)
+        id_tag = self.store_survey(decrypted_json)
+        self.logger.info("id_tag: {}".format(id_tag))
 
         if valid and self._requires_receipting(decrypted_json):
             self.send_receipt(decrypted_json)
 
         if valid and self._requires_downstream_processing(decrypted_json):
-            self.send_notification()
+            self.send_notification(id_tag)
 
         if valid and self._requires_dap_processing(decrypted_json):
             self.send_to_dap_queue(decrypted_json)
@@ -214,10 +215,10 @@ class ResponseProcessor:
         return f"{date_time.strftime('%Y-%m-%dT%H:%M:%S')}.{milliseconds}Z"
 
     def _requires_downstream_processing(self, decrypted_json):
-        if self._is_feedback_survey(decrypted_json):
-            self.logger.info("Feedback survey, downstream processing")
-            return True
-        elif decrypted_json.get("version") == "0.0.2":
+        # if self._is_feedback_survey(decrypted_json):
+        #     self.logger.info("Feedback survey, downstream processing")
+        #     return True
+        if decrypted_json.get("version") == "0.0.2":
             survey_id = decrypted_json.get("survey_id")
             self.logger.info("Skipping downstream processing", survey_id=survey_id)
             return False
@@ -250,11 +251,12 @@ class ResponseProcessor:
             self.logger.exception("Unsuccesful publish")
             raise RetryableError
 
-    def send_notification(self):
+    def send_notification(self, id_tag):
         self.logger.info("Sending to downstream")
         try:
             self.logger.info("About to publish notification to queue")
-            self.notifications.publish_message(self.tx_id, headers={'tx_id': self.tx_id})
+            # self.notifications.publish_message(id_tag, headers={'tx_id': self.tx_id})
+            self.notifications.publish_message(headers={'tx_id': self.tx_id})
         except PublishMessageError:
             self.logger.exception("Unable to queue response notification")
             raise RetryableError
