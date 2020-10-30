@@ -329,9 +329,10 @@ class TestResponseProcessor(unittest.TestCase):
         # # passes notifications feedback
         self.rp.decrypt_survey = MagicMock(return_value=feedback)
         self.rp.store_survey = MagicMock(return_value=feedback_id_tag)
+        self.rp.send_notification = MagicMock()
         self._process()
-        self.rp.decrypt_survey = MagicMock(return_value=valid_json)
 
+        self.rp.decrypt_survey = MagicMock(return_value=valid_json)
         # # passes notifications invalid survey
         self.rp.validate_survey = MagicMock(return_value=False)
         self._process()
