@@ -15,7 +15,7 @@ from structlog import wrap_logger
 
 from app.response_processor import ResponseProcessor
 from tests.test_data import feedback_decrypted, invalid_decrypted, valid_decrypted, valid_rm_decrypted, \
-    valid_census_decrypted, valid_id_tag
+    valid_census_decrypted, valid_id_tag, feedback_id_tag
 from app import settings
 from app import session
 
@@ -287,7 +287,7 @@ class TestResponseProcessor(unittest.TestCase):
     def test_send_notification(self):
         self.rp.decrypt_survey = MagicMock(return_value=valid_json)
         self.rp.validate_survey = MagicMock()
-        self.rp.store_survey = MagicMock(return_value=valid_id)
+        self.rp.store_survey = MagicMock(return_value=valid_id_tag)
         self.rp.send_receipt = MagicMock()
 
         # Subsequent tests expect valid key
@@ -317,7 +317,7 @@ class TestResponseProcessor(unittest.TestCase):
     def test_send_notification_cora(self):
         self.rp.decrypt_survey = MagicMock(return_value=valid_json)
         self.rp.validate_survey = MagicMock()
-        self.rp.store_survey = MagicMock()
+        self.rp.store_survey = MagicMock(return_value=valid_id_tag)
         self.rp.send_receipt = MagicMock()
 
         # # cora notifications queue fail census
@@ -328,8 +328,9 @@ class TestResponseProcessor(unittest.TestCase):
 
         # # passes notifications feedback
         self.rp.decrypt_survey = MagicMock(return_value=feedback)
+        self.rp.store_survey = MagicMock(return_value=feedback_id_tag)
         self._process()
-        self.rp.decrypt_survey = MagicMock(return_value=valid_id_tag)
+        self.rp.decrypt_survey = MagicMock(return_value=valid_json)
 
         # # passes notifications invalid survey
         self.rp.validate_survey = MagicMock(return_value=False)
@@ -338,7 +339,7 @@ class TestResponseProcessor(unittest.TestCase):
     def test_send_notification_success(self):
         self.rp.decrypt_survey = MagicMock(return_value=valid_json)
         self.rp.validate_survey = MagicMock()
-        self.rp.store_survey = MagicMock()
+        self.rp.store_survey = MagicMock(return_value=valid_id_tag)
         self.rp.send_receipt = MagicMock()
 
         # survey notifications queue publish ok
@@ -429,13 +430,13 @@ class TestResponseProcessor(unittest.TestCase):
     def test_send_feedback(self):
         self.rp.decrypt_survey = MagicMock(return_value=feedback)
         self.rp.validate_survey = MagicMock()
-        self.rp.store_survey = MagicMock()
+        self.rp.store_survey = MagicMock(return_value=feedback_id_tag)
+        self.rp.notifications.publish_message = MagicMock()
 
         with self.assertLogs(level="INFO") as cm:
             self._process()
 
-        self.assertIn("Feedback survey, skipping receipting", cm.output[0])
-        self.assertIn("Feedback survey, skipping downstream processing", cm.output[1])
+        self.assertIn("Feedback survey, skipping receipting", cm.output[1])
 
     def test_invalid_and_not_feedback(self):
         invalid_json = copy.deepcopy(valid_json)

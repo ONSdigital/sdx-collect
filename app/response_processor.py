@@ -78,7 +78,6 @@ class ResponseProcessor:
 
         id_tag = self.store_survey(decrypted_json)
         self.logger.info("id_tag: {}".format(id_tag))
-        # self.logger.info("id_tag type: {}".format(type(id_tag)))
 
         if valid and self._requires_receipting(decrypted_json):
             self.send_receipt(decrypted_json)
