@@ -14,7 +14,8 @@ from sdc.rabbit.exceptions import RetryableError, QuarantinableError
 from structlog import wrap_logger
 
 from app.response_processor import ResponseProcessor
-from tests.test_data import feedback_decrypted, invalid_decrypted, valid_decrypted, valid_rm_decrypted, valid_census_decrypted
+from tests.test_data import feedback_decrypted, invalid_decrypted, valid_decrypted, valid_rm_decrypted, \
+    valid_census_decrypted, valid_id_tag
 from app import settings
 from app import session
 
@@ -286,7 +287,7 @@ class TestResponseProcessor(unittest.TestCase):
     def test_send_notification(self):
         self.rp.decrypt_survey = MagicMock(return_value=valid_json)
         self.rp.validate_survey = MagicMock()
-        self.rp.store_survey = MagicMock()
+        self.rp.store_survey = MagicMock(return_value=valid_id)
         self.rp.send_receipt = MagicMock()
 
         # Subsequent tests expect valid key
@@ -328,7 +329,7 @@ class TestResponseProcessor(unittest.TestCase):
         # # passes notifications feedback
         self.rp.decrypt_survey = MagicMock(return_value=feedback)
         self._process()
-        self.rp.decrypt_survey = MagicMock(return_value=valid_json)
+        self.rp.decrypt_survey = MagicMock(return_value=valid_id_tag)
 
         # # passes notifications invalid survey
         self.rp.validate_survey = MagicMock(return_value=False)

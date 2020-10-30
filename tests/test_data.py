@@ -1,5 +1,8 @@
 fake_encrypted = "abcdefghijklmnopqrstuvwxyz"
 
+
+valid_id_tag = '{"tx_id": "0f534ffc-9442-414c-b39f-a756b4adc6cb","is_feedback":false}'
+
 valid_decrypted = '''
 {
   "tx_id": "0f534ffc-9442-414c-b39f-a756b4adc6cb",

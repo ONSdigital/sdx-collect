@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 from json import dumps
 import logging
@@ -77,6 +78,7 @@ class ResponseProcessor:
 
         id_tag = self.store_survey(decrypted_json)
         self.logger.info("id_tag: {}".format(id_tag))
+        # self.logger.info("id_tag type: {}".format(type(id_tag)))
 
         if valid and self._requires_receipting(decrypted_json):
             self.send_receipt(decrypted_json)
@@ -126,7 +128,7 @@ class ResponseProcessor:
             raise QuarantinableError
 
         self.logger.info("Survey storage successful")
-        return response
+        return response.json()
 
     def _requires_receipting(self, decrypted_json):
         if self._is_feedback_survey(decrypted_json):
@@ -255,8 +257,8 @@ class ResponseProcessor:
         self.logger.info("Sending to downstream")
         try:
             self.logger.info("About to publish notification to queue")
-            # self.notifications.publish_message(id_tag, headers={'tx_id': self.tx_id})
-            self.notifications.publish_message(headers={'tx_id': self.tx_id})
+            self.notifications.publish_message(json.dumps(id_tag), headers={'tx_id': self.tx_id})
+            # self.notifications.publish_message(headers={'tx_id': self.tx_id})
         except PublishMessageError:
             self.logger.exception("Unable to queue response notification")
             raise RetryableError
