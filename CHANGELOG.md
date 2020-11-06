@@ -1,4 +1,6 @@
 ### Unreleased
+  - Functions for saving feedback and returning it for downstream processing
+  - Tests for feedback automation
 
 ### 3.21.0 2020-09-07
   - Add EPE survey 
