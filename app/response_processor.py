@@ -254,7 +254,6 @@ class ResponseProcessor:
         try:
             self.logger.info("About to publish notification to queue")
             self.notifications.publish_message(json.dumps(id_tag), headers={'tx_id': self.tx_id})
-            # self.notifications.publish_message(headers={'tx_id': self.tx_id})
         except PublishMessageError:
             self.logger.exception("Unable to queue response notification")
             raise RetryableError
