@@ -76,14 +76,14 @@ class ResponseProcessor:
             self.logger.info("Invalid survey data, skipping receipting and downstream processing")
             decrypted_json['invalid'] = True
 
-        id_tag = self.store_survey(decrypted_json)
-        self.logger.info("id_tag: {}".format(id_tag))
+        id = self.store_survey(decrypted_json)
+        self.logger.info("Saved data to the database", id=id)
 
         if valid and self._requires_receipting(decrypted_json):
             self.send_receipt(decrypted_json)
 
         if valid and self._requires_downstream_processing(decrypted_json):
-            self.send_notification(id_tag)
+            self.send_notification(id)
 
         if valid and self._requires_dap_processing(decrypted_json):
             self.send_to_dap_queue(decrypted_json)
