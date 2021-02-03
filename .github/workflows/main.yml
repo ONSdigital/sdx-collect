@@ -11,6 +11,8 @@ jobs:
     name: Build and Package
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
     - name: Install Packages
       run: pip install --upgrade pip
     - name: Build
