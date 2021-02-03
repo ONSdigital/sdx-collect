@@ -13,16 +13,20 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-    - name: Install Packages
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+    - name: install packages
       run: pip install --upgrade pip
-    - name: Build
+    - name: make build
       run: |
         make build
         pip install -r test_requirements.txt
         pip install codecov
-    - name: Tests
+    - name: run tests
         pytest -v tests/ --cov=app --cov-report html
-    - name: Coverage
+    - name: get coverage
       run: codecov
 
 
