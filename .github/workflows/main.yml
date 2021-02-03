@@ -1,0 +1,31 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: Build and Package
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install Packages
+      run: pip install --upgrade pip
+    - name: Build
+      run: |
+        make build
+        pip install -r test_requirements.txt
+        pip install codecov
+    - name: Tests
+        pytest -v tests/ --cov=app --cov-report html
+  coverage:
+      name: Code Coverage
+      runs-on: ubuntu-latest
+      needs: build
+      steps:
+      - name: Coverage
+        run: codecov
+
+
