@@ -1,6 +1,6 @@
 # sdx-collect
 
-[![Build Status](https://travis-ci.org/ONSdigital/sdx-collect.svg?branch=python-consumer)](https://travis-ci.org/ONSdigital/sdx-collect) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/858afbc345f64b288b8aef4c6600f82d)](https://www.codacy.com/app/ons-sdc/sdx-collect?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ONSdigital/sdx-collect&amp;utm_campaign=Badge_Grade) [![codecov](https://codecov.io/gh/ONSdigital/sdx-collect/branch/master/graph/badge.svg)](https://codecov.io/gh/ONSdigital/sdx-collect)
+[![Build Status](https://github.com/ONSdigital/sdx-collect/workflows/Build/badge.svg)](https://github.com/ONSdigital/sdx-collect) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/858afbc345f64b288b8aef4c6600f82d)](https://www.codacy.com/app/ons-sdc/sdx-collect?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ONSdigital/sdx-collect&amp;utm_campaign=Badge_Grade) [![codecov](https://codecov.io/gh/ONSdigital/sdx-collect/branch/master/graph/badge.svg)](https://codecov.io/gh/ONSdigital/sdx-collect)
 
 ``sdx-collect`` is a component of the Office for National Statistics (ONS) Survey Data Exchange (SDX) project which listens to a queue for survey data from the eQ Survey Runner.
 
